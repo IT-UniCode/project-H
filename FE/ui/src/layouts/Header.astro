@@ -1,0 +1,31 @@
+---
+import type { HeaderLink } from "src/interfaces";
+import { routes } from "src/routes";
+
+const links: HeaderLink[] = [
+  {
+    title: "Home",
+    href: routes.Home,
+  },
+  {
+    title: "Log in",
+    href: routes.Login,
+  },
+  {
+    title: "Sign up",
+    href: routes.SignUp,
+  },
+  {
+    title: "Profile",
+    href: routes.Profile,
+  },
+];
+---
+
+<header class="container mx-auto py-3">
+  <section>
+    <nav class="flex gap-x-3">
+      {links.map((v) => <a href={v.href}>{v.title}</a>)}
+    </nav>
+  </section>
+</header>
