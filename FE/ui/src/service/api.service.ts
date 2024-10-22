@@ -1,5 +1,5 @@
 class ApiService {
-  apiUrl = import.meta.env.API_URL;
+  apiUrl = import.meta.env.STRAPI_URL;
 
   async requst(
     path: string,

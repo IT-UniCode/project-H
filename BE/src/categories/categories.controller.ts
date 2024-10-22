@@ -11,87 +11,76 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import axios from 'axios';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { RequestService } from 'src/request/request.service';
 
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
+  constructor(public requestService: RequestService) {}
+
   @Get('')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'Category',
     type: Category,
   })
   async getAll() {
-    const res = await axios(`${process.env.API_URL}/categories`);
-    const data = res.data;
+    const res = await this.requestService.get('categories');
 
-    return data;
+    return res;
   }
 
   @Get('/:id')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'Category',
     type: Category,
   })
   async getById(@Param() params: { id: number }) {
-    const res = await axios(`${process.env.API_URL}/categories/${params.id}`);
-    const data = res.data;
+    const res = await this.requestService.get(`categories/${params.id}`);
 
-    return data;
+    return res;
   }
 
   @Post('')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'Category',
   })
   async add(@Body() body: CreateCategoryDto) {
-    const res = await axios.post(
-      `${process.env.API_URL}/categories`,
-      { data: body },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    console.log('here-body:', body);
 
-    return res.status;
+    const res = await this.requestService.post(`categories`, {
+      body: { data: body },
+    });
+
+    return res;
   }
 
   @Put('/:id')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'Category',
   })
   async update(
     @Body() body: CreateCategoryDto,
     @Param() params: { id: number },
   ) {
-    const res = await axios.put(
-      `${process.env.API_URL}/categories/${params.id}`,
-      { data: body },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    const res = await this.requestService.post(`categories/${params.id}`, {
+      body: { data: body },
+    });
 
-    return res.status;
+    return res;
   }
 
   @Delete('/:id')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'Category',
   })
   async delete(@Param() params: { id: number }) {
-    const res = await axios.delete(
-      `${process.env.API_URL}/categories/${params.id}`,
-    );
+    const res = await this.requestService.delete(`categories/${params.id}`);
 
-    return res.status;
+    return res;
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsObject } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateNewsDto {
   @IsNotEmpty()
@@ -9,11 +9,11 @@ export class CreateNewsDto {
 
   @IsNotEmpty()
   @ApiProperty({
-    example: '"Some text"',
+    example: 'Some text',
     description: 'Content can be string or markdown',
   })
-  @IsObject()
-  content: {};
+  @IsString()
+  content: string;
 
   @ApiProperty({
     example: '[1, 3, 5, 6]',
