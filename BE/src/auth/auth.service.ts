@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
@@ -17,6 +18,10 @@ export class AuthService {
 
   async signIn(email: string, pass: string): Promise<any> {
     const user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not exist');
+    }
 
     const systemPass = await this.jwtService.decode(user.password);
 

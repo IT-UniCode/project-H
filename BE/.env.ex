@@ -4,5 +4,12 @@
 # Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
 # See the documentation for all the connection string options: https://pris.ly/d/connection-strings
 
+PORT=5000
+
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres?schema=public"
 SECRET="LLOOOOOOONNNGGGG_SECREEEEEEEET"
+
+STRAPI_URL="http://localhost:1337/api"
+STRAPI_TOKEN=""
+ASTRO_URL="http://localhost:4321/"
+

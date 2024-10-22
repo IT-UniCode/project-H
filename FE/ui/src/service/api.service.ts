@@ -1,6 +1,5 @@
 class ApiService {
-  // apiUrl = import.meta.env.API_URL;
-  apiUrl = "http://localhost:5000";
+  apiUrl = import.meta.env.STRAPI_URL;
 
   async requst(
     path: string,
