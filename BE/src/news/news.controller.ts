@@ -3,18 +3,18 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
-import axios from 'axios';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
+import { AuthGuard } from 'src/guard/user.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
@@ -27,9 +27,7 @@ export class NewsController {
     type: News,
   })
   async getAll() {
-    const res = await this.requestService.get('news?populate=category');
-
-    return res;
+    return this.requestService.get('news?populate=category');
   }
 
   @Get('/:id')
@@ -39,11 +37,7 @@ export class NewsController {
     type: News,
   })
   async getById(@Param() params: { id: number }) {
-    const res = await this.requestService.get(
-      `news/${params.id}?populate=category`,
-    );
-
-    return res;
+    return this.requestService.get(`news/${params.id}?populate=category`);
   }
 
   @Post('')
@@ -52,11 +46,9 @@ export class NewsController {
     description: 'User',
   })
   async add(@Body() body: CreateNewsDto) {
-    const res = await this.requestService.post(`news`, {
+    return this.requestService.post(`news`, {
       body: { data: body },
     });
-
-    return res;
   }
 
   @Put('/:id')
@@ -65,11 +57,9 @@ export class NewsController {
     description: 'Status',
   })
   async update(@Body() body: CreateNewsDto, @Param() params: { id: number }) {
-    const res = await this.requestService.put(`news/${params.id}`, {
+    return this.requestService.put(`news/${params.id}`, {
       body: { data: body },
     });
-
-    return res;
   }
 
   @Delete('/:id')
@@ -78,8 +68,6 @@ export class NewsController {
     description: 'Status',
   })
   async delete(@Param() params: { id: number }) {
-    const res = await this.requestService.delete(`news/${params.id}`);
-
-    return res;
+    return this.requestService.delete(`news/${params.id}`);
   }
 }

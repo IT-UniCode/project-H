@@ -6,13 +6,15 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import axios from 'axios';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { RequestService } from 'src/request/request.service';
+import { AuthGuard } from 'src/guard/user.guard';
 
+@UseGuards(AuthGuard)
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
@@ -25,9 +27,7 @@ export class CategoriesController {
     type: Category,
   })
   async getAll() {
-    const res = await this.requestService.get('categories');
-
-    return res;
+    return this.requestService.get('categories');
   }
 
   @Get('/:id')
@@ -37,9 +37,7 @@ export class CategoriesController {
     type: Category,
   })
   async getById(@Param() params: { id: number }) {
-    const res = await this.requestService.get(`categories/${params.id}`);
-
-    return res;
+    return this.requestService.get(`categories/${params.id}`);
   }
 
   @Post('')
@@ -48,13 +46,9 @@ export class CategoriesController {
     description: 'Category',
   })
   async add(@Body() body: CreateCategoryDto) {
-    console.log('here-body:', body);
-
-    const res = await this.requestService.post(`categories`, {
+    return this.requestService.post(`categories`, {
       body: { data: body },
     });
-
-    return res;
   }
 
   @Put('/:id')
@@ -64,13 +58,11 @@ export class CategoriesController {
   })
   async update(
     @Body() body: CreateCategoryDto,
-    @Param() params: { id: number },
+    @Param() params: { id: string },
   ) {
-    const res = await this.requestService.post(`categories/${params.id}`, {
+    return this.requestService.put(`categories/${params.id}`, {
       body: { data: body },
     });
-
-    return res;
   }
 
   @Delete('/:id')
@@ -79,8 +71,6 @@ export class CategoriesController {
     description: 'Category',
   })
   async delete(@Param() params: { id: number }) {
-    const res = await this.requestService.delete(`categories/${params.id}`);
-
-    return res;
+    return this.requestService.delete(`categories/${params.id}`);
   }
 }

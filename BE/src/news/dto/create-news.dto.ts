@@ -16,7 +16,7 @@ export class CreateNewsDto {
   content: string;
 
   @ApiProperty({
-    example: '[1, 3, 5, 6]',
+    example: [1, 3, 5, 6],
     description: 'Categories of new (array of categories id)',
   })
   categories: number[];
