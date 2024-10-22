@@ -3,7 +3,7 @@ import apiService from "./api.service";
 
 class UserService {
   async getProfile() {
-    return apiService.get<User>("/user/profile");
+    return await apiService.get<User>("/user/profile");
   }
 }
 

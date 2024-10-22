@@ -19,6 +19,7 @@ import Layout from "@layouts/Layout.astro";
 <script>
   import { actions } from "astro:actions";
   import { navigate } from "astro:transitions/client";
+  import { storageName } from "src/constant/storageName";
 
   const form = document.querySelector("form");
   form?.addEventListener("submit", async (event) => {
@@ -27,7 +28,7 @@ import Layout from "@layouts/Layout.astro";
     const { error, data } = await actions.auth.login(formData);
     console.log({ error, data });
     if (data?.access_token) {
-      localStorage.setItem("access_token", data?.access_token);
+      localStorage.setItem(storageName.AccessToken, data?.access_token);
       navigate("/");
     }
   });

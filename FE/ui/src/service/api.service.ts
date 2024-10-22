@@ -1,5 +1,6 @@
 class ApiService {
-  apiUrl = import.meta.env.API_URL;
+  // apiUrl = import.meta.env.API_URL;
+  apiUrl = "http://localhost:5000";
 
   async requst(
     path: string,
@@ -17,7 +18,8 @@ class ApiService {
       ...init.headers,
     };
 
-    console.log("ApiRequest", init.body, typeof init.body, this.apiUrl + path);
+    console.log("ApiRequest", headers);
+    console.log("ApiRequest url", this.apiUrl);
     const res = await fetch(this.apiUrl + path, {
       method: method,
       headers,
@@ -51,6 +53,7 @@ class ApiService {
       headers?: any;
     } = {},
   ): Promise<T> {
+    console.log("Get path: ", path);
     const res = await this.requst(path, "GET", init);
 
     return await res.json();
