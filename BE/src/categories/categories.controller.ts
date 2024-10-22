@@ -1,20 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from './category.entity';
-import { CreateCategoryDto } from './dto/create-category.dto';
 import { RequestService } from 'src/request/request.service';
-import { AuthGuard } from 'src/guard/user.guard';
 
-@UseGuards(AuthGuard)
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
@@ -26,8 +14,32 @@ export class CategoriesController {
     description: 'Category',
     type: Category,
   })
-  async getAll() {
-    return this.requestService.get('categories');
+  async getAll(
+    @Query()
+    query: {
+      includeNews?: boolean;
+      pagination?: { page?: number; pageSize?: number } | 'max';
+      filters?: {
+        field: string;
+        value: string | number;
+      };
+    },
+  ) {
+    console.log(query);
+
+    const includeNews = query.includeNews ? 'populate=news&' : '';
+    const pagination = query.pagination
+      ? query.pagination === 'max'
+        ? 'pagination[limit]=max&'
+        : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
+      : '';
+
+    const filters = query.filters
+      ? `filters[${query.filters.field}][id]=${query.filters.value}&`
+      : '';
+    return this.requestService.get(
+      `categories?${includeNews}${pagination}${filters}`,
+    );
   }
 
   @Get('/:id')
@@ -38,39 +50,5 @@ export class CategoriesController {
   })
   async getById(@Param() params: { id: number }) {
     return this.requestService.get(`categories/${params.id}`);
-  }
-
-  @Post('')
-  @ApiResponse({
-    status: 200,
-    description: 'Category',
-  })
-  async add(@Body() body: CreateCategoryDto) {
-    return this.requestService.post(`categories`, {
-      body: { data: body },
-    });
-  }
-
-  @Put('/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Category',
-  })
-  async update(
-    @Body() body: CreateCategoryDto,
-    @Param() params: { id: string },
-  ) {
-    return this.requestService.put(`categories/${params.id}`, {
-      body: { data: body },
-    });
-  }
-
-  @Delete('/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'Category',
-  })
-  async delete(@Param() params: { id: number }) {
-    return this.requestService.delete(`categories/${params.id}`);
   }
 }

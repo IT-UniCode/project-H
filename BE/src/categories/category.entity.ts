@@ -10,5 +10,5 @@ export class Category {
       '{id: 1, title: "Some title", description: "Some Description", categories: [2, 3]}',
     description: 'List of this category news',
   })
-  data: News[];
+  news?: News[];
 }

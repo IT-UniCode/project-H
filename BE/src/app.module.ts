@@ -9,6 +9,7 @@ import { NewsModule } from './news/news.module';
 import { CategoriesController } from './categories/categories.controller';
 import { CategoriesModule } from './categories/categories.module';
 import { RequestService } from './request/request.service';
+import { CacheModule, CacheStore } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RequestService } from './request/request.service';
     PrismaModule,
     NewsModule,
     CategoriesModule,
+    // CacheModule.register(),
   ],
   controllers: [AppController, NewsController, CategoriesController],
   providers: [AppService, RequestService],
