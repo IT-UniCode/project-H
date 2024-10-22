@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/users/user.entity';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -15,8 +16,7 @@ export class AuthController {
     description: 'Login',
   })
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    console.log('Login', signInDto);
+  signIn(@Body() signInDto: LoginDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
   }
 
