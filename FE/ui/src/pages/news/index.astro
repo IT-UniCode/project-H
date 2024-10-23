@@ -1,0 +1,24 @@
+---
+import Layout from "@layouts/Layout.astro";
+import categoryService from "@service/category.service";
+
+const { pathname } = Astro.url;
+
+const res = await categoryService.getAll();
+---
+
+<Layout title="News">
+  <h4 class="mb-4 text-3xl text-center">News category</h4>
+  <section class="flex gap-x-3 justify-evenly">
+    {
+      res.data.map((v) => (
+        <a
+          class="text-xl hover:underline hover:underline-offset-4"
+          href={pathname + `/${v.id}/${1}`}
+        >
+          {v.name}
+        </a>
+      ))
+    }
+  </section>
+</Layout>

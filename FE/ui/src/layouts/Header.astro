@@ -1,4 +1,6 @@
 ---
+import Authorization from "@components/Authorization";
+import ToastList from "@components/Toast/ToastList";
 import type { HeaderLink } from "src/interfaces";
 import { routes } from "src/routes";
 
@@ -8,24 +10,19 @@ const links: HeaderLink[] = [
     href: routes.Home,
   },
   {
-    title: "Log in",
-    href: routes.Login,
-  },
-  {
-    title: "Sign up",
-    href: routes.SignUp,
-  },
-  {
-    title: "Profile",
-    href: routes.Profile,
+    title: "News",
+    href: routes.News,
   },
 ];
 ---
 
 <header class="container mx-auto py-3">
-  <section>
+  <section class="flex items-center justify-between">
     <nav class="flex gap-x-3">
       {links.map((v) => <a href={v.href}>{v.title}</a>)}
     </nav>
+
+    <ToastList client:only="preact" />
+    <Authorization client:only="preact" />
   </section>
 </header>

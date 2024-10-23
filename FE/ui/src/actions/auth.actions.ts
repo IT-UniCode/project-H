@@ -11,7 +11,6 @@ export const auth = {
     }),
     accept: "form",
     handler: async (input): Promise<Login> => {
-      console.log(input);
       return await apiService.post("/auth/login", {
         body: input,
       });

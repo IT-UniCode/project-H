@@ -1,5 +1,5 @@
 ---
-import ShowProfile from "@components/ShowProfile.astro";
+import ShowProfile from "@components/ShowProfile";
 import Layout from "@layouts/Layout.astro";
 ---
 
@@ -7,8 +7,6 @@ import Layout from "@layouts/Layout.astro";
   <section>
     <h6>Profile</h6>
 
-    <ShowProfile client:load />
+    <ShowProfile client:only="preact" />
   </section>
 </Layout>
-
-

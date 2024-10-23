@@ -21,7 +21,7 @@ const { title, class: mainClass } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="flex flex-col">
+  <body class="flex flex-col" id="root">
     <Header />
     <main class={clsx("container mx-auto flex-grow flex flex-col", mainClass)}>
       <slot />

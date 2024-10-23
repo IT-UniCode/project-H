@@ -1,0 +1,19 @@
+---
+import Link from "@components/Link.astro";
+import type { Page } from "astro";
+import type { HTMLAttributes } from "astro/types";
+import clsx from "clsx";
+
+interface Props {
+  page: Page;
+  class?: string;
+}
+
+const url = Astro.url;
+const { page, class: className } = Astro.props;
+---
+
+<section class={clsx("flex gap-x-2", className)}>
+  <Link href={page.url.prev} disable={!page.url.prev}>Previues</Link>
+  <Link href={page.url.next} disable={!page.url.next}>Next</Link>
+</section>
