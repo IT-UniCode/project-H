@@ -13,3 +13,5 @@ STRAPI_URL="http://localhost:1337/api"
 STRAPI_TOKEN=""
 ASTRO_URL="http://localhost:4321/"
 
+REDIS_URL="redis://localhost:6379"
+REDIS_TTL=1800000
