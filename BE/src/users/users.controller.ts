@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user.entity';
 
 @ApiBearerAuth()
+@UseGuards(AuthGuard)
 @ApiTags('user')
 @Controller('user')
 export class UsersController {
@@ -15,7 +16,6 @@ export class UsersController {
     description: 'User',
     type: User,
   })
-  @UseGuards(AuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
