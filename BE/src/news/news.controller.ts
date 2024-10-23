@@ -1,8 +1,9 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
+import { NewsQuery } from './query/query-news.query';
 
 @ApiTags('news')
 @Controller('news')
@@ -12,67 +13,15 @@ export class NewsController {
     private readonly cacheService: CacheService,
   ) {}
 
-  @Get('')
+  @Get()
   @ApiResponse({
     status: 200,
     description: 'News',
     type: News,
   })
-  @ApiQuery({
-    name: 'includeCategories',
-    required: false,
-    type: Boolean,
-    description:
-      'Include categories in the response if set to true. If false or omitted, categories will not be included.',
-  })
-  @ApiQuery({
-    name: 'pagination[page]',
-    required: false,
-    type: Number,
-    description: 'Specify the page number to retrieve. Default is 1.',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'pagination[pageSize]',
-    required: false,
-    type: Number,
-    description: 'Specify the number of items per page. Default is 25.',
-    example: 25,
-  })
-  @ApiQuery({
-    name: 'pagination',
-    required: false,
-    type: String,
-    description:
-      'If set to "max", returns all the data without pagination. Overrides page and pageSize parameters.',
-    example: 'max',
-  })
-  @ApiQuery({
-    name: 'filters[field]',
-    required: false,
-    type: String,
-    description:
-      'The name of the field to filter data by (e.g., "title", "category").',
-    example: 'title',
-  })
-  @ApiQuery({
-    name: 'filters[value]',
-    required: false,
-    type: String,
-    description:
-      'The value the specified filter field must match (e.g., "JS", "Sport", "Politics" or a numerical value).',
-    example: 'Some title',
-  })
   async getAll(
     @Query()
-    query?: {
-      includeCategories?: boolean;
-      pagination?: { page?: number; pageSize?: number } | 'max';
-      filters?: {
-        field: string;
-        value: string | number;
-      };
-    },
+    query?: NewsQuery,
   ) {
     const includeCategories = query.includeCategories
       ? 'populate=category&'
@@ -83,9 +32,12 @@ export class NewsController {
         : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
       : '';
 
-    const filters = query.filters
-      ? `filters[${query.filters.field}][id]=${query.filters.value}&`
-      : '';
+    const filters =
+      query.filters && query.filters.field && query.filters.value
+        ? `filters[${query.filters.field}][documentId]=${query.filters.value}&`
+        : '';
+
+    console.log(filters);
 
     const path = `news?${includeCategories}${pagination}${filters}`;
 
@@ -107,6 +59,10 @@ export class NewsController {
     status: 200,
     description: 'News',
     type: News,
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
   })
   async getById(@Param() params: { id: number }) {
     const data = await this.cacheService.get(`news_${params.id}`);

@@ -11,6 +11,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { RequestService } from './request/request.service';
 import { CacheModule } from './cache/cache.module';
 import { CacheService } from './cache/cache.service';
+import { CommentsController } from './comments/comments.controller';
+import { CommentService } from './comments/comments.service';
 
 @Module({
   imports: [
@@ -20,9 +22,13 @@ import { CacheService } from './cache/cache.service';
     NewsModule,
     CategoriesModule,
     CacheModule,
-    // CacheModule.register(),
   ],
-  controllers: [AppController, NewsController, CategoriesController],
-  providers: [AppService, RequestService, CacheService],
+  controllers: [
+    AppController,
+    NewsController,
+    CategoriesController,
+    CommentsController,
+  ],
+  providers: [AppService, RequestService, CacheService, CommentService],
 })
 export class AppModule {}
