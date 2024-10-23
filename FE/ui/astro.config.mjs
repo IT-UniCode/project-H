@@ -9,7 +9,5 @@ import icon from "astro-icon";
 export default defineConfig({
   integrations: [tailwind(), preact(), icon()],
   output: "server",
-  redirects: {
-    // "/news": "/news/1",
-  },
+  redirects: {},
 });

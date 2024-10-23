@@ -26,7 +26,7 @@ import Layout from "@layouts/Layout.astro";
     event.preventDefault();
     const formData = new FormData(form);
     const { error, data } = await actions.auth.login(formData);
-    console.log({ error, data });
+
     if (data?.access_token) {
       localStorage.setItem(storageName.AccessToken, data?.access_token);
       navigate("/");
