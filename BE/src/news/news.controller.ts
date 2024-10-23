@@ -2,11 +2,15 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
+import { CacheService } from 'src/cache/cache.service';
 
 @ApiTags('news')
 @Controller('news')
 export class NewsController {
-  constructor(public requestService: RequestService) {}
+  constructor(
+    public requestService: RequestService,
+    private readonly cacheService: CacheService,
+  ) {}
 
   @Get('')
   @ApiResponse({
@@ -38,9 +42,19 @@ export class NewsController {
       ? `filters[${query.filters.field}][id]=${query.filters.value}&`
       : '';
 
-    return this.requestService.get(
-      `news?${includeCategories}${pagination}${filters}`,
-    );
+    const path = `news?${includeCategories}${pagination}${filters}`;
+
+    const data = await this.cacheService.get(path);
+
+    if (!data) {
+      const data = await this.requestService.get(path);
+
+      this.cacheService.set(path, data);
+
+      return data;
+    } else {
+      return data;
+    }
   }
 
   @Get('/:id')
@@ -50,6 +64,16 @@ export class NewsController {
     type: News,
   })
   async getById(@Param() params: { id: number }) {
-    return this.requestService.get(`news/${params.id}?populate=category`);
+    const data = await this.cacheService.get(`news_${params.id}`);
+
+    if (!data) {
+      const data = await this.requestService.get(
+        `news/${params.id}?populate=category`,
+      );
+      this.cacheService.set(`news_${params.id}`, data);
+      return data;
+    } else {
+      return data;
+    }
   }
 }
