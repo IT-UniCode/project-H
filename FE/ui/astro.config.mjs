@@ -9,4 +9,7 @@ import preact from "@astrojs/preact";
 export default defineConfig({
   integrations: [tailwind(), preact()],
   output: "server",
+  redirects: {
+    // "/news": "/news/1",
+  },
 });

@@ -1,7 +1,21 @@
 ---
 import Layout from "@layouts/Layout.astro";
+import categoryService from "@service/category.service";
+
+const { pathname } = Astro.url;
+
+const res = await categoryService.getAll();
 ---
 
 <Layout title="News">
-  <h4>News</h4>
+  <h4 class="mb-4 text-3xl">News category</h4>
+  <section class="flex gap-x-3">
+    {
+      res.data.map((v) => (
+        <a class="text-xl" href={pathname + `/${1}`}>
+          {v.name}
+        </a>
+      ))
+    }
+  </section>
 </Layout>

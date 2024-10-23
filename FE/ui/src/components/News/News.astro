@@ -1,0 +1,15 @@
+---
+import type { News } from "src/interfaces";
+import { routes } from "src/routes";
+
+interface Props {
+  news: News;
+}
+
+const { news } = Astro.props;
+---
+
+<article class="rounded py-3 px-2 border">
+  <h5 class="text-3xl"><a href={routes.NewsById + news.id}>{news.title}</a></h5>
+  <p>{news.content}</p>
+</article>

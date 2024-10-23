@@ -1,5 +1,7 @@
+import type { ApiPath } from "@constant/api.path";
+
 class ApiService {
-  apiUrl = import.meta.env.STRAPI_URL;
+  apiUrl = "http://localhost:5000";
 
   async requst(
     path: string,
@@ -17,8 +19,6 @@ class ApiService {
       ...init.headers,
     };
 
-    console.log("ApiRequest", headers);
-    console.log("ApiRequest url", this.apiUrl);
     const res = await fetch(this.apiUrl + path, {
       method: method,
       headers,
@@ -32,7 +32,7 @@ class ApiService {
   }
 
   async post<T>(
-    path: string,
+    path: string | ApiPath,
     init: {
       body: any;
       headers?: any;
@@ -47,12 +47,11 @@ class ApiService {
   }
 
   async get<T>(
-    path: string,
+    path: string | ApiPath,
     init: {
       headers?: any;
     } = {},
   ): Promise<T> {
-    console.log("Get path: ", path);
     const res = await this.requst(path, "GET", init);
 
     return await res.json();
