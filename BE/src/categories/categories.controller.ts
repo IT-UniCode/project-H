@@ -25,8 +25,6 @@ export class CategoriesController {
       };
     },
   ) {
-    console.log(query);
-
     const includeNews = query.includeNews ? 'populate=news&' : '';
     const pagination = query.pagination
       ? query.pagination === 'max'

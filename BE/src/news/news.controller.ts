@@ -11,7 +11,7 @@ export class NewsController {
   @Get('')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'News',
     type: News,
   })
   async getAll(
@@ -46,7 +46,7 @@ export class NewsController {
   @Get('/:id')
   @ApiResponse({
     status: 200,
-    description: 'User',
+    description: 'News',
     type: News,
   })
   async getById(@Param() params: { id: number }) {

@@ -5,7 +5,7 @@ export class News {
   title: string;
 
   @ApiProperty({
-    example: '"Some text"',
+    example: 'Some text',
     description: 'Content can be string or markdown',
   })
   content: {};
