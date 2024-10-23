@@ -3,7 +3,7 @@ import queryString from "query-string";
 import type { QueryApi } from "src/interfaces";
 
 class ApiService {
-  apiUrl = "http://localhost:5000";
+  apiUrl = import.meta.env.PUBLIC_API_URL;
 
   async requst(
     path: string,

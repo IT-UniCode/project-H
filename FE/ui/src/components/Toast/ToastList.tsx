@@ -1,7 +1,6 @@
 import { createPortal, useEffect } from "preact/compat";
-import x from "@icons/x.svg";
-
 import useToast from "./useToast";
+import { Close } from "@icons/index";
 
 export interface Toast {
   id: string;
@@ -39,7 +38,7 @@ function ToastList() {
                   removeToast(toast.id);
                 }}
               >
-                <img src={x.src} width={20} />
+                <img src={Close.src} width={20} />
               </button>
             </div>
           ))}
