@@ -1,9 +1,9 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { News, Pagination, ResponseBody } from "src/interfaces";
+import type { News, Pagination, QueryApi, ResponseBody } from "src/interfaces";
 
 class NewsService {
-  async getAll() {
+  async getAll(query?: QueryApi) {
     return apiService.get<
       ResponseBody<
         News,
@@ -11,7 +11,7 @@ class NewsService {
           pagination: Pagination;
         }
       >
-    >(ApiPath.news);
+    >(ApiPath.news, { query });
   }
 
   async getById(id: number) {

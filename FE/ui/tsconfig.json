@@ -7,6 +7,9 @@
       "@layouts/*": ["src/layouts/*"],
       "@service/*": ["src/service/*"],
       "@store/*": ["src/store/*"],
+      "@icons/*": ["src/icons/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@helpers/*": ["src/helpers/*"],
       "@constant/*": ["src/constant/*"]
     },
     "jsx": "react-jsx",

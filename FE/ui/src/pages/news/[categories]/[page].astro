@@ -1,0 +1,49 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "@layouts/Layout.astro";
+import newsService from "@service/news.service";
+import News from "@components/News/News.astro";
+import Pagination from "@components/Pagination/Pagination.astro";
+import categoryService from "@service/category.service";
+
+export const prerender = true;
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allCategories = await categoryService.getAll({ pagination: "max" });
+
+  const requests = [];
+  for (const category of allCategories.data) {
+    const request = newsService.getAll({
+      pagination: "max",
+      includeCategories: true,
+      filters: { field: "category", value: category.id },
+    });
+
+    requests.push(request);
+  }
+  const res = await Promise.all(requests);
+
+  return allCategories.data.flatMap((category) => {
+    const data = res.find((v) => v.data[0].category.id == category.id);
+
+    return paginate(data?.data || [], {
+      params: { categories: category.id.toString() },
+      pageSize: 10,
+    });
+  });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+
+const { categories } = Astro.params;
+---
+
+<Layout title="News">
+  <h4 class="text-4xl mb-3">News {categories}</h4>
+
+  <section class="flex flex-col gap-y-2 flex-grow">
+    {page.data.map((v) => <News news={v} />)}
+  </section>
+
+  <Pagination page={page} class="" />
+</Layout>

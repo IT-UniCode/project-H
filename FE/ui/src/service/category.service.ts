@@ -1,9 +1,14 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { Category, Pagination, ResponseBody } from "src/interfaces";
+import type {
+  Category,
+  Pagination,
+  QueryApi,
+  ResponseBody,
+} from "src/interfaces";
 
 class CategoryService {
-  async getAll() {
+  async getAll(query?: QueryApi) {
     return apiService.get<
       ResponseBody<
         Category,
@@ -11,7 +16,7 @@ class CategoryService {
           pagination: Pagination;
         }
       >
-    >(`${ApiPath.categories}`);
+    >(ApiPath.categories, { query });
   }
 }
 

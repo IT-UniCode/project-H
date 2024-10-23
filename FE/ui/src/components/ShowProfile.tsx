@@ -1,16 +1,22 @@
 import userService from "@service/user.service";
 import { useEffect, useState } from "preact/hooks";
 import type { User } from "src/interfaces";
+import useToast from "./Toast/useToast";
 
 function ShowProfile() {
   const [user, setUser] = useState<User>();
+  const { addToast } = useToast();
 
   async function getProfile() {
     try {
       const res = await userService.getProfile();
       setUser(res);
     } catch (error) {
-      console.error(error);
+      addToast({
+        id: "error-load-profile",
+        message: "Error loading profile",
+        type: "error",
+      });
     }
   }
 

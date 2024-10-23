@@ -1,5 +1,6 @@
 ---
 import Authorization from "@components/Authorization";
+import ToastList from "@components/Toast/ToastList";
 import type { HeaderLink } from "src/interfaces";
 import { routes } from "src/routes";
 
@@ -21,6 +22,7 @@ const links: HeaderLink[] = [
       {links.map((v) => <a href={v.href}>{v.title}</a>)}
     </nav>
 
+    <ToastList client:only="preact" />
     <Authorization client:only="preact" />
   </section>
 </header>
