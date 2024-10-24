@@ -65,6 +65,6 @@ export class CommentsController {
     @Body() body: UpdateCommentDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.commentService.updateComment(+id, body.content, req.user);
+    return this.commentService.updateComment(id, body.content, req.user);
   }
 }
