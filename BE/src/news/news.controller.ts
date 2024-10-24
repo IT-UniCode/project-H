@@ -4,6 +4,7 @@ import { News, NewsWithCategories } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
+import { getQueryParams } from 'src/utils';
 
 @ApiTags('news')
 @Controller('news')
@@ -26,17 +27,10 @@ export class NewsController {
     const includeCategories = query.includeCategories
       ? 'populate=category&'
       : '';
-    const pagination =
-      query.pageSize === 'max'
-        ? 'pagination[limit]=max&'
-        : `pagination[page]=${query.page || 0}&pagination[pageSize]=${query.pageSize}&`;
 
-    const filters =
-      query.value && query.field && query.value
-        ? `filters[category][${query.field || 'documentId'}]=${query.value}&`
-        : '';
+    const params = getQueryParams(query);
 
-    const path = `news?${includeCategories}${pagination}${filters}`;
+    const path = `news?${includeCategories}${params}`;
     const data = await this.cacheService.get(path);
 
     if (!data) {

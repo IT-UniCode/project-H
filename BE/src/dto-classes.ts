@@ -57,7 +57,6 @@ export class Filters {
 }
 
 export class Pagination {
-  @IsString()
   @ApiProperty({
     required: false,
     type: String,
@@ -65,13 +64,7 @@ export class Pagination {
       'Specify the number of items per page (or "max" for get all items). Default is 25.',
     example: 25,
   })
-  @Transform((params) => {
-    if (typeof params.value !== 'string') return 25;
-
-    if (params.value.toLowerCase() === 'max') return 'max';
-    else return parseInt(params.value) || 25;
-  })
-  pageSize: number | 'max';
+  pageSize: string;
 
   @IsNumber()
   @ApiProperty({

@@ -4,6 +4,7 @@ import { Category, CategoryWithNews } from './category.entity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { CategoriesQuery } from './query/query-categories.query';
+import { getQueryParams } from 'src/utils';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -25,17 +26,9 @@ export class CategoriesController {
   ) {
     const includeNews = query.includeNews ? 'populate=news&' : '';
 
-    const pagination =
-      query.pageSize === 'max'
-        ? 'pagination[limit]=max&'
-        : `pagination[page]=${query.page || 0}&pagination[pageSize]=${query.pageSize}&`;
+    const params = getQueryParams(query);
 
-    const filters =
-      query.field && query.value
-        ? `filters[news][${query.field || 'documentId'}]=${query.value}&`
-        : '';
-
-    const path = `categories?${includeNews}${pagination}${filters}`;
+    const path = `categories?${includeNews}${params}`;
 
     console.log(path);
 
