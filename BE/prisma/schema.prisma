@@ -13,3 +13,12 @@ model User {
   name     String?
   password String
 }
+
+model Comment {
+  id           Int      @id @default(autoincrement())
+  content      String
+  documentType String
+  documentId   String
+  userId       Int
+  createdAt    DateTime @default(now())
+}

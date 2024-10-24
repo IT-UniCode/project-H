@@ -1,8 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Category } from './category.entity';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Category, CategoryWithNews } from './category.entity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
+import { CategoriesQuery } from './query/query-categories.query';
+import { getQueryParams } from 'src/utils';
 
 @ApiTags('categories')
 @Controller('categories')
@@ -16,39 +18,26 @@ export class CategoriesController {
   @ApiResponse({
     status: 200,
     description: 'Category',
-    type: Category,
+    type: CategoryWithNews,
   })
   async getAll(
     @Query()
-    query: {
-      includeNews?: boolean;
-      pagination?: { page?: number; pageSize?: number } | 'max';
-      filters?: {
-        field: string;
-        value: string | number;
-      };
-    },
+    query?: CategoriesQuery,
   ) {
-    const data = await this.cacheService.get('categories');
+    const includeNews = query.includeNews ? 'populate=news&' : '';
+
+    const params = getQueryParams(query);
+
+    const path = `categories?${includeNews}${params}`;
+
+    console.log(path);
+
+    const data = await this.cacheService.get(path);
 
     if (!data) {
-      const includeNews = query.includeNews ? 'populate=news&' : '';
+      const data = await this.requestService.get(path);
 
-      const pagination = query.pagination
-        ? query.pagination === 'max'
-          ? 'pagination[limit]=max&'
-          : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
-        : '';
-
-      const filters = query.filters
-        ? `filters[${query.filters.field}][id]=${query.filters.value}&`
-        : '';
-
-      const data = await this.requestService.get(
-        `categories?${includeNews}${pagination}${filters}`,
-      );
-
-      this.cacheService.set('categories', data);
+      this.cacheService.set(path, data);
 
       return data;
     } else {
@@ -57,6 +46,10 @@ export class CategoriesController {
   }
 
   @Get('/:id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+  })
   @ApiResponse({
     status: 200,
     description: 'Category',
