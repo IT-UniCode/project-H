@@ -25,17 +25,20 @@ export class CategoriesController {
   ) {
     const includeNews = query.includeNews ? 'populate=news&' : '';
 
-    const pagination = query.pagination
-      ? query.pagination === 'max'
+    const pagination =
+      query.pageSize === 'max'
         ? 'pagination[limit]=max&'
-        : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
-      : '';
+        : `pagination[page]=${query.page || 0}&pagination[pageSize]=${query.pageSize}&`;
 
-    const filters = query.filters
-      ? `filters[${query.filters.field}][id]=${query.filters.value}&`
-      : '';
+    const filters =
+      query.field && query.value
+        ? `filters[news][${query.field || 'documentId'}]=${query.value}&`
+        : '';
 
     const path = `categories?${includeNews}${pagination}${filters}`;
+
+    console.log(path);
+
     const data = await this.cacheService.get(path);
 
     if (!data) {

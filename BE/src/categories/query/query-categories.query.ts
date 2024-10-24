@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsObject, IsString } from 'class-validator';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { IsBoolean, IsObject } from 'class-validator';
 import { Filters, Pagination } from 'src/dto-classes';
 
-export class CategoriesQuery {
+export class CategoriesQuery extends IntersectionType(Pagination, Filters) {
   @IsBoolean()
   @ApiProperty({
     required: false,
@@ -12,23 +12,8 @@ export class CategoriesQuery {
   })
   includeNews?: boolean;
 
-  @IsObject()
-  @IsString()
   @ApiProperty({
-    type: Pagination || 'max',
-    name: 'Pagination',
-    required: false,
-    description:
-      'If set to "max", returns all the data without pagination. Overrides page and pageSize parameters.',
-    example: 'max',
+    example: 'name',
   })
-  pagination?: Pagination | 'max';
-
-  @IsObject()
-  @ApiProperty({
-    type: Filters,
-    name: 'Filters',
-    required: false,
-  })
-  filters?: Filters;
+  field: string;
 }

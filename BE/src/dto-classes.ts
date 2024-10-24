@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNumberString, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsNumber, IsNumberString, IsString, Validate } from 'class-validator';
 
 export class Entity {
   @ApiProperty({
@@ -36,7 +37,6 @@ export class Entity {
 export class Filters {
   @IsString()
   @ApiProperty({
-    name: 'filters[field]',
     required: false,
     type: String,
     description:
@@ -47,7 +47,6 @@ export class Filters {
 
   @IsNumberString()
   @ApiProperty({
-    name: 'filters[value]',
     required: false,
     type: String,
     description:
@@ -58,19 +57,24 @@ export class Filters {
 }
 
 export class Pagination {
-  @IsNumber()
+  @IsString()
   @ApiProperty({
-    name: 'pagination[pageSize]',
     required: false,
-    type: Number,
-    description: 'Specify the number of items per page. Default is 25.',
+    type: String,
+    description:
+      'Specify the number of items per page (or "max" for get all items). Default is 25.',
     example: 25,
   })
-  pageSize: number;
+  @Transform((params) => {
+    if (typeof params.value !== 'string') return 25;
+
+    if (params.value.toLowerCase() === 'max') return 'max';
+    else return parseInt(params.value) || 25;
+  })
+  pageSize: number | 'max';
 
   @IsNumber()
   @ApiProperty({
-    name: 'pagination[page]',
     required: false,
     type: Number,
     description: 'Specify the page number to retrieve. Default is 1.',

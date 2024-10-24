@@ -26,15 +26,14 @@ export class NewsController {
     const includeCategories = query.includeCategories
       ? 'populate=category&'
       : '';
-    const pagination = query.pagination
-      ? query.pagination === 'max'
+    const pagination =
+      query.pageSize === 'max'
         ? 'pagination[limit]=max&'
-        : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
-      : '';
+        : `pagination[page]=${query.page || 0}&pagination[pageSize]=${query.pageSize}&`;
 
     const filters =
-      query.filters && query.filters.field && query.filters.value
-        ? `filters[${query.filters.field}][documentId]=${query.filters.value}&`
+      query.value && query.field && query.value
+        ? `filters[category][${query.field || 'documentId'}]=${query.value}&`
         : '';
 
     const path = `news?${includeCategories}${pagination}${filters}`;
