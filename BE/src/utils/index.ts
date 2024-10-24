@@ -1,18 +1,20 @@
-export function getQueryParams(query: {
-  page: number;
-  pageSize: string;
-  field: string;
-  value: string | number;
-}) {
+export function getQueryParams(
+  query: {
+    page: number;
+    pageSize: string;
+    field: string;
+    value: string | number;
+  },
+  filterType: string,
+) {
   const pagination =
     query.pageSize === 'max'
       ? 'pagination[limit]=max&'
       : `pagination[page]=${query.page || 0}&pagination[pageSize]=${parseInt(query.pageSize) || 25}&`;
 
-  const filters =
-    query.field && query.value
-      ? `filters[news][${query.field || 'documentId'}]=${query.value}&`
-      : '';
+  const filters = query.value
+    ? `filters[${filterType}][${query.field || 'documentId'}]=${query.value}&`
+    : '';
 
   return pagination + filters;
 }

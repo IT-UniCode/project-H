@@ -26,7 +26,7 @@ export class CategoriesController {
   ) {
     const includeNews = query.includeNews ? 'populate=news&' : '';
 
-    const params = getQueryParams(query);
+    const params = getQueryParams(query, 'news');
 
     const path = `categories?${includeNews}${params}`;
 
