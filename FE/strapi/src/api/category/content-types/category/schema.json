@@ -20,6 +20,11 @@
       "relation": "oneToMany",
       "target": "api::new.new",
       "mappedBy": "category"
+    },
+    "slug": {
+      "type": "string",
+      "unique": true,
+      "required": true
     }
   }
 }

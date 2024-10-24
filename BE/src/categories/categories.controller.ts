@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Category } from './category.entity';
+import { Category, CategoryWithNews } from './category.entity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { CategoriesQuery } from './query/query-categories.query';
@@ -17,32 +17,31 @@ export class CategoriesController {
   @ApiResponse({
     status: 200,
     description: 'Category',
-    type: Category,
+    type: CategoryWithNews,
   })
   async getAll(
     @Query()
-    query: CategoriesQuery,
+    query?: CategoriesQuery,
   ) {
-    const data = await this.cacheService.get('categories');
+    const includeNews = query.includeNews ? 'populate=news&' : '';
+
+    const pagination = query.pagination
+      ? query.pagination === 'max'
+        ? 'pagination[limit]=max&'
+        : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
+      : '';
+
+    const filters = query.filters
+      ? `filters[${query.filters.field}][id]=${query.filters.value}&`
+      : '';
+
+    const path = `categories?${includeNews}${pagination}${filters}`;
+    const data = await this.cacheService.get(path);
 
     if (!data) {
-      const includeNews = query.includeNews ? 'populate=news&' : '';
+      const data = await this.requestService.get(path);
 
-      const pagination = query.pagination
-        ? query.pagination === 'max'
-          ? 'pagination[limit]=max&'
-          : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
-        : '';
-
-      const filters = query.filters
-        ? `filters[${query.filters.field}][id]=${query.filters.value}&`
-        : '';
-
-      const data = await this.requestService.get(
-        `categories?${includeNews}${pagination}${filters}`,
-      );
-
-      this.cacheService.set('categories', data);
+      this.cacheService.set(path, data);
 
       return data;
     } else {

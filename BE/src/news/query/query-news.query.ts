@@ -1,57 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsNumber,
-  IsNumberString,
-  IsObject,
-  IsString,
-} from 'class-validator';
-
-class Filters {
-  @IsString()
-  @ApiProperty({
-    name: 'filters[field]',
-    required: false,
-    type: String,
-    description:
-      'The name of the field to filter data by (e.g., "title", "category").',
-    example: 'title',
-  })
-  field: string;
-
-  @IsNumberString()
-  @ApiProperty({
-    name: 'filters[value]',
-    required: false,
-    type: String,
-    description:
-      'The value the specified filter field must match (e.g., "JS", "Sport", "Politics" or a numerical value).',
-    example: 'Some title',
-  })
-  value: string | number;
-}
-
-class Pagination {
-  @IsNumber()
-  @ApiProperty({
-    name: 'pagination[pageSize]',
-    required: false,
-    type: Number,
-    description: 'Specify the number of items per page. Default is 25.',
-    example: 25,
-  })
-  pageSize: number;
-
-  @IsNumber()
-  @ApiProperty({
-    name: 'pagination[page]',
-    required: false,
-    type: Number,
-    description: 'Specify the page number to retrieve. Default is 1.',
-    example: 1,
-  })
-  page: number;
-}
+import { IsBoolean, IsObject, IsString } from 'class-validator';
+import { Filters, Pagination } from 'src/dto-classes';
 
 export class NewsQuery {
   @IsBoolean()

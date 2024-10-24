@@ -14,6 +14,9 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   attributes: {
     name: Schema.Attribute.String;
     news: Schema.Attribute.Relation<'oneToMany', 'api::new.new'>;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -36,6 +39,7 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
     singularName: 'new';
     pluralName: 'news';
     displayName: 'New';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -44,6 +48,9 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
     title: Schema.Attribute.String;
     content: Schema.Attribute.RichText;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

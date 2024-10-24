@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { News } from './news.enetity';
+import { News, NewsWithCategories } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
@@ -17,7 +17,7 @@ export class NewsController {
   @ApiResponse({
     status: 200,
     description: 'News',
-    type: News,
+    type: NewsWithCategories,
   })
   async getAll(
     @Query()
@@ -37,10 +37,7 @@ export class NewsController {
         ? `filters[${query.filters.field}][documentId]=${query.filters.value}&`
         : '';
 
-    console.log(filters);
-
     const path = `news?${includeCategories}${pagination}${filters}`;
-
     const data = await this.cacheService.get(path);
 
     if (!data) {
