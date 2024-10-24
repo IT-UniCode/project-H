@@ -18,6 +18,7 @@ import { AuthGuard } from 'src/guard/user.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { CommentsQuery } from './query/query-comments.query';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Comment } from './entities/comment.entity';
 
 @ApiTags('comments')
 @Controller('comments')
@@ -38,6 +39,10 @@ export class CommentsController {
   }
 
   @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Comment,
+  })
   async getComments(@Query() query: CommentsQuery) {
     return this.commentService.getCommentsByEntity(
       query.documentType,
@@ -48,6 +53,10 @@ export class CommentsController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Put(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Comment,
+  })
   async updateComment(
     @Param('id') id: number,
     @Body() body: UpdateCommentDto,
