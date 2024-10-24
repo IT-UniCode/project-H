@@ -29,12 +29,15 @@ export class CommentsController {
   @ApiBearerAuth()
   @ApiResponse({ status: HttpStatus.CREATED, type: Number })
   @Post()
-  async createComment(@Body() body: CreateCommentDto) {
+  async createComment(
+    @Body() body: CreateCommentDto,
+    @Req() req: { user: JwtPayload },
+  ) {
     return this.commentService.createComment(
       body.content,
       body.documentType,
       body.documentId,
-      body.userId,
+      req.user.id,
     );
   }
 

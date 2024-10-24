@@ -26,6 +26,8 @@ export class RequestService {
 
       return res;
     } catch (error) {
+      console.log(error);
+
       throw new BadRequestException(exception);
     }
   }

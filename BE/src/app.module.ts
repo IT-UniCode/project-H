@@ -13,6 +13,7 @@ import { CacheModule } from './cache/cache.module';
 import { CacheService } from './cache/cache.service';
 import { CommentsController } from './comments/comments.controller';
 import { CommentService } from './comments/comments.service';
+import { VotingsModule } from './votings/votings.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CommentService } from './comments/comments.service';
     NewsModule,
     CategoriesModule,
     CacheModule,
+    VotingsModule,
   ],
   controllers: [
     AppController,

@@ -20,10 +20,4 @@ export class CreateCommentDto {
   })
   //   @IsEnum() TODO
   documentType: 'news' | 'forum';
-
-  @ApiProperty({
-    description: 'User id',
-  })
-  @IsNumber()
-  userId: number;
 }
