@@ -6,3 +6,4 @@ export type { News } from "./news";
 export type { Pagination } from "./pagination";
 export type { Category } from "./category";
 export type { QueryApi } from "./query.api";
+export type { BaseDate as BaseEntity } from "./base.date";

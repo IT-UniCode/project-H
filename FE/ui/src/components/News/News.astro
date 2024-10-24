@@ -2,6 +2,7 @@
 import type { News } from "src/interfaces";
 import { routes } from "src/routes";
 import { marked } from "marked";
+import { confMarldownNewsSmall } from "@helpers/index";
 
 interface Props {
   news: News;
@@ -11,6 +12,11 @@ const { news } = Astro.props;
 ---
 
 <article class="rounded py-3 px-2 border">
-  <h5 class="text-3xl"><a href={routes.NewsById + news.id}>{news.title}</a></h5>
-  <article set:html={marked.parse(news.content)} />
+  <h5 class="text-3xl">
+    <a href={routes.NewsById + news.documentId}>{news.title}</a>
+  </h5>
+  <article
+    class="flex gap-x-2"
+    set:html={marked.parse(news.content, { renderer: confMarldownNewsSmall() })}
+  />
 </article>

@@ -27,19 +27,20 @@ export const getStaticPaths = (async ({ paginate }) => {
     const data = res.find((v) => v.data[0].category.id == category.id);
 
     return paginate(data?.data || [], {
-      params: { categories: category.id.toString() },
+      params: { categories: category.name },
+      props: { category },
       pageSize: 10,
     });
   });
 }) satisfies GetStaticPaths;
 
-const { page } = Astro.props;
+const { page, category } = Astro.props;
 
 const { categories } = Astro.params;
 ---
 
 <Layout title="News">
-  <h4 class="text-4xl mb-3">News {categories}</h4>
+  <h4 class="text-4xl mb-3">News by {category.name}</h4>
 
   <section class="flex flex-col gap-y-2 flex-grow">
     {page.data.map((v) => <News news={v} />)}

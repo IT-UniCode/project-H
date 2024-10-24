@@ -1,6 +1,7 @@
+import type { BaseEntity } from ".";
 import type { Category } from "./category";
 
-export interface News {
+export interface News extends BaseEntity {
   id: number;
   documentId: string;
   createdAt: string;
