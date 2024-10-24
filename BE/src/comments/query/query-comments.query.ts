@@ -1,12 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { CommentsDocumentType } from 'src/types/types';
 
 export class CommentsQuery {
   @ApiProperty({
     description: 'Unique type of document',
+    enum: CommentsDocumentType,
   })
-  @IsString()
-  documentType: string;
+  @IsEnum(CommentsDocumentType)
+  documentType: 'news';
 
   @ApiProperty({
     description: 'Unique id of document',

@@ -11,7 +11,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { CacheService } from 'src/cache/cache.service';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CommentService } from './comments.service';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';

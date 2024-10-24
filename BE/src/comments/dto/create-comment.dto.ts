@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsString } from 'class-validator';
+import { CommentsDocumentType } from 'src/types/types';
 
 export class CreateCommentDto {
   @ApiProperty({
@@ -16,8 +17,8 @@ export class CreateCommentDto {
 
   @ApiProperty({
     description: 'Unique type of document',
-    //   enum: TODO
+    enum: CommentsDocumentType,
   })
-  //   @IsEnum() TODO
-  documentType: 'news' | 'forum';
+  @IsEnum(CommentsDocumentType)
+  documentType: CommentsDocumentType;
 }

@@ -15,21 +15,22 @@ export class VotingsController {
 
   @Post()
   create(@Body() body: CreateVotingDto) {
-    return this.requestService.post('voting', { body });
+    return this.requestService.post('votings', {
+      body: { ...body, state: 'active' },
+    });
   }
 
   @Get()
   @ApiResponse({
     status: 200,
-    description: 'Voting',
-    // type: NewsWithCategories,
+    description: 'Votings',
   })
   async getAll(
     @Query()
     query?: any,
   ) {
     const params = getQueryParams(query, '');
-    const path = `votings${params}`;
+    const path = `votings?${params}`;
     const data = await this.cacheService.get(path);
 
     if (!data) {

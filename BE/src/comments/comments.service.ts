@@ -1,14 +1,19 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { PrismaService } from 'src/prisma/prisma.service'; // Ensure PrismaService is set up
+import { RequestService } from 'src/request/request.service';
 
 @Injectable()
 export class CommentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly requestService: RequestService,
+  ) {}
 
   async createComment(
     content: string,
@@ -16,6 +21,8 @@ export class CommentService {
     documentId: string,
     userId: number,
   ) {
+    await this.requestService.get(`${documentType}/${documentId}`);
+
     return this.prisma.comment.create({
       data: {
         userId,

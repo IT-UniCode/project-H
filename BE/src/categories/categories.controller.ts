@@ -30,8 +30,6 @@ export class CategoriesController {
 
     const path = `categories?${includeNews}${params}`;
 
-    console.log(path);
-
     const data = await this.cacheService.get(path);
 
     if (!data) {
