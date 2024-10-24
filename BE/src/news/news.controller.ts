@@ -28,7 +28,7 @@ export class NewsController {
       ? 'populate=category&'
       : '';
 
-    const params = getQueryParams(query);
+    const params = getQueryParams(query, 'category');
 
     const path = `news?${includeCategories}${params}`;
     const data = await this.cacheService.get(path);
