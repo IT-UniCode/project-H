@@ -21,7 +21,7 @@ export function confMarldownNewsSmall() {
   const renderer = new marked.Renderer();
 
   renderer.text = (text) => {
-    console.log(text);
+    // console.log(text);
     if (firstTextRendered) return "";
 
     firstTextRendered = true;
