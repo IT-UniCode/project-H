@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
-import { ForbiddenException } from 'src/forbidden.exception';
 @Injectable()
 export class RequestService {
   async request(
@@ -27,7 +26,7 @@ export class RequestService {
 
       return res;
     } catch (error) {
-      throw new ForbiddenException(exception);
+      throw new BadRequestException(exception);
     }
   }
 

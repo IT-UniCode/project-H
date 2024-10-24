@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Category } from 'src/categories/category.entity';
+import { Entity } from 'src/dto-classes';
 
-export class News {
+export class News extends Entity {
   @ApiProperty({ example: 'Some Title', description: 'Title of new' })
   title: string;
 
@@ -8,11 +10,16 @@ export class News {
     example: 'Some text',
     description: 'Content can be string or markdown',
   })
-  content: {};
+  content: string;
 
+  @ApiProperty({ example: 'some-name', description: 'Slug of the new' })
+  slug: string;
+}
+
+export class NewsWithCategories extends News {
   @ApiProperty({
-    example: '[1, 3, 5, 6]',
-    description: 'Categories of new (array of categories id)',
+    description: 'Categories of new',
+    type: Category,
   })
-  categories: number[];
+  category: Category;
 }

@@ -1,8 +1,10 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { News } from './news.enetity';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { News, NewsWithCategories } from './news.enetity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
+import { NewsQuery } from './query/query-news.query';
+import { getQueryParams } from 'src/utils';
 
 @ApiTags('news')
 @Controller('news')
@@ -12,38 +14,23 @@ export class NewsController {
     private readonly cacheService: CacheService,
   ) {}
 
-  @Get('')
+  @Get()
   @ApiResponse({
     status: 200,
     description: 'News',
-    type: News,
+    type: NewsWithCategories,
   })
   async getAll(
     @Query()
-    query?: {
-      includeCategories?: boolean;
-      pagination?: { page?: number; pageSize?: number } | 'max';
-      filters?: {
-        field: string;
-        value: string | number;
-      };
-    },
+    query?: NewsQuery,
   ) {
     const includeCategories = query.includeCategories
       ? 'populate=category&'
       : '';
-    const pagination = query.pagination
-      ? query.pagination === 'max'
-        ? 'pagination[limit]=max&'
-        : `pagination[page]=${query.pagination.page || 0}&pagination[pageSize]=${query.pagination.pageSize || 25}&`
-      : '';
 
-    const filters = query.filters
-      ? `filters[${query.filters.field}][id]=${query.filters.value}&`
-      : '';
+    const params = getQueryParams(query);
 
-    const path = `news?${includeCategories}${pagination}${filters}`;
-
+    const path = `news?${includeCategories}${params}`;
     const data = await this.cacheService.get(path);
 
     if (!data) {
@@ -62,6 +49,10 @@ export class NewsController {
     status: 200,
     description: 'News',
     type: News,
+  })
+  @ApiParam({
+    name: 'id',
+    type: Number,
   })
   async getById(@Param() params: { id: number }) {
     const data = await this.cacheService.get(`news_${params.id}`);

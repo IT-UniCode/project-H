@@ -8,6 +8,7 @@ import {
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { JwtPayload } from './dto/jwt-payload';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,12 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { sub: user.id, name: user.name, email: user.email };
+    const payload: JwtPayload = {
+      sub: user.id,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+    };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
