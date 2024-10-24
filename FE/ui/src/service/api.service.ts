@@ -69,35 +69,8 @@ function convertToQueryString(params: QueryApi): string {
 
   const queryObject: any = {};
 
-  // Обробляємо пагінацію
-  if (params.pagination) {
-    if (params.pagination === "max") {
-      queryObject["pagination[limit]"] = "max";
-    } else {
-      if (params.pagination.page) {
-        queryObject["pagination[page]"] = params.pagination.page;
-      }
-      if (params.pagination.pageSize) {
-        queryObject["pagination[pageSize]"] = params.pagination.pageSize;
-      }
-    }
-  }
-
-  // Обробляємо фільтри
-  if (params.filters) {
-    queryObject["filters[field]"] = params.filters.field;
-    queryObject["filters[value]"] = params.filters.value;
-  }
-
-  // Додаємо інші параметри
-  for (const key in params) {
-    if (key !== "pagination" && key !== "filters") {
-      queryObject[key] = params[key];
-    }
-  }
-
   // Перетворюємо об'єкт на query string
-  return queryString.stringify(queryObject);
+  return queryString.stringify(params);
 }
 
 export default new ApiService();

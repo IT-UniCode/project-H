@@ -1,0 +1,55 @@
+---
+import { confMarkdownNews } from "@helpers/index";
+import Layout from "@layouts/Layout.astro";
+import newsService from "@service/news.service";
+import type { GetStaticPaths } from "astro";
+import { marked } from "marked";
+
+export const prerender = true;
+
+export const getStaticPaths = (async () => {
+  const res = await newsService.getAll({ pagination: "max" });
+
+  return res.data.map((news) => ({
+    params: { id: news.documentId },
+    props: { news },
+  }));
+}) satisfies GetStaticPaths;
+
+const { news } = Astro.props;
+
+const dateCreated = new Date(news.createdAt);
+---
+
+<Layout title={`News ${news.title}`}>
+  <article class="max-w-5xl w-full mx-auto mb-3">
+    <h1 class="text-4xl font-bold mb-3">{news.title}</h1>
+    <p class="text-sm">Updated {dateCreated.toUTCString()}</p>
+  </article>
+
+  <article
+    id="content"
+    set:html={marked.parse(news.content, {
+      renderer: confMarkdownNews(),
+    })}
+    class="max-w-4xl w-full mx-auto"
+  />
+</Layout>
+
+<style is:global>
+  #content p {
+    max-width: 676px;
+    margin: 16px auto;
+    font-size: 1.125rem;
+  }
+
+  #content > h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: 2rem;
+    margin-bottom: 12px;
+  }
+</style>

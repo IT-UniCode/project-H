@@ -9,37 +9,39 @@ import categoryService from "@service/category.service";
 export const prerender = true;
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const allCategories = await categoryService.getAll({ pagination: "max" });
+  const allCategories = await categoryService.getAll({ pageSize: "max" });
 
   const requests = [];
   for (const category of allCategories.data) {
     const request = newsService.getAll({
-      pagination: "max",
+      pageSize: "max",
       includeCategories: true,
-      filters: { field: "category", value: category.id },
+      value: category.documentId,
     });
-
     requests.push(request);
   }
   const res = await Promise.all(requests);
 
   return allCategories.data.flatMap((category) => {
-    const data = res.find((v) => v.data[0].category.id == category.id);
+    const data = res.find(
+      (v) => v.data[0].category.documentId === category.documentId,
+    );
 
     return paginate(data?.data || [], {
-      params: { categories: category.id.toString() },
+      params: { categories: category.name },
+      props: { category },
       pageSize: 10,
     });
   });
 }) satisfies GetStaticPaths;
 
-const { page } = Astro.props;
+const { page, category } = Astro.props;
 
 const { categories } = Astro.params;
 ---
 
 <Layout title="News">
-  <h4 class="text-4xl mb-3">News {categories}</h4>
+  <h4 class="text-4xl mb-3">News by {category.name}</h4>
 
   <section class="flex flex-col gap-y-2 flex-grow">
     {page.data.map((v) => <News news={v} />)}
