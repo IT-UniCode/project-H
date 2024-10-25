@@ -31,16 +31,16 @@ export class NewsController {
     const params = getQueryParams(query, "category");
 
     const path = `news?${includeCategories}${params}`;
-    const data = await this.cacheService.get(path);
+    const cachedData = await this.cacheService.get(path);
 
-    if (!data) {
+    if (!cachedData) {
       const data = await this.requestService.get(path);
 
       this.cacheService.set(path, data);
 
       return data;
     } else {
-      return data;
+      return cachedData;
     }
   }
 

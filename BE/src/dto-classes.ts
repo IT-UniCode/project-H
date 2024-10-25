@@ -34,55 +34,6 @@ export class Entity {
   publishedAt: string;
 }
 
-export class Filters {
-  @IsString()
-  @ApiProperty({
-    required: false,
-    type: String,
-    description:
-      'The name of the field to filter data by (e.g., "title", "category").',
-    example: "title",
-  })
-  field: string;
-
-  @IsNumberString()
-  @ApiProperty({
-    required: false,
-    type: String,
-    description:
-      'The value the specified filter field must match (e.g., "JS", "Sport", "Politics" or a numerical value).',
-    example: "Some title",
-  })
-  value: string | number;
-}
-
-export class Pagination {
-  @ApiProperty({
-    required: false,
-    type: String,
-    description:
-      'Specify the number of items per page (or "max" for get all items). Default is 25.',
-    example: 25,
-  })
-  pageSize: string;
-
-  @IsNumber()
-  @ApiProperty({
-    required: false,
-    type: Number,
-    description: "Specify the page number to retrieve. Default is 1.",
-    example: 1,
-  })
-  page: number;
-}
-
-class PaginationMeta {
-  page: 1;
-  pageSize: 25;
-  pageCount: 1;
-  total: 1;
-}
-
 export class Meta {
   @ApiProperty({
     description: "Pagination info",

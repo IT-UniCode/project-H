@@ -11,19 +11,14 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { CacheService } from "src/cache/cache.service";
-import {
-  ApiBearerAuth,
-  ApiProperty,
-  ApiResponse,
-  ApiTags,
-} from "@nestjs/swagger";
+import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CommentService } from "./comments.service";
 import { JwtPayload } from "src/auth/dto/jwt-payload";
 import { AuthGuard } from "src/guard/user.guard";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { CommentsQuery } from "./query/query-comments.query";
 import { UpdateCommentDto } from "./dto/update-comment.dto";
-import { Comment } from "./entities/comment.entity";
+import { ResponseComment } from "./dto/response-commnet.dto";
 
 @ApiTags("comments")
 @Controller("comments")
@@ -50,7 +45,7 @@ export class CommentsController {
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Comment,
+    type: ResponseComment,
   })
   async getComments(@Query() query: CommentsQuery) {
     return this.commentService.getCommentsByEntity(
@@ -64,7 +59,7 @@ export class CommentsController {
   @Put(":id")
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Comment,
+    type: ResponseComment,
   })
   async updateComment(
     @Param("id") id: string,

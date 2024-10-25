@@ -12,6 +12,7 @@ import { CacheService } from "src/cache/cache.service";
 import { getQueryParams } from "src/utils";
 import { ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ResponseVoting, Voting } from "./entities/voting.entity";
+import { VotingQuery } from "./queries/query-voting.query";
 
 @ApiTags("votings")
 @Controller("votings")
@@ -29,20 +30,20 @@ export class VotingsController {
   })
   async getAll(
     @Query()
-    query?: any,
+    query?: VotingQuery,
   ) {
     const params = getQueryParams(query, "");
     const path = `votings?${params}`;
-    const data = await this.cacheService.get(path);
+    const cachedData = await this.cacheService.get(path);
 
-    if (!data) {
+    if (!cachedData) {
       const data = await this.requestService.get(path);
 
       this.cacheService.set(path, data);
 
       return data;
     } else {
-      return data;
+      return cachedData;
     }
   }
 
@@ -63,16 +64,16 @@ export class VotingsController {
     },
   ) {
     const path = `votings/${params.id}`;
-    const data = await this.cacheService.get(path);
+    const cachedData = await this.cacheService.get(path);
 
-    if (!data) {
+    if (!cachedData) {
       const data = await this.requestService.get(path);
 
       this.cacheService.set(path, data);
 
       return data;
     } else {
-      return data;
+      return cachedData;
     }
   }
 }
