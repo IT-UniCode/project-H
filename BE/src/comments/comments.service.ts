@@ -1,24 +1,34 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { JwtPayload } from 'src/auth/dto/jwt-payload';
-import { PrismaService } from 'src/prisma/prisma.service'; // Ensure PrismaService is set up
+} from "@nestjs/common";
+import { JwtPayload } from "src/auth/dto/jwt-payload";
+import { PrismaService } from "src/prisma/prisma.service"; // Ensure PrismaService is set up
+import { RequestService } from "src/request/request.service";
+import { ResponseComment } from "./dto/response-commnet.dto";
 
 @Injectable()
 export class CommentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly requestService: RequestService,
+  ) {}
 
   async createComment(
     content: string,
     documentType: string,
     documentId: string,
     userId: number,
+    userName: string,
   ) {
+    await this.requestService.get(`${documentType}/${documentId}`);
+
     return this.prisma.comment.create({
       data: {
         userId,
+        userName,
         content,
         documentType,
         documentId,
@@ -45,7 +55,7 @@ export class CommentService {
     }
 
     if (auth.id !== existingComment.userId) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException("Access denied");
     }
 
     return this.prisma.comment.update({
