@@ -1,13 +1,13 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { News, NewsWithCategories } from './news.enetity';
-import { RequestService } from 'src/request/request.service';
-import { CacheService } from 'src/cache/cache.service';
-import { NewsQuery } from './query/query-news.query';
-import { getQueryParams } from 'src/utils';
+import { Controller, Get, Param, Query } from "@nestjs/common";
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { News, NewsWithCategories } from "./news.enetity";
+import { RequestService } from "src/request/request.service";
+import { CacheService } from "src/cache/cache.service";
+import { NewsQuery } from "./query/query-news.query";
+import { getQueryParams } from "src/utils";
 
-@ApiTags('news')
-@Controller('news')
+@ApiTags("news")
+@Controller("news")
 export class NewsController {
   constructor(
     public requestService: RequestService,
@@ -17,7 +17,7 @@ export class NewsController {
   @Get()
   @ApiResponse({
     status: 200,
-    description: 'News',
+    description: "News",
     type: NewsWithCategories,
   })
   async getAll(
@@ -25,33 +25,33 @@ export class NewsController {
     query?: NewsQuery,
   ) {
     const includeCategories = query.includeCategories
-      ? 'populate=category&'
-      : '';
+      ? "populate=category&"
+      : "";
 
-    const params = getQueryParams(query, 'category');
+    const params = getQueryParams(query, "category");
 
     const path = `news?${includeCategories}${params}`;
-    const data = await this.cacheService.get(path);
+    const cachedData = await this.cacheService.get(path);
 
-    if (!data) {
+    if (!cachedData) {
       const data = await this.requestService.get(path);
 
       this.cacheService.set(path, data);
 
       return data;
     } else {
-      return data;
+      return cachedData;
     }
   }
 
-  @Get('/:id')
+  @Get("/:id")
   @ApiResponse({
     status: 200,
-    description: 'News',
+    description: "News",
     type: News,
   })
   @ApiParam({
-    name: 'id',
+    name: "id",
     type: Number,
   })
   async getById(@Param() params: { id: number }) {

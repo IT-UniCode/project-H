@@ -1,7 +1,4 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsNumber, IsNumberString, IsString, Validate } from "class-validator";
-import { PaginationMeta } from "./types";
 
 export class Entity {
   @ApiProperty({
@@ -33,12 +30,4 @@ export class Entity {
     example: "2024-10-22T13:40:49.782Z",
   })
   publishedAt: string;
-}
-
-export class Meta {
-  @ApiProperty({
-    description: "Pagination info",
-    type: PaginationMeta,
-  })
-  pagination: PaginationMeta;
 }

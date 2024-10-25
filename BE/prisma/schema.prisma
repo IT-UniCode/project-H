@@ -20,5 +20,6 @@ model Comment {
   documentType String
   documentId   String
   userId       Int
+  userName     String
   createdAt    DateTime @default(now())
 }
