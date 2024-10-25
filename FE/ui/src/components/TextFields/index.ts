@@ -1,3 +1,4 @@
-import TextFieldAstro from "@components/TextField.astro";
+import TextFieldAstro from "./TextField.astro";
+import TextField from "./TextFiels";
 
-export { TextFieldAstro };
+export { TextFieldAstro, TextField };

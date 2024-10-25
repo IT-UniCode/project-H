@@ -1,4 +1,4 @@
-export interface Comments {
+export interface IComments {
   id: number;
   content: string;
   documentType: string;

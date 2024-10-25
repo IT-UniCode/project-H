@@ -10,7 +10,8 @@
       "@icons/*": ["src/icons/*"],
       "@hooks/*": ["src/hooks/*"],
       "@helpers/*": ["src/helpers/*"],
-      "@constant/*": ["src/constant/*"]
+      "@constant/*": ["src/constant/*"],
+      "@interfaces/*": ["src/interfaces/*"]
     },
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
