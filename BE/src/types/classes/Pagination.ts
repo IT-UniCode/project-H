@@ -22,8 +22,30 @@ export class Pagination {
 }
 
 export class PaginationMeta {
+  @ApiProperty({
+    description: "Page number",
+    example: 1,
+  })
+  @IsNumber()
   page: 1;
+
+  @ApiProperty({
+    description: "Page size",
+    example: 25,
+  })
+  @IsNumber()
   pageSize: 25;
+
+  @ApiProperty({
+    description: "Page count",
+    example: 1,
+  })
+  @IsNumber()
   pageCount: 1;
+
+  @ApiProperty({
+    description: "Total objects count",
+    example: 1,
+  })
   total: 1;
 }

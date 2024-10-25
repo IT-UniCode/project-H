@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsNumber, IsNumberString, IsString, Validate } from "class-validator";
+import { PaginationMeta } from "./types";
 
 export class Entity {
   @ApiProperty({
