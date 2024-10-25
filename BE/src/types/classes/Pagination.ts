@@ -1,21 +1,20 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
+// Це пгінація для чого? Query????
 export class Pagination {
   @ApiProperty({
     required: false,
-    type: String,
     description:
-      'Specify the number of items per page (or "max" for get all items). Default is 25.',
+      'Specify the number of items per page (or -1 for get all items). Default is 25.',
     example: 25,
   })
-  pageSize: string;
+  pageSize: number;
 
   @IsNumber()
   @ApiProperty({
     required: false,
-    type: Number,
-    description: "Specify the page number to retrieve. Default is 1.",
+    description: 'Specify the page number to retrieve. Default is 1.',
     example: 1,
   })
   page: number;
@@ -23,29 +22,29 @@ export class Pagination {
 
 export class PaginationMeta {
   @ApiProperty({
-    description: "Page number",
+    description: 'Page number',
     example: 1,
   })
   @IsNumber()
-  page: 1;
+  page: number;
 
   @ApiProperty({
-    description: "Page size",
+    description: 'Page size',
     example: 25,
   })
   @IsNumber()
-  pageSize: 25;
+  pageSize: number;
 
   @ApiProperty({
-    description: "Page count",
+    description: 'Page count',
     example: 1,
   })
   @IsNumber()
-  pageCount: 1;
+  pageCount: number;
 
   @ApiProperty({
-    description: "Total objects count",
+    description: 'Total objects count',
     example: 1,
   })
-  total: 1;
+  total: number;
 }

@@ -9,19 +9,19 @@ import {
   Req,
   UseGuards,
   HttpStatus,
-} from "@nestjs/common";
-import { CacheService } from "src/cache/cache.service";
-import { ApiBearerAuth, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { CommentService } from "./comments.service";
-import { JwtPayload } from "src/auth/dto/jwt-payload";
-import { AuthGuard } from "src/guard/user.guard";
-import { CreateCommentDto } from "./dto/create-comment.dto";
-import { CommentsQuery } from "./query/query-comments.query";
-import { UpdateCommentDto } from "./dto/update-comment.dto";
-import { ResponseComment } from "./dto/response-commnet.dto";
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CommentService } from './comments.service';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
+import { AuthGuard } from 'src/guard/user.guard';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { CommentsQuery } from './query/query-comments.query';
+import { UpdateCommentDto } from './dto/update-comment.dto';
+import { ResponseComment } from './dto/response-commnet.dto';
+import { CommentsPaginationDto } from './dto/comments.pagination.dto';
 
-@ApiTags("comments")
-@Controller("comments")
+@ApiTags('comments')
+@Controller('comments')
 export class CommentsController {
   constructor(private readonly commentService: CommentService) {}
 
@@ -37,32 +37,40 @@ export class CommentsController {
       body.content,
       body.documentType,
       body.documentId,
-      req.user.id,
-      req.user.name,
+      req.user,
     );
   }
 
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
-    type: ResponseComment,
+    type: CommentsPaginationDto,
   })
   async getComments(@Query() query: CommentsQuery) {
+    console.log(query);
+    //@ts-ignore
+    const page = parseInt(query.page || '1');
     return this.commentService.getCommentsByEntity(
       query.documentType,
       query.documentId,
+      {
+        //@ts-ignore
+        page: page <= 1 ? 0 : page - 1,
+        //@ts-ignore
+        pageSize: parseInt(query.pageSize) || 25,
+      },
     );
   }
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Put(":id")
+  @Put(':id')
   @ApiResponse({
     status: HttpStatus.OK,
     type: ResponseComment,
   })
   async updateComment(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() body: UpdateCommentDto,
     @Req() req: { user: JwtPayload },
   ) {

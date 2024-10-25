@@ -1,0 +1,17 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { ListResponse, MetaPagination, PaginationMeta } from 'src/types';
+import { ResponseComment } from './response-commnet.dto';
+
+export class CommentsPaginationDto extends ListResponse<ResponseComment> {
+  @ApiProperty({
+    description: 'Array items',
+    type: [ResponseComment],
+  })
+  data: ResponseComment[];
+
+  @ApiProperty({
+    description: 'Meta pagination',
+    type: MetaPagination,
+  })
+  meta: MetaPagination;
+}
