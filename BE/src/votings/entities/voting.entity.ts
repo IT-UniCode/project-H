@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsJSON, IsNumber, IsObject, IsString } from "class-validator";
-import { Entity } from "src/dto-classes";
+import { Entity, Meta } from "src/dto-classes";
 export class Voting extends Entity {
   @ApiProperty({
     description: "Name of voting",
@@ -49,4 +49,14 @@ export class Voting extends Entity {
     example: "active",
   })
   state: "active" | "finish";
+}
+
+export class ResponseVoting {
+  @ApiProperty({ type: Voting })
+  data: Voting;
+
+  @ApiProperty({
+    type: Meta,
+  })
+  meta: Meta;
 }

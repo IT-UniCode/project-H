@@ -3,10 +3,10 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { JwtPayload } from 'src/auth/dto/jwt-payload';
-import { PrismaService } from 'src/prisma/prisma.service'; // Ensure PrismaService is set up
-import { RequestService } from 'src/request/request.service';
+} from "@nestjs/common";
+import { JwtPayload } from "src/auth/dto/jwt-payload";
+import { PrismaService } from "src/prisma/prisma.service"; // Ensure PrismaService is set up
+import { RequestService } from "src/request/request.service";
 
 @Injectable()
 export class CommentService {
@@ -20,12 +20,14 @@ export class CommentService {
     documentType: string,
     documentId: string,
     userId: number,
+    userName: string,
   ) {
     await this.requestService.get(`${documentType}/${documentId}`);
 
     return this.prisma.comment.create({
       data: {
         userId,
+        userName,
         content,
         documentType,
         documentId,
@@ -52,7 +54,7 @@ export class CommentService {
     }
 
     if (auth.id !== existingComment.userId) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException("Access denied");
     }
 
     return this.prisma.comment.update({

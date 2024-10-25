@@ -32,6 +32,13 @@ export class Comment {
   userId: number;
 
   @ApiProperty({
+    description: "Author's user name",
+    type: String,
+    example: "Name",
+  })
+  userName: "Name";
+
+  @ApiProperty({
     description: "Date and time of creating comment as string",
     type: Date,
   })

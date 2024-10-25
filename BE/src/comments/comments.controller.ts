@@ -9,24 +9,24 @@ import {
   Req,
   UseGuards,
   HttpStatus,
-} from '@nestjs/common';
-import { CacheService } from 'src/cache/cache.service';
+} from "@nestjs/common";
+import { CacheService } from "src/cache/cache.service";
 import {
   ApiBearerAuth,
   ApiProperty,
   ApiResponse,
   ApiTags,
-} from '@nestjs/swagger';
-import { CommentService } from './comments.service';
-import { JwtPayload } from 'src/auth/dto/jwt-payload';
-import { AuthGuard } from 'src/guard/user.guard';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommentsQuery } from './query/query-comments.query';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from './entities/comment.entity';
+} from "@nestjs/swagger";
+import { CommentService } from "./comments.service";
+import { JwtPayload } from "src/auth/dto/jwt-payload";
+import { AuthGuard } from "src/guard/user.guard";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { CommentsQuery } from "./query/query-comments.query";
+import { UpdateCommentDto } from "./dto/update-comment.dto";
+import { Comment } from "./entities/comment.entity";
 
-@ApiTags('comments')
-@Controller('comments')
+@ApiTags("comments")
+@Controller("comments")
 export class CommentsController {
   constructor(private readonly commentService: CommentService) {}
 
@@ -43,6 +43,7 @@ export class CommentsController {
       body.documentType,
       body.documentId,
       req.user.id,
+      req.user.name,
     );
   }
 
@@ -60,16 +61,20 @@ export class CommentsController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Put(':id')
+  @Put(":id")
   @ApiResponse({
     status: HttpStatus.OK,
     type: Comment,
   })
   async updateComment(
-    @Param('id') id: number,
+    @Param("id") id: string,
     @Body() body: UpdateCommentDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.commentService.updateComment(id, body.content, req.user);
+    return this.commentService.updateComment(
+      parseInt(id),
+      body.content,
+      req.user,
+    );
   }
 }

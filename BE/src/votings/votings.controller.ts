@@ -11,7 +11,7 @@ import { RequestService } from "src/request/request.service";
 import { CacheService } from "src/cache/cache.service";
 import { getQueryParams } from "src/utils";
 import { ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Voting } from "./entities/voting.entity";
+import { ResponseVoting, Voting } from "./entities/voting.entity";
 
 @ApiTags("votings")
 @Controller("votings")
@@ -25,7 +25,7 @@ export class VotingsController {
   @ApiResponse({
     status: 200,
     description: "Votings",
-    type: Voting,
+    type: ResponseVoting,
   })
   async getAll(
     @Query()
