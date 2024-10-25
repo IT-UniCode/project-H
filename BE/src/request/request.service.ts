@@ -1,10 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import axios, { AxiosResponse } from 'axios';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import axios, { AxiosResponse } from "axios";
 @Injectable()
 export class RequestService {
   async request(
     path: string,
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE',
+    method: "POST" | "GET" | "PUT" | "DELETE",
     init: {
       body?: any;
       headers?: any;
@@ -12,7 +12,7 @@ export class RequestService {
     exception?: string,
   ): Promise<AxiosResponse<any, any>> {
     const headers = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.STRAPI_TOKEN}`,
       ...init.headers,
     };
@@ -26,6 +26,8 @@ export class RequestService {
 
       return res;
     } catch (error) {
+      console.log(error);
+
       throw new BadRequestException(exception);
     }
   }
@@ -37,7 +39,7 @@ export class RequestService {
       body: T;
     },
   ): Promise<any> {
-    const res = await this.request(path, 'POST', {
+    const res = await this.request(path, "POST", {
       ...init,
       body: JSON.stringify(init.body),
     });
@@ -51,7 +53,7 @@ export class RequestService {
       headers?: any;
     } = {},
   ) {
-    const res = await this.request(path, 'GET', init);
+    const res = await this.request(path, "GET", init);
 
     return await res.data;
   }
@@ -63,7 +65,7 @@ export class RequestService {
       body?: T;
     } = {},
   ): Promise<any> {
-    const res = await this.request(path, 'PUT', {
+    const res = await this.request(path, "PUT", {
       ...init,
       body: JSON.stringify(init.body),
     });
@@ -77,7 +79,7 @@ export class RequestService {
       headers?: any;
     } = {},
   ): Promise<number> {
-    const res = await this.request(path, 'DELETE', init);
+    const res = await this.request(path, "DELETE", init);
 
     return res.status;
   }
