@@ -47,17 +47,16 @@ export class CommentsController {
     type: CommentsPaginationDto,
   })
   async getComments(@Query() query: CommentsQuery) {
-    console.log(query);
     //@ts-ignore
-    const page = parseInt(query.page || '1');
+    const page = Math.abs(parseInt(query.page || '1'));
+    //@ts-ignore
+    const pageSize = Math.max(parseInt(query.pageSize) || 25, -1);
     return this.commentService.getCommentsByEntity(
       query.documentType,
       query.documentId,
       {
-        //@ts-ignore
-        page: page <= 1 ? 0 : page - 1,
-        //@ts-ignore
-        pageSize: parseInt(query.pageSize) || 25,
+        page: page - 1 < 1 ? 0 : page - 1,
+        pageSize: pageSize,
       },
     );
   }

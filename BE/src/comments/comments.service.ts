@@ -41,28 +41,35 @@ export class CommentService {
     documentId: string,
     pagination: Pagination,
   ): Promise<CommentsPaginationDto> {
-    const total = await this.prisma.comment.count();
+    const total = await this.prisma.comment.count({
+      where: {
+        documentType,
+        documentId,
+      },
+    });
     const take = pagination.pageSize === -1 ? total : pagination.pageSize;
+    const skip = pagination.page * Math.abs(pagination.pageSize);
+
     const res = await this.prisma.comment.findMany({
       where: {
         documentType,
         documentId,
       },
-      skip:
-        pagination.pageSize === -1 ? 0 : pagination.page * pagination.pageSize,
+      skip,
       take,
       include: {
         user: { select: { id: true, name: true } },
       },
     });
 
+    console.log({ count: Math.floor(total / take), total, take });
     return {
       data: res,
       meta: {
         pagination: {
           page: pagination.page,
-          pageCount: take,
-          pageSize: res.length,
+          pageCount: Math.floor(total / take) || 1,
+          pageSize: take,
           total,
         },
       },

@@ -4,7 +4,7 @@ import { ResponseComment } from './response-commnet.dto';
 
 export class CommentsPaginationDto extends ListResponse<ResponseComment> {
   @ApiProperty({
-    description: 'Array items',
+    description: 'List comments',
     type: [ResponseComment],
   })
   data: ResponseComment[];

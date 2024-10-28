@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 
-// Це пгінація для чого? Query????
 export class Pagination {
   @ApiProperty({
     required: false,
