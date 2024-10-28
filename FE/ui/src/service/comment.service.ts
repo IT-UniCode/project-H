@@ -1,14 +1,18 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { IComments } from "src/interfaces";
+import type { IComments, ResponseBody } from "src/interfaces";
 
 class CommentService {
-  async create({}) {
-    return apiService.post<IComments>(ApiPath.comments, { body: {} });
+  async create(body: {
+    documentId: string;
+    content: string;
+    documentType: string;
+  }) {
+    return apiService.post<IComments>(ApiPath.comments, { body });
   }
 
   async getAll(query: { documentType: string; documentId: string }) {
-    return apiService.get<IComments[]>(ApiPath.comments, { query });
+    return apiService.get<ResponseBody<IComments>>(ApiPath.comments, { query });
   }
 }
 

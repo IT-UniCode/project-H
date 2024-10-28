@@ -1,0 +1,14 @@
+---
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout title="Votings">
+  <h2 class="text-4xl mb-6">Votings</h2>
+  <section class="flex flex-col gap-y-2">
+    {
+      Array(6)
+        .fill(0)
+        .map((v) => <section class="h-10 bg-gray-400" />)
+    }
+  </section>
+</Layout>

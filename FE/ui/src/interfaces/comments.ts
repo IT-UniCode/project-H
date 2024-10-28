@@ -4,5 +4,9 @@ export interface IComments {
   documentType: string;
   documentId: string;
   userId: number;
+  user: {
+    id: number;
+    name: string;
+  };
   createdAt: string;
 }

@@ -1,6 +1,6 @@
 export interface QueryApi {
   page?: number;
-  pageSize?: number | "max";
+  pageSize?: number;
   field?: string;
   value?: string | number;
   [key: string]: any;

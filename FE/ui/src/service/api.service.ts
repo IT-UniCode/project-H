@@ -1,4 +1,6 @@
 import type { ApiPath } from "@constant/api.path";
+import { storageName } from "@constant/storageName";
+import { getLocalStorage } from "@helpers/localStorageHelper";
 import queryString from "query-string";
 import type { QueryApi } from "src/interfaces";
 
@@ -16,7 +18,7 @@ class ApiService {
     const headers = {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
-        globalThis.window ? localStorage.getItem("access_token") : "none"
+        globalThis.window ? getLocalStorage(storageName.AccessToken) : "none"
       }`,
       ...init.headers,
     };
