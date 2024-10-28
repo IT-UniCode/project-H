@@ -3,11 +3,13 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from "@nestjs/common";
-import { JwtPayload } from "src/auth/dto/jwt-payload";
-import { PrismaService } from "src/prisma/prisma.service"; // Ensure PrismaService is set up
-import { RequestService } from "src/request/request.service";
-import { ResponseComment } from "./dto/response-commnet.dto";
+} from '@nestjs/common';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
+import { PrismaService } from 'src/prisma/prisma.service'; // Ensure PrismaService is set up
+import { RequestService } from 'src/request/request.service';
+import { ResponseComment } from './dto/response-commnet.dto';
+import { CommentsPaginationDto } from './dto/comments.pagination.dto';
+import { Pagination } from 'src/types';
 
 @Injectable()
 export class CommentService {
@@ -20,15 +22,13 @@ export class CommentService {
     content: string,
     documentType: string,
     documentId: string,
-    userId: number,
-    userName: string,
+    user: JwtPayload,
   ) {
     await this.requestService.get(`${documentType}/${documentId}`);
 
     return this.prisma.comment.create({
       data: {
-        userId,
-        userName,
+        userId: user.id,
         content,
         documentType,
         documentId,
@@ -36,13 +36,44 @@ export class CommentService {
     });
   }
 
-  async getCommentsByEntity(documentType: string, documentId: string) {
-    return this.prisma.comment.findMany({
+  async getCommentsByEntity(
+    documentType: string,
+    documentId: string,
+    pagination: Pagination,
+  ): Promise<CommentsPaginationDto> {
+    const total = await this.prisma.comment.count({
       where: {
         documentType,
         documentId,
       },
     });
+    const take = pagination.pageSize === -1 ? total : pagination.pageSize;
+    const skip = pagination.page * Math.abs(pagination.pageSize);
+
+    const res = await this.prisma.comment.findMany({
+      where: {
+        documentType,
+        documentId,
+      },
+      skip,
+      take,
+      include: {
+        user: { select: { id: true, name: true } },
+      },
+    });
+
+    console.log({ count: Math.floor(total / take), total, take });
+    return {
+      data: res,
+      meta: {
+        pagination: {
+          page: pagination.page,
+          pageCount: Math.floor(total / take) || 1,
+          pageSize: take,
+          total,
+        },
+      },
+    };
   }
 
   async updateComment(id: number, content: string, auth: JwtPayload) {
@@ -55,7 +86,7 @@ export class CommentService {
     }
 
     if (auth.id !== existingComment.userId) {
-      throw new ForbiddenException("Access denied");
+      throw new ForbiddenException('Access denied');
     }
 
     return this.prisma.comment.update({
