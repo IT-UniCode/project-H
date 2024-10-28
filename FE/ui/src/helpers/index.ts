@@ -4,6 +4,7 @@ import {
 } from "./configuration.markdown";
 import { extractFirstTextAndImage } from "./extractors";
 import { getLocalStorage, setLocalStorage } from "./localStorageHelper";
+import { getSessionStorage, setSessionStorage } from "./sessionStorage";
 
 export {
   confMarkdownNews,
@@ -11,4 +12,6 @@ export {
   getLocalStorage,
   setLocalStorage,
   extractFirstTextAndImage,
+  getSessionStorage,
+  setSessionStorage,
 };

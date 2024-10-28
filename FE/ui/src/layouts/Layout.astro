@@ -1,4 +1,5 @@
 ---
+import { CanvassModal } from "@components/Canvass";
 import Footer from "@layouts/Footer.astro";
 import Header from "@layouts/Header.astro";
 import clsx from "clsx";
@@ -26,6 +27,7 @@ const { title, class: mainClass } = Astro.props;
     <main class={clsx("container mx-auto flex-grow flex flex-col", mainClass)}>
       <slot />
     </main>
+    <CanvassModal client:only="preact" />
     <Footer />
   </body>
 </html>

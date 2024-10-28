@@ -20,7 +20,7 @@ function ToastList() {
   return (
     <div>
       {createPortal(
-        <section class=" absolute right-2 top-2 flex flex-col">
+        <section class="fixed right-2 top-2 flex flex-col">
           {toasts.map((toast, index) => (
             <div
               key={index}
