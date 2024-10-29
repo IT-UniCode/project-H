@@ -60,6 +60,9 @@ export class CommentService {
       include: {
         user: { select: { id: true, name: true } },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return {
@@ -67,7 +70,7 @@ export class CommentService {
       meta: {
         pagination: {
           page: pagination.page + 1,
-          pageCount: Math.floor(total / take) || 1,
+          pageCount: Math.ceil(total / take) || 1,
           pageSize: take,
           total,
         },

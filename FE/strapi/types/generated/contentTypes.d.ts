@@ -608,6 +608,9 @@ export interface ApiVotingVoting extends Struct.CollectionTypeSchema {
     state: Schema.Attribute.Enumeration<['active', 'finish']>;
     answers: Schema.Attribute.Relation<'oneToMany', 'api::answer.answer'>;
     variants: Schema.Attribute.Component<'variant.variant', true>;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

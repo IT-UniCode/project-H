@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-10-29T09:33:47.032Z"
+    "x-generation-date": "2024-10-29T12:54:53.086Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -3982,6 +3982,9 @@
                   "$ref": "#/components/schemas/VariantVariantComponent"
                 }
               },
+              "slug": {
+                "type": "string"
+              },
               "createdAt": {
                 "type": "string",
                 "format": "date-time"
@@ -5276,6 +5279,9 @@
         ],
         "properties": {
           "data": {
+            "required": [
+              "slug"
+            ],
             "type": "object",
             "properties": {
               "name": {
@@ -5310,6 +5316,9 @@
                 "items": {
                   "$ref": "#/components/schemas/VariantVariantComponent"
                 }
+              },
+              "slug": {
+                "type": "string"
               },
               "locale": {
                 "type": "string"
@@ -5369,6 +5378,9 @@
       },
       "Voting": {
         "type": "object",
+        "required": [
+          "slug"
+        ],
         "properties": {
           "id": {
             "type": "number"
@@ -5450,6 +5462,9 @@
                       "items": {
                         "$ref": "#/components/schemas/VariantVariantComponent"
                       }
+                    },
+                    "slug": {
+                      "type": "string"
                     },
                     "createdAt": {
                       "type": "string",
@@ -5815,6 +5830,9 @@
             "items": {
               "$ref": "#/components/schemas/VariantVariantComponent"
             }
+          },
+          "slug": {
+            "type": "string"
           },
           "createdAt": {
             "type": "string",
