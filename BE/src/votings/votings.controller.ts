@@ -48,7 +48,7 @@ export class VotingsController {
     query?: VotingQuery,
   ) {
     const params = getQueryParams(query);
-    const path = `votings?${params}&filters[state][$eq]=active`;
+    const path = `votings?populate=variants&${params}&filters[state][$eq]=active`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
@@ -66,6 +66,7 @@ export class VotingsController {
   @ApiResponse({
     status: 200,
     description: 'Votings',
+    type: ResponseVoting,
   })
   @ApiParam({
     name: 'id',

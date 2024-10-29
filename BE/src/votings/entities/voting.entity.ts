@@ -1,59 +1,55 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsJSON, IsNumber, IsObject, IsString } from "class-validator";
-import { Entity, Meta } from "src/dto-classes";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsJSON, IsNumber, IsObject, IsString } from 'class-validator';
+import { Entity, Meta } from 'src/dto-classes';
 export class Voting extends Entity {
   @ApiProperty({
-    description: "Name of voting",
+    description: 'Name of voting',
   })
   @IsString()
-  name: "some name";
+  name: 'some name';
 
   @ApiProperty({
-    description: "Description of voting",
+    description: 'Description of voting',
   })
   @IsString()
-  content: "some description";
+  content: 'some description';
 
   @ApiProperty({
-    description: "Variants for votes",
-    example: { data: ["a", "b", "c"] },
+    description: 'State of voting (active or finished)',
+    enum: ['active', 'finish'],
+    example: 'active',
   })
-  @IsObject()
-  variants: {
-    data: ["a", "b", "c"];
-  };
+  state: 'active' | 'finish';
 
   @ApiProperty({
-    description: "Users votes",
-    example: {
-      data: [
-        {
-          userId: 1,
-          variant: 1,
-        },
-      ],
-    },
-  })
-  answers: {
-    data: [
+    description: 'Vote variants',
+    example: [
       {
-        userId: 1;
-        variant: 1;
+        id: 1,
+        content: 'a',
+        uniqueId: 'some_unique_id',
       },
-    ];
-  };
+    ],
+  })
+  variants: [
+    {
+      id: 1;
+      content: 'a';
+      uniqueId: 'some_unique_id';
+    },
+  ];
 
   @ApiProperty({
-    description: "State of voting (active or finished)",
-    enum: ["active", "finish"],
-    example: "active",
+    description: 'User friendly slug',
+    type: String,
+    example: 'some-slug',
   })
-  state: "active" | "finish";
+  slug: string;
 }
 
 export class ResponseVoting {
-  @ApiProperty({ type: Voting })
-  data: Voting;
+  @ApiProperty({ type: [Voting] })
+  data: [Voting];
 
   @ApiProperty({
     type: Meta,

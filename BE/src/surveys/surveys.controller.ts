@@ -29,7 +29,7 @@ export class SurveysController {
     type: GetSurveyDto,
   })
   async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
-    const path = `survey_answers`;
+    const path = `survey-answers`;
 
     return this.requestService.post(path, {
       body: { data: { ...body, userId: req.user.id } },
