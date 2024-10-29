@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, NextFunction } from 'express';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
 
 @Injectable()
 export class ExtractUserMiddleware implements NestMiddleware {
@@ -21,14 +22,9 @@ export class ExtractUserMiddleware implements NestMiddleware {
     const token = authHeader.split(' ')[1];
 
     try {
-      const decoded = this.jwtService.verify(token) as {
-        id: string;
-      };
+      const decoded: JwtPayload = this.jwtService.verify(token);
 
-      req.user = {
-        id: decoded.id,
-        ...decoded,
-      };
+      req.user = decoded;
 
       next();
     } catch (error) {
