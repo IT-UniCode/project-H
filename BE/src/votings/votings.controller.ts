@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
-import { AnswerBody } from './dto/answer.dto';
+import { CreateAnswerDto } from './dto/answer.create.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 
@@ -32,13 +32,10 @@ export class VotingsController {
     private readonly cacheService: CacheService,
   ) {}
 
-  @ApiBody({
-    type: AnswerBody,
-  })
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post()
-  async vote(@Body() body: AnswerBody, @Req() req: { user: JwtPayload }) {
+  async vote(@Body() body: CreateAnswerDto, @Req() req: { user: JwtPayload }) {
     const path = `answers`;
 
     return this.requestService.post(path, {
@@ -56,7 +53,7 @@ export class VotingsController {
     @Query()
     query?: VotingQuery,
   ) {
-    const params = getQueryParams(query, '');
+    const params = getQueryParams(query);
     const path = `votings?${params}`;
     const cachedData = await this.cacheService.get(path);
 
