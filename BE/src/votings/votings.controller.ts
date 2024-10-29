@@ -48,7 +48,7 @@ export class VotingsController {
     query?: VotingQuery,
   ) {
     const params = getQueryParams(query);
-    const path = `votings?populate=variants&${params}&filters[state][$eq]=active`;
+    const path = `votings?${params}&populate=variants`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
@@ -79,7 +79,7 @@ export class VotingsController {
       id: string;
     },
   ) {
-    const path = `votings/${params.id}`;
+    const path = `votings/${params.id}&populate=variants`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {

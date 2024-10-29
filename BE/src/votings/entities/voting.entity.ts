@@ -15,36 +15,30 @@ export class Voting extends Entity {
   content: 'some description';
 
   @ApiProperty({
+    description: 'Variants for votes',
+    example: [
+      {
+        id: 1,
+        content: '1',
+        uniqueId: '1',
+      },
+    ],
+  })
+  @IsObject()
+  variants: [
+    {
+      id: 1;
+      content: '1';
+      uniqueId: '1';
+    },
+  ];
+
+  @ApiProperty({
     description: 'State of voting (active or finished)',
     enum: ['active', 'finish'],
     example: 'active',
   })
   state: 'active' | 'finish';
-
-  @ApiProperty({
-    description: 'Vote variants',
-    example: [
-      {
-        id: 1,
-        content: 'a',
-        uniqueId: 'some_unique_id',
-      },
-    ],
-  })
-  variants: [
-    {
-      id: 1;
-      content: 'a';
-      uniqueId: 'some_unique_id';
-    },
-  ];
-
-  @ApiProperty({
-    description: 'User friendly slug',
-    type: String,
-    example: 'some-slug',
-  })
-  slug: string;
 }
 
 export class ResponseVoting {
