@@ -4,4 +4,5 @@ export enum ApiPath {
   categories = "/categories",
   userProfile = "/user/profile",
   comments = "/comments",
+  votings = "/votings",
 }

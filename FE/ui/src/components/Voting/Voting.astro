@@ -1,0 +1,14 @@
+---
+import type { IVoting } from "@interfaces/index";
+
+interface Props {
+  voting: IVoting;
+}
+
+const { voting } = Astro.props;
+---
+
+<section class="rounded bg-gray-300 px-2 py-3">
+  <p class="text-lg">{voting.name}</p>
+  {}
+</section>

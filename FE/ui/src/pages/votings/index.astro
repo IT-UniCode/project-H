@@ -1,14 +1,14 @@
 ---
+import { VotingAstro } from "@components/Voting";
 import Layout from "@layouts/Layout.astro";
+import votingService from "@service/voting.service";
+
+const response = await votingService.getAll({ pageSize: -1 });
 ---
 
 <Layout title="Votings">
   <h2 class="text-4xl mb-6">Votings</h2>
-  <section class="flex flex-col gap-y-2">
-    {
-      Array(6)
-        .fill(0)
-        .map((v) => <section class="h-10 bg-gray-400" />)
-    }
+  <section class="flex flex-col gap-y-2 max-w-4xl mx-auto w-full">
+    {response.data.map((v) => <VotingAstro voting={v} />)}
   </section>
 </Layout>

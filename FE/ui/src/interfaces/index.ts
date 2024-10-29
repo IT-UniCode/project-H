@@ -7,4 +7,6 @@ export type { Pagination } from "./pagination";
 export type { Category } from "./category";
 export type { QueryApi } from "./query.api";
 export type { IComments } from "./comments";
-export type { BaseDate as BaseEntity } from "./base.date";
+export type { IVoting } from "./voting";
+export type { BaseDate } from "./base.date";
+export type { BaseEntity } from "./base.entity";
