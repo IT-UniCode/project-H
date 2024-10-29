@@ -14,11 +14,15 @@ import { GetSurveyDto } from './dto/get-survey.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AnswerCreateDto } from 'src/votings/dto/answer.create.dto';
 import { AuthGuard } from 'src/guard/user.guard';
+import { SurveysService } from './surveys.service';
 
 @ApiTags('surveys')
 @Controller('surveys')
 export class SurveysController {
-  constructor(private readonly requestService: RequestService) {}
+  constructor(
+    private readonly requestService: RequestService,
+    private readonly surveyService: SurveysService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard)
@@ -31,9 +35,15 @@ export class SurveysController {
   async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
     const path = `survey-answers`;
 
-    return this.requestService.post(path, {
-      body: { data: { ...body, userId: req.user.id } },
-    });
+    return this.surveyService.postVote(
+      body.surveyId,
+      body.answers,
+      req.user.id,
+    );
+
+    // return this.requestService.post(path, {
+    //   body: { data: { ...body, userId: req.user.id } },
+    // });
   }
 
   @Get()

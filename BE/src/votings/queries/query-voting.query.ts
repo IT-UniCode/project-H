@@ -1,4 +1,4 @@
-import { IntersectionType } from "@nestjs/swagger";
-import { Pagination, Filters } from "src/types";
+import { IntersectionType } from '@nestjs/swagger';
+import { Filters, PaginationQuery } from 'src/types';
 
-export class VotingQuery extends IntersectionType(Pagination, Filters) {}
+export class VotingQuery extends IntersectionType(PaginationQuery, Filters) {}

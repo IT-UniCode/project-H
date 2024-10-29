@@ -645,8 +645,8 @@ export interface ApiSurveyAnswerSurveyAnswer
   attributes: {
     surveyId: Schema.Attribute.String;
     userId: Schema.Attribute.Integer;
-    answer: Schema.Attribute.String;
     survey: Schema.Attribute.Relation<'manyToOne', 'api::survey.survey'>;
+    answers: Schema.Attribute.JSON;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;

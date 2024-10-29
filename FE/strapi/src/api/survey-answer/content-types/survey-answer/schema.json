@@ -20,14 +20,14 @@
     "userId": {
       "type": "integer"
     },
-    "answer": {
-      "type": "string"
-    },
     "survey": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::survey.survey",
       "inversedBy": "survey_answers"
+    },
+    "answers": {
+      "type": "json"
     }
   }
 }

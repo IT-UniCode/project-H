@@ -1,36 +1,38 @@
-import { Controller, Get, Param, Query } from "@nestjs/common";
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Category, CategoryWithNews } from "./category.entity";
-import { RequestService } from "src/request/request.service";
-import { CacheService } from "src/cache/cache.service";
-import { CategoriesQuery } from "./query/query-categories.query";
-import { getQueryParams } from "src/utils";
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Category, CategoryWithNews } from './category.entity';
+import { RequestService } from 'src/request/request.service';
+import { CacheService } from 'src/cache/cache.service';
+import { CategoriesQuery } from './query/query-categories.query';
+import { getQueryParams } from 'src/utils';
 
-@ApiTags("categories")
-@Controller("categories")
+@ApiTags('categories')
+@Controller('categories')
 export class CategoriesController {
   constructor(
     public requestService: RequestService,
     private readonly cacheService: CacheService,
   ) {}
 
-  @Get("")
+  @Get('')
   @ApiResponse({
     status: 200,
-    description: "Category",
+    description: 'Category',
     type: CategoryWithNews,
   })
   async getAll(
     @Query()
     query?: CategoriesQuery,
   ) {
-    const includeNews = query.includeNews ? "populate=news&" : "";
+    const includeNews = query.includeNews ? 'populate=news&' : '';
 
-    const params = getQueryParams(query, "news");
+    const params = getQueryParams(query, 'news');
 
     const path = `categories?${includeNews}${params}`;
 
-    const cachedData = await this.cacheService.get(path);
+    console.log(path);
+
+    const cachedData = null;
 
     if (!cachedData) {
       const data = await this.requestService.get(path);
@@ -43,14 +45,14 @@ export class CategoriesController {
     }
   }
 
-  @Get("/:id")
+  @Get('/:id')
   @ApiParam({
-    name: "id",
+    name: 'id',
     type: Number,
   })
   @ApiResponse({
     status: 200,
-    description: "Category",
+    description: 'Category',
     type: Category,
   })
   async getById(@Param() params: { id: number }) {

@@ -6,11 +6,11 @@ export class AnswerCreateDto {
   @IsNotEmpty()
   @ApiProperty({
     description: 'Id of user answer',
-    type: String,
+    type: [String],
     example: 'aso2i3o4o9809saf',
     required: true,
   })
-  answer: string;
+  answers: string[];
 
   @IsString()
   @IsNotEmpty()
@@ -20,5 +20,5 @@ export class AnswerCreateDto {
     example: 'aso2i3o4o9809saf',
     required: true,
   })
-  votingId: string;
+  surveyId: string;
 }
