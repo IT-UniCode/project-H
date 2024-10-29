@@ -9,8 +9,12 @@ export class CacheService {
     return await this.keyv.get(key);
   }
 
-  async set(key: string, value: any): Promise<void> {
-    await this.keyv.set(key, value, Number(process.env.REDIS_TTL) || 1800000);
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    await this.keyv.set(
+      key,
+      value,
+      ttl || Number(process.env.REDIS_TTL) || 600000, // 10 min
+    );
   }
 
   async delete(key: string): Promise<void> {
