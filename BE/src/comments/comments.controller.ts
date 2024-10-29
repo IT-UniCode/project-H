@@ -47,9 +47,7 @@ export class CommentsController {
     type: CommentsPaginationDto,
   })
   async getComments(@Query() query: CommentsQuery) {
-    //@ts-ignore
     const page = Math.abs(parseInt(query.page || '1'));
-    //@ts-ignore
     const pageSize = Math.max(parseInt(query.pageSize) || 25, -1);
     return this.commentService.getCommentsByEntity(
       query.documentType,
