@@ -66,7 +66,7 @@ export class CommentService {
       data: res,
       meta: {
         pagination: {
-          page: pagination.page,
+          page: pagination.page + 1,
           pageCount: Math.floor(total / take) || 1,
           pageSize: take,
           total,
