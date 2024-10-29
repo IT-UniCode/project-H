@@ -32,8 +32,6 @@ export class ExtractUserMiddleware implements NestMiddleware {
 
       next();
     } catch (error) {
-      console.log(error);
-
       throw new UnauthorizedException('Invalid or expired token');
     }
   }

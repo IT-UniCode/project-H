@@ -62,7 +62,6 @@ export class CommentService {
       },
     });
 
-    console.log({ count: Math.floor(total / take), total, take });
     return {
       data: res,
       meta: {
