@@ -38,7 +38,7 @@
     },
     "slug": {
       "type": "string",
-      "regex": "[\\s/\\\\]+",
+      "regex": "^[^\\s/\\\\]+$",
       "unique": true,
       "required": true
     }
