@@ -8,4 +8,5 @@ export interface News extends BaseEntity {
   title: string;
   content: string;
   category: Category;
+  slug: string;
 }

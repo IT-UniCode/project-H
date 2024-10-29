@@ -14,7 +14,7 @@ const res = await categoryService.getAll({ pageSize: -1 });
       res.data.map((v) => (
         <a
           class="text-xl hover:underline hover:underline-offset-4"
-          href={pathname + `/${v.name}/${1}`}
+          href={pathname + `/${v.slug}/${1}`}
         >
           {v.name}
         </a>

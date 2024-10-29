@@ -28,7 +28,7 @@ export const getStaticPaths = (async ({ paginate }) => {
     );
 
     return paginate(data?.data || [], {
-      params: { categories: category.name },
+      params: { categories: category.slug.trim() },
       props: { category },
       pageSize: 10,
     });
