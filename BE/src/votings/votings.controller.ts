@@ -86,7 +86,7 @@ export class VotingsController {
       id: string;
     },
   ) {
-    const path = `votings/${params.id}`;
+    const path = `votings/${params.id}&populate=variants`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
