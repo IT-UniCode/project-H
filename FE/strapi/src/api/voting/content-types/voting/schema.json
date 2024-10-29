@@ -4,7 +4,8 @@
   "info": {
     "singularName": "voting",
     "pluralName": "votings",
-    "displayName": "voting"
+    "displayName": "voting",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -17,18 +18,22 @@
     "content": {
       "type": "richtext"
     },
-    "variants": {
-      "type": "json"
-    },
-    "answers": {
-      "type": "json"
-    },
     "state": {
       "type": "enumeration",
       "enum": [
         "active",
         "finish"
       ]
+    },
+    "answers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::answer.answer"
+    },
+    "variants": {
+      "type": "component",
+      "repeatable": true,
+      "component": "variant.variant"
     }
   }
 }

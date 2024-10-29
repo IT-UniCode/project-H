@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "answers",
+  "info": {
+    "singularName": "answer",
+    "pluralName": "answers",
+    "displayName": "Answer",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "votingId": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "integer"
+    },
+    "answer": {
+      "type": "string"
+    }
+  }
+}
