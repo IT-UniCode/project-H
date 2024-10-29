@@ -18,7 +18,7 @@ export class ValidateVoteMiddleware implements NestMiddleware {
     const { votingId, answer } = req.body;
     const userId = req.user.id;
 
-    const votingPath = `votings/${votingId}?populate=variants`;
+    const votingPath = `votings/${votingId}?populate=variants&filters[state][$eq]=active`;
     const answersPath = `answers?filters[userId][$eq]=${userId}&filters[votingId][$eq]=${votingId}`;
 
     const cachedVoting = await this.cacheService.get(votingPath);

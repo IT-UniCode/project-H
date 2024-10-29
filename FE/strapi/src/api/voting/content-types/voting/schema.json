@@ -35,6 +35,12 @@
       "type": "component",
       "repeatable": true,
       "component": "variant.variant"
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "unique": true,
+      "required": true
     }
   }
 }

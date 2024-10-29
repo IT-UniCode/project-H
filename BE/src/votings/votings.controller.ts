@@ -7,18 +7,11 @@ import {
   Body,
   Req,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { getQueryParams } from 'src/utils';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
 import { AnswerCreateDto } from './dto/answer.create.dto';
@@ -55,7 +48,7 @@ export class VotingsController {
     query?: VotingQuery,
   ) {
     const params = getQueryParams(query);
-    const path = `votings?${params}`;
+    const path = `votings?${params}&filters[state][$eq]=active`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
