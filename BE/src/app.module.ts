@@ -15,6 +15,7 @@ import { CommentsController } from './comments/comments.controller';
 import { CommentService } from './comments/comments.service';
 import { VotingsModule } from './votings/votings.module';
 import { VotingsController } from './votings/votings.controller';
+import { SurveysModule } from './surveys/surveys.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { VotingsController } from './votings/votings.controller';
     CategoriesModule,
     CacheModule,
     VotingsModule,
+    SurveysModule,
   ],
   controllers: [
     AppController,

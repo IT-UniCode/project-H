@@ -591,6 +591,39 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiSurveySurvey extends Struct.CollectionTypeSchema {
+  collectionName: 'surveys';
+  info: {
+    singularName: 'survey';
+    pluralName: 'surveys';
+    displayName: 'Survey';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Schema.Attribute.String;
+    content: Schema.Attribute.RichText;
+    state: Schema.Attribute.Enumeration<['active', 'finish']>;
+    answers: Schema.Attribute.Relation<'oneToMany', 'api::answer.answer'>;
+    variants: Schema.Attribute.Component<'variant.variant', true>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::survey.survey'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiVotingVoting extends Struct.CollectionTypeSchema {
   collectionName: 'votings';
   info: {
@@ -1009,6 +1042,7 @@ declare module '@strapi/strapi' {
       'api::answer.answer': ApiAnswerAnswer;
       'api::category.category': ApiCategoryCategory;
       'api::new.new': ApiNewNew;
+      'api::survey.survey': ApiSurveySurvey;
       'api::voting.voting': ApiVotingVoting;
       'admin::permission': AdminPermission;
       'admin::user': AdminUser;
