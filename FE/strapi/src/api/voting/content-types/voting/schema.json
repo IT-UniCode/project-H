@@ -28,7 +28,8 @@
     "answers": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::answer.answer"
+      "target": "api::answer.answer",
+      "mappedBy": "voting"
     },
     "variants": {
       "type": "component",

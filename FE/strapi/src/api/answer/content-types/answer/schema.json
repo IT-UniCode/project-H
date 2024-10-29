@@ -20,6 +20,12 @@
     },
     "answer": {
       "type": "string"
+    },
+    "voting": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::voting.voting",
+      "inversedBy": "answers"
     }
   }
 }

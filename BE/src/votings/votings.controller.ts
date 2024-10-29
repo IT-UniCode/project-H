@@ -7,6 +7,7 @@ import {
   Body,
   Req,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
@@ -20,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
-import { CreateAnswerDto } from './dto/answer.create.dto';
+import { AnswerCreateDto } from './dto/answer.create.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 
@@ -35,7 +36,37 @@ export class VotingsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post()
-  async vote(@Body() body: CreateAnswerDto, @Req() req: { user: JwtPayload }) {
+  async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
+    const isVoteExist = await this.requestService.get(
+      `votings/${body.votingId}?populate=variants`,
+    );
+
+    if (!isVoteExist) {
+      throw new BadRequestException(
+        `This voting with id ${body.votingId} does not exists`,
+      );
+    }
+
+    const isVariantExist = isVoteExist.data.variants.find(
+      (v) => v.uniqueId === body.answer,
+    );
+
+    if (!isVariantExist) {
+      throw new BadRequestException(
+        `This variant ${body.answer} does not exists in voting with id ${body.votingId}`,
+      );
+    }
+
+    const isAnswerExist = await this.requestService.get(
+      `answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${body.votingId}`,
+    );
+
+    if (isAnswerExist.data.length > 0) {
+      throw new BadRequestException(
+        `This user's vote is exists on this voting with id ${body.votingId}`,
+      );
+    }
+
     const path = `answers`;
 
     return this.requestService.post(path, {

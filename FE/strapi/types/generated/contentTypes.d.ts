@@ -510,6 +510,7 @@ export interface ApiAnswerAnswer extends Struct.CollectionTypeSchema {
     votingId: Schema.Attribute.String;
     userId: Schema.Attribute.Integer;
     answer: Schema.Attribute.String;
+    voting: Schema.Attribute.Relation<'manyToOne', 'api::voting.voting'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
