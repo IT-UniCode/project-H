@@ -1,5 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { MetaPagination } from './meta.pagination';
+import { MetaPagination } from '.';
 
 export class ListResponse<D, M = MetaPagination> {
   data: D[];

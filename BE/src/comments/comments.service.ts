@@ -60,15 +60,17 @@ export class CommentService {
       include: {
         user: { select: { id: true, name: true } },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
-    console.log({ count: Math.floor(total / take), total, take });
     return {
       data: res,
       meta: {
         pagination: {
-          page: pagination.page,
-          pageCount: Math.floor(total / take) || 1,
+          page: pagination.page + 1,
+          pageCount: Math.ceil(total / take) || 1,
           pageSize: take,
           total,
         },

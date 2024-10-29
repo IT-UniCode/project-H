@@ -2,37 +2,59 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Query,
-  HttpStatus,
   Param,
-} from "@nestjs/common";
-import { RequestService } from "src/request/request.service";
-import { CacheService } from "src/cache/cache.service";
-import { getQueryParams } from "src/utils";
-import { ApiParam, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ResponseVoting, Voting } from "./entities/voting.entity";
-import { VotingQuery } from "./queries/query-voting.query";
+  Body,
+  Req,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
+import { RequestService } from 'src/request/request.service';
+import { CacheService } from 'src/cache/cache.service';
+import { getQueryParams } from 'src/utils';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ResponseVoting } from './entities/voting.entity';
+import { VotingQuery } from './queries/query-voting.query';
+import { AnswerCreateDto } from './dto/answer.create.dto';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
+import { AuthGuard } from 'src/guard/user.guard';
 
-@ApiTags("votings")
-@Controller("votings")
+@ApiTags('votings')
+@Controller('votings')
 export class VotingsController {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
   ) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Post()
+  async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
+    const path = `answers`;
+
+    return this.requestService.post(path, {
+      body: { data: { ...body, userId: req.user.id } },
+    });
+  }
+
   @Get()
   @ApiResponse({
     status: 200,
-    description: "Votings",
+    description: 'Votings',
     type: ResponseVoting,
   })
   async getAll(
     @Query()
     query?: VotingQuery,
   ) {
-    const params = getQueryParams(query, "");
+    const params = getQueryParams(query);
     const path = `votings?${params}`;
     const cachedData = await this.cacheService.get(path);
 
@@ -47,15 +69,15 @@ export class VotingsController {
     }
   }
 
-  @Get("/:id")
+  @Get('/:id')
   @ApiResponse({
     status: 200,
-    description: "Votings",
+    description: 'Votings',
   })
   @ApiParam({
-    name: "id",
+    name: 'id',
     type: String,
-    example: "ew1da2sss678yd4yhu3lrje2",
+    example: 'ew1da2sss678yd4yhu3lrje2',
   })
   async getById(
     @Param()

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ListResponse, MetaPagination, PaginationMeta } from 'src/types';
+import { ListResponse, MetaPagination } from 'src/types';
 import { ResponseComment } from './response-commnet.dto';
 
 export class CommentsPaginationDto extends ListResponse<ResponseComment> {
