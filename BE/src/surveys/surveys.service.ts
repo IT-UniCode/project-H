@@ -62,7 +62,7 @@ export class SurveysService {
 
     const cachedAnswers = await this.cacheService.get(answersPath);
 
-    if (!cachedAnswers) {
+    if (!cachedAnswers || cachedAnswers.data.length === 0) {
       const remoteAnswers = await this.requestService.get(answersPath);
 
       await this.cacheService.set(answersPath, remoteAnswers);

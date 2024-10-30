@@ -6,11 +6,11 @@ export class VotingAnswerCreateDto {
   @IsNotEmpty()
   @ApiProperty({
     description: 'Id of user answer',
-    type: [String],
+    type: String,
     example: 'aso2i3o4o98091234',
     required: true,
   })
-  answer: string[];
+  answer: string;
 
   @IsString()
   @IsNotEmpty()

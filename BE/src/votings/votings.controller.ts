@@ -18,7 +18,9 @@ import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 import { AnswerGetDto } from './dto/answer.get.dto';
 import { VotingAnswerCreateDto } from './dto/voting.answer.create.dto';
-import { VotingsService } from './votings.service';
+import { VotingsPostService } from './votings.post.service';
+import { HttpStatusCode } from 'axios';
+import { PostVoteDto } from './dto/post-vote.dto';
 
 @ApiTags('votings')
 @Controller('votings')
@@ -26,16 +28,22 @@ export class VotingsController {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
-    private readonly votingsService: VotingsService,
+    private readonly votingsPostService: VotingsPostService,
   ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: HttpStatusCode.Created,
+    type: PostVoteDto,
+  })
   @Post()
   async vote(@Body() body: VotingAnswerCreateDto, @Req() req) {
-    const path = `answers`;
-
-    return this.votingsService.post(path, req);
+    return this.votingsPostService.post(
+      body.votingId,
+      body.answer,
+      req.user.id,
+    );
   }
 
   @Get()
@@ -96,8 +104,30 @@ export class VotingsController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @Get('/answers')
-  async getResults() {
-    return this.requestService.get(`votings?populate=answers`);
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    type: AnswerGetDto,
+  })
+  @Get('/answers/:id')
+  async getResults(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    const a = {};
+    const ids = params.id.split(',');
+
+    await Promise.all(
+      ids.map(async (id) => {
+        const ans = await this.requestService.get(
+          `answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
+        );
+        a[id] = ans.data[0]?.answer || null;
+      }),
+    );
+
+    return a;
   }
 }

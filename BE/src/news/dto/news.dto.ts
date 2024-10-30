@@ -12,6 +12,12 @@ export class News extends Entity {
   })
   content: string;
 
+  @ApiProperty({
+    example: 'Some preview text',
+    description: 'Content can be string or markdown',
+  })
+  previewText: string;
+
   @ApiProperty({ example: 'some-name', description: 'Slug of the new' })
   slug: string;
 }

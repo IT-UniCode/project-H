@@ -4,16 +4,13 @@ import { CacheService } from 'src/cache/cache.service';
 import { RequestService } from 'src/request/request.service';
 
 @Injectable()
-export class VotingsService {
+export class VotingsPostService {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
   ) {}
 
-  async post(path: string, req: Request) {
-    const { votingId, answer } = req.body;
-    const userId = req.user.id;
-
+  async post(votingId: string, answer: string, userId: number) {
     const votingPath = `votings/${votingId}?populate=variants&filters[state][$eq]=active`;
     const answersPath = `answers?filters[userId][$eq]=${userId}&filters[votingId][$eq]=${votingId}`;
 
@@ -70,8 +67,8 @@ export class VotingsService {
       }
     }
 
-    return this.requestService.post(path, {
-      body: { data: { ...req.body, userId: req.user.id } },
+    return this.requestService.post(`answers`, {
+      body: { data: { answer, userId, votingId } },
     });
   }
 }

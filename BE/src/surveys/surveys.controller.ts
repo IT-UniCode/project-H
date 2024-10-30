@@ -36,17 +36,11 @@ export class SurveysController {
     @Body() body: SurveyAnswerCreateDto,
     @Req() req: { user: JwtPayload },
   ) {
-    const path = `survey-answers`;
-
     return this.surveyService.postVote(
       body.surveyId,
       body.answers,
       req.user.id,
     );
-
-    // return this.requestService.post(path, {
-    //   body: { data: { ...body, userId: req.user.id } },
-    // });
   }
 
   @Get()
