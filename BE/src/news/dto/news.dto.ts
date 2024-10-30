@@ -14,7 +14,7 @@ export class News extends Entity {
 
   @ApiProperty({
     example: 'Some preview text',
-    description: 'Content can be string or markdown',
+    description: 'Preview text',
   })
   previewText: string;
 

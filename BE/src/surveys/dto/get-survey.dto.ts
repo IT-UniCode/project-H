@@ -6,18 +6,23 @@ export class Survey extends Entity {
   @ApiProperty({
     description: 'Name of survey',
     type: String,
+    example: 'Some name',
   })
   @IsString()
   @IsNotEmpty()
-  name: 'new-survey';
+  name: string;
 
   @ApiProperty({
-    description: 'Name of survey',
+    description: 'Content can be string or markdown',
     type: String,
+    example: 'Some content',
   })
   @IsString()
   @IsNotEmpty()
-  content: 'some content';
+  content: string;
+
+  @ApiProperty({ example: 'some-name', description: 'Slug of the survey' })
+  slug: string;
 
   @ApiProperty({
     description: 'State of voting (active or finished)',
@@ -25,7 +30,7 @@ export class Survey extends Entity {
     example: 'active',
   })
   @IsNotEmpty()
-  state: 'active' | 'finish';
+  state: string;
 }
 
 export class GetSurveyDto {

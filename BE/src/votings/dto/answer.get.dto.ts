@@ -7,5 +7,5 @@ export class AnswerGetDto {
     required: false,
     example: 'answerUniqueId',
   })
-  'votingId': 'answerUniqueId';
+  votingId: string;
 }

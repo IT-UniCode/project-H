@@ -9,6 +9,38 @@ export class SurveysService {
     private readonly requestService: RequestService,
   ) {}
 
+  createAnswers(answers: string[], survey: any, surveyId: string) {
+    const newAnswers = [];
+    answers.map((ans) => {
+      const isVariantExist = survey.data.variants.find(
+        (v) => v.uniqueId === ans,
+      );
+
+      if (isVariantExist) {
+        newAnswers.push(ans);
+      }
+    });
+
+    if (newAnswers.length === 0) {
+      throw new BadRequestException(
+        `No one of this answers (${answers}) doest exists in survey with id ${surveyId}`,
+      );
+    }
+
+    return newAnswers;
+  }
+
+  async verifySurvey(surveyPath: string, surveyId: string) {
+    const remoteSurvey = await this.requestService.get(surveyPath);
+    await this.cacheService.set(surveyPath, remoteSurvey);
+
+    if (!remoteSurvey) {
+      return false;
+    }
+
+    return remoteSurvey;
+  }
+
   async postVote(surveyId: string, answers: string[], userId: number) {
     const surveyPath = `surveys/${surveyId}?populate=variants&filters[state][$eq]=active`;
     const newAnswers = [];
@@ -16,46 +48,13 @@ export class SurveysService {
     const cachedSurvey = await this.cacheService.get(surveyPath);
 
     if (!cachedSurvey) {
-      const remoteSurvey = await this.requestService.get(surveyPath);
-      await this.cacheService.set(surveyPath, remoteSurvey);
+      const survey = await this.verifySurvey(surveyPath, surveyId);
 
-      if (!remoteSurvey) {
-        throw new BadRequestException(
-          `This survey with id ${surveyId} does not exists`,
-        );
-      }
-
-      answers.map((ans) => {
-        const isVariantExist = remoteSurvey.data.variants.find(
-          (v) => v.uniqueId === ans,
-        );
-
-        if (isVariantExist) {
-          newAnswers.push(ans);
-        }
-      });
-
-      if (newAnswers.length === 0) {
-        throw new BadRequestException(
-          `No one of this answers (${answers}) doest exists in survey with id ${surveyId}`,
-        );
+      if (survey) {
+        newAnswers.push(...this.createAnswers(answers, survey, surveyId));
       }
     } else {
-      answers.map((ans) => {
-        const isVariantExist = cachedSurvey.data.variants.find(
-          (v) => v.uniqueId === ans,
-        );
-
-        if (isVariantExist) {
-          newAnswers.push(ans);
-        }
-      });
-
-      if (newAnswers.length === 0) {
-        throw new BadRequestException(
-          `No one of this answers (${answers}) doest exists in survey with id ${surveyId}`,
-        );
-      }
+      newAnswers.push(...this.createAnswers(answers, cachedSurvey, surveyId));
     }
 
     const answersPath = `survey-answers?filters[userId][$eq]=${userId}&filters[surveyId][$eq]=${surveyId}`;

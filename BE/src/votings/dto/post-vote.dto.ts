@@ -8,21 +8,21 @@ class Vote extends Entity {
     example: 'nkopfwwusms7tsmwydvb7tob',
   })
   @IsString()
-  votingId: 'nkopfwwusms7tsmwydvb7tob';
+  votingId: string;
 
   @ApiProperty({
     description: 'User id',
     example: 1,
   })
   @IsNumber()
-  userId: 1;
+  userId: number;
 
   @ApiProperty({
     description: 'Unique id of answer',
     example: '1',
   })
   @IsString()
-  answer: '1';
+  answer: string;
 }
 
 export class PostVoteDto {
