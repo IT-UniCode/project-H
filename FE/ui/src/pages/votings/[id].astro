@@ -1,12 +1,11 @@
 ---
-import type { GetStaticPaths } from "astro";
-import Layout from "@layouts/Layout.astro";
-import votingService from "@service/voting.service";
-import { ButtonAstro } from "@components/Button";
-import { marked } from "marked";
-import { confMarkdownNews } from "@helpers/index";
-import FormVoting from "./FormVoting";
-import TextField from "@components/TextFields/TextField.astro";
+import type { GetStaticPaths } from 'astro';
+import Layout from '@layouts/Layout.astro';
+import votingService from '@service/voting.service';
+import { ButtonAstro } from '@components/Button';
+import { marked } from 'marked';
+import { confMarkdownNews } from '@helpers/index';
+import FormVoting from '../../components/Forms/FormVoting';
 
 export const prerender = true;
 
@@ -24,9 +23,9 @@ export const getStaticPaths = (async () => {
 const { vote } = Astro.props;
 ---
 
-<Layout title="Voting by id">
-  <section class="flex flex-col gap-y-4 max-w-3xl w-full mx-auto">
-    <p class="text-xl">{vote.name}</p>
+<Layout title='Voting by id'>
+  <section class='flex flex-col gap-y-4 max-w-3xl w-full mx-auto'>
+    <p class='text-xl'>{vote.name}</p>
 
     <article
       set:html={marked.parse(vote.content, {
@@ -41,8 +40,8 @@ const { vote } = Astro.props;
             <div>
               <input
                 id={v.uniqueId}
-                type="radio"
-                name="voting"
+                type='radio'
+                name='voting'
                 value={v.uniqueId}
               />
               <label for={v.uniqueId}>{v.content}</label>
@@ -51,7 +50,7 @@ const { vote } = Astro.props;
         }
       </section>
 
-      <ButtonAstro type="submit" class="py-1">Vote</ButtonAstro>
+      <ButtonAstro type='submit' class='py-1'>Vote</ButtonAstro>
     </FormVoting>
   </section>
 </Layout>
