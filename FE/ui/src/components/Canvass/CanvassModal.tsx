@@ -24,12 +24,8 @@ function CanvassModal() {
   return createPortal(
     show && (
       <section class="fixed flex flex-col right-2 bottom-5 ">
-        <article class=" bg-gray-300 px-3 py-2 rounded">
-          <button
-            onClick={() =>
-              setState((prev) => ({ ...prev, showDetails: !prev.showDetails }))
-            }
-          >
+        <article class="bg-gray-300 px-3 py-2 rounded">
+          <button class="hover:underline" onClick={showDialog}>
             Would you like to take a survey?
           </button>
           <button
@@ -38,22 +34,6 @@ function CanvassModal() {
           >
             hide
           </button>
-          <section
-            class={clsx(
-              "flex flex-col gap-y-2 overflow-hidden transition-all ease-in-out duration-[1s]",
-              {
-                "max-h-[300px] mt-2": state.showDetails,
-                "max-h-0 mt-0": !state.showDetails,
-              },
-            )}
-          >
-            <button
-              onClick={showDialog}
-              class="text-center rounded bg-slate-500 text-white text-lg "
-            >
-              Voite
-            </button>
-          </section>
         </article>
 
         <dialog

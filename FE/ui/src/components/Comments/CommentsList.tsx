@@ -3,7 +3,7 @@ import Comments from "./Comments";
 import { TextField } from "@components/TextFields";
 import commentService from "@service/comment.service";
 import type { IComments } from "@interfaces/comments";
-import Button from "@components/Button";
+import Button from "@components/Button/Button";
 import { useAuth } from "@hooks/useAuth";
 import { useForm } from "@hooks/useForm";
 import type { ResponseBody } from "@interfaces/index";
