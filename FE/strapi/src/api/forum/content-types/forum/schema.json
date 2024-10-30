@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "forums",
+  "info": {
+    "singularName": "forum",
+    "pluralName": "forums",
+    "displayName": "Forum",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "userName": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "integer"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "slug": {
+      "type": "string",
+      "required": true,
+      "unique": true,
+      "regex": "^[^\\s/\\\\]+$"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "finish"
+      ]
+    }
+  }
+}

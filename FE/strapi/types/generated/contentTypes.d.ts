@@ -560,6 +560,39 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiForumForum extends Struct.CollectionTypeSchema {
+  collectionName: 'forums';
+  info: {
+    singularName: 'forum';
+    pluralName: 'forums';
+    displayName: 'Forum';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Schema.Attribute.String;
+    userName: Schema.Attribute.String;
+    userId: Schema.Attribute.Integer;
+    content: Schema.Attribute.RichText;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    state: Schema.Attribute.Enumeration<['active', 'finish']>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::forum.forum'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiNewNew extends Struct.CollectionTypeSchema {
   collectionName: 'news';
   info: {
@@ -1085,6 +1118,7 @@ declare module '@strapi/strapi' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::answer.answer': ApiAnswerAnswer;
       'api::category.category': ApiCategoryCategory;
+      'api::forum.forum': ApiForumForum;
       'api::new.new': ApiNewNew;
       'api::survey.survey': ApiSurveySurvey;
       'api::survey-answer.survey-answer': ApiSurveyAnswerSurveyAnswer;

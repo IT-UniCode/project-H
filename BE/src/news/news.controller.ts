@@ -5,6 +5,8 @@ import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
 import { getImageUrl, getQueryParams } from 'src/utils';
+import { getQueryParams } from 'src/utils';
+import { HttpStatusCode } from 'axios';
 
 @ApiTags('news')
 @Controller('news')
@@ -16,7 +18,7 @@ export class NewsController {
 
   @Get()
   @ApiResponse({
-    status: 200,
+    status: HttpStatusCode.Ok,
     description: 'News',
     type: NewsWithCategories,
   })
@@ -55,7 +57,7 @@ export class NewsController {
 
   @Get('/:id')
   @ApiResponse({
-    status: 200,
+    status: HttpStatusCode.Ok,
     description: 'News',
     type: News,
   })
