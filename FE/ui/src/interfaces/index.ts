@@ -9,5 +9,6 @@ export type { QueryApi } from "./query.api";
 export type { IComments } from "./comments";
 export type { IVoting } from "./voting";
 export type { IVariant } from "./variant";
+export type { ISurvey } from "./survey";
 export type { BaseDate } from "./base.date";
 export type { BaseEntity } from "./base.entity";

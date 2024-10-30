@@ -1,5 +1,6 @@
 import { createPortal, useRef, useState } from "preact/compat";
 import { useSurvey } from "./useSurvey";
+import SurveyList from "./SurveyList";
 
 function SurveyModal() {
   const container = document.getElementById("root");
@@ -40,10 +41,10 @@ function SurveyModal() {
           class="backdrop:bg-gray-500 backdrop:bg-opacity-40 max-w-xl w-full rounded"
         >
           <section class="flex flex-col py-3 px-2">
-            Modal
+            <SurveyList />
             <button
               onClick={hideDialog}
-              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:underline"
+              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:bg-gray-400"
             >
               Close
             </button>
