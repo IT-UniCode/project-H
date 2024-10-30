@@ -1,6 +1,7 @@
 import { createPortal, useEffect } from "preact/compat";
 import useToast from "./useToast";
 import { Close } from "@icons/index";
+import clsx from "clsx";
 
 export interface Toast {
   id: string;
@@ -9,6 +10,11 @@ export interface Toast {
   onClose?: () => void;
   duration?: number;
 }
+
+const styles = {
+  error: "bg-red-500",
+  success: "bg-green-500",
+};
 
 function ToastList() {
   const { toasts, removeToast } = useToast();
@@ -20,13 +26,15 @@ function ToastList() {
   return (
     <div>
       {createPortal(
-        <section class="fixed right-2 top-2 flex flex-col gap-y-2">
+        <section class="fixed right-2 top-2 flex flex-col gap-y-2 max-w-md w-full">
           {toasts.map((toast, index) => (
-            <div
+            <section
               key={index}
-              class={`flex gap-x-4 px-3 rounded items-center justify-between w-full min-h-10 text-white ${
-                toast.type === "success" ? "bg-green-500" : "bg-red-500"
-              }`}
+              class={clsx(
+                "px-3 py-1 rounded w-full min-h-10 text-white",
+                "flex items-center justify-between gap-x-4",
+                styles[toast.type],
+              )}
               style={{ transition: "opacity 0.5s" }}
             >
               <p>{toast.message}</p>
@@ -40,7 +48,7 @@ function ToastList() {
               >
                 <img src={Close.src} width={20} />
               </button>
-            </div>
+            </section>
           ))}
         </section>,
         container,

@@ -1,7 +1,7 @@
 import userService from "@service/user.service";
 import { useEffect, useState } from "preact/hooks";
 import type { User } from "src/interfaces";
-import useToast from "./Toast/useToast";
+import { useToast } from "./Toast";
 
 function ShowProfile() {
   const [user, setUser] = useState<User>();

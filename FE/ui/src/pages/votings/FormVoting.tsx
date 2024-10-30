@@ -1,4 +1,4 @@
-import useToast from "@components/Toast/useToast";
+import { useToast } from "@components/Toast/index";
 import { useAuth } from "@hooks/useAuth";
 import { useForm } from "@hooks/useForm";
 import votingService from "@service/voting.service";

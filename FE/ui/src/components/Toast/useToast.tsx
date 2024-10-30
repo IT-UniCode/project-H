@@ -2,11 +2,10 @@ import { useLocalStorage } from "@helpers/index";
 import type { Toast } from "./ToastList";
 import { useEffect, useState } from "preact/hooks";
 
+const toastKey = "toast-list";
 export default function useToast() {
-  const toastKey = "toast-list";
-
   const [toastList, setToastList] = useState<Toast[]>([]);
-  const { get, remove, set } = useLocalStorage(toastKey);
+  const { get, set } = useLocalStorage(toastKey);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
@@ -27,7 +26,7 @@ export default function useToast() {
       return;
     }
 
-    set([...list, toast]);
+    set([toast, ...list]);
   };
 
   const removeToast = (id: string) => {
@@ -35,4 +34,22 @@ export default function useToast() {
     set(list.filter((v) => v.id !== id));
   };
   return { addToast, removeToast, toasts: toastList };
+}
+
+export function removeToast(id: string) {
+  const { get, set } = useLocalStorage(toastKey);
+  const list = get<Toast[]>() || [];
+  set(list.filter((v) => v.id !== id));
+}
+
+export function addToast(toast: Toast) {
+  const { get, set } = useLocalStorage(toastKey);
+  const list = get<Toast[]>() || [];
+  const exist = list.find((v) => v.id === toast.id);
+
+  if (exist) {
+    return;
+  }
+
+  set([toast, ...list]);
 }

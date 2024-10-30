@@ -21,6 +21,8 @@ import Layout from "@layouts/Layout.astro";
   import { actions } from "astro:actions";
   import { navigate } from "astro:transitions/client";
   import { storageName } from "src/constant/storageName";
+  import { nanoid } from "nanoid";
+  import { addToast } from "@components/Toast";
 
   const form = document.querySelector("form");
   form?.addEventListener("submit", async (event) => {
@@ -31,6 +33,14 @@ import Layout from "@layouts/Layout.astro";
     if (data?.access_token) {
       useLocalStorage(storageName.AccessToken).set(data?.access_token);
       navigate("/");
+    }
+
+    if (error) {
+      addToast({
+        id: nanoid(),
+        message: `Fail login`,
+        type: "error",
+      });
     }
   });
 </script>
