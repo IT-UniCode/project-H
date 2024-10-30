@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsJSON, IsNumber, IsObject, IsString } from 'class-validator';
+import { IsObject, IsString } from 'class-validator';
 import { Entity, Meta } from 'src/dto-classes';
 export class Voting extends Entity {
   @ApiProperty({
@@ -42,8 +42,8 @@ export class Voting extends Entity {
 }
 
 export class ResponseVoting {
-  @ApiProperty({ type: Voting })
-  data: Voting;
+  @ApiProperty({ type: [Voting] })
+  data: [Voting];
 
   @ApiProperty({
     type: Meta,

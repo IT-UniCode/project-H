@@ -1,24 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NestMiddleware,
-} from '@nestjs/common';
-import { RequestService } from 'src/request/request.service';
-import { NextFunction, Request } from 'express';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CacheService } from 'src/cache/cache.service';
+import { RequestService } from 'src/request/request.service';
 
 @Injectable()
-export class ValidateVoteMiddleware implements NestMiddleware {
+export class VotingsPostService {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
   ) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
-    const { votingId, answer } = req.body;
-    const userId = req.user.id;
-
-    const votingPath = `votings/${votingId}?populate=variants`;
+  async post(votingId: string, answer: string, userId: number) {
+    const votingPath = `votings/${votingId}?populate=variants&filters[state][$eq]=active`;
     const answersPath = `answers?filters[userId][$eq]=${userId}&filters[votingId][$eq]=${votingId}`;
 
     const cachedVoting = await this.cacheService.get(votingPath);
@@ -56,7 +48,7 @@ export class ValidateVoteMiddleware implements NestMiddleware {
 
     const cachedAnswers = await this.cacheService.get(answersPath);
 
-    if (!cachedAnswers) {
+    if (!cachedAnswers || cachedAnswers.data.length === 0) {
       const answers = await this.requestService.get(answersPath);
 
       await this.cacheService.set(answersPath, answers, 300000); // 5 min
@@ -74,6 +66,8 @@ export class ValidateVoteMiddleware implements NestMiddleware {
       }
     }
 
-    next();
+    return this.requestService.post(`answers`, {
+      body: { data: { answer, userId, votingId } },
+    });
   }
 }

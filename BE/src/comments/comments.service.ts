@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -7,7 +6,6 @@ import {
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { PrismaService } from 'src/prisma/prisma.service'; // Ensure PrismaService is set up
 import { RequestService } from 'src/request/request.service';
-import { ResponseComment } from './dto/response-commnet.dto';
 import { CommentsPaginationDto } from './dto/comments.pagination.dto';
 import { Pagination } from 'src/types';
 

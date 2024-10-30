@@ -1,9 +1,9 @@
 export enum ModesEnum {
-  small = "small",
-  all = "all",
+  small = 'small',
+  all = 'all',
 }
 
 export enum CommentsDocumentType {
-  news = "news",
-  forum = "forum",
+  news = 'news',
+  forum = 'forum',
 }
