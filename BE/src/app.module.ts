@@ -16,6 +16,7 @@ import { CommentService } from './comments/comments.service';
 import { VotingsModule } from './votings/votings.module';
 import { VotingsController } from './votings/votings.controller';
 import { SurveysModule } from './surveys/surveys.module';
+import { VotingsService } from './votings/votings.service';
 
 @Module({
   imports: [
@@ -35,6 +36,12 @@ import { SurveysModule } from './surveys/surveys.module';
     CommentsController,
     VotingsController,
   ],
-  providers: [AppService, RequestService, CacheService, CommentService],
+  providers: [
+    AppService,
+    RequestService,
+    CacheService,
+    CommentService,
+    VotingsService,
+  ],
 })
 export class AppModule {}

@@ -12,9 +12,9 @@ import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RequestService } from 'src/request/request.service';
 import { GetSurveyDto } from './dto/get-survey.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
-import { AnswerCreateDto } from 'src/votings/dto/answer.create.dto';
 import { AuthGuard } from 'src/guard/user.guard';
 import { SurveysService } from './surveys.service';
+import { SurveyAnswerCreateDto } from './dto/survey.answer.create.dto';
 
 @ApiTags('surveys')
 @Controller('surveys')
@@ -32,7 +32,10 @@ export class SurveysController {
     description: 'Surveys',
     type: GetSurveyDto,
   })
-  async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
+  async vote(
+    @Body() body: SurveyAnswerCreateDto,
+    @Req() req: { user: JwtPayload },
+  ) {
     const path = `survey-answers`;
 
     return this.surveyService.postVote(

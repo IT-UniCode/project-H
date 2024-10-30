@@ -14,9 +14,11 @@ import { getQueryParams } from 'src/utils';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
-import { AnswerCreateDto } from './dto/answer.create.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
+import { AnswerGetDto } from './dto/answer.get.dto';
+import { VotingAnswerCreateDto } from './dto/voting.answer.create.dto';
+import { VotingsService } from './votings.service';
 
 @ApiTags('votings')
 @Controller('votings')
@@ -24,17 +26,16 @@ export class VotingsController {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
+    private readonly votingsService: VotingsService,
   ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Post()
-  async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
+  async vote(@Body() body: VotingAnswerCreateDto, @Req() req) {
     const path = `answers`;
 
-    return this.requestService.post(path, {
-      body: { data: { ...body, userId: req.user.id } },
-    });
+    return this.votingsService.post(path, req);
   }
 
   @Get()
@@ -91,5 +92,12 @@ export class VotingsController {
     } else {
       return cachedData;
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @Get('/answers')
+  async getResults() {
+    return this.requestService.get(`votings?populate=answers`);
   }
 }
