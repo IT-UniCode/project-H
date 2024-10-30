@@ -34,5 +34,5 @@ export class PostVoteDto {
   @ApiProperty({
     type: {},
   })
-  meta: {};
+  meta: object;
 }

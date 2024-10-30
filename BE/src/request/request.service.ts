@@ -9,7 +9,6 @@ export class RequestService {
       body?: any;
       headers?: any;
     },
-    exception?: string,
   ): Promise<AxiosResponse<any, any>> {
     const headers = {
       'Content-Type': 'application/json',
@@ -26,9 +25,7 @@ export class RequestService {
 
       return res;
     } catch (error) {
-      // console.log(error);
-
-      throw new BadRequestException(exception);
+      throw new BadRequestException(error.request.res.statusMessage);
     }
   }
 

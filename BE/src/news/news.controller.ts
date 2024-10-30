@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News, NewsWithCategories } from './dto/news.dto';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';

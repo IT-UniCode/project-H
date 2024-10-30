@@ -30,7 +30,7 @@ export class SurveysService {
     return newAnswers;
   }
 
-  async verifySurvey(surveyPath: string, surveyId: string) {
+  async verifySurvey(surveyPath: string) {
     const remoteSurvey = await this.requestService.get(surveyPath);
     await this.cacheService.set(surveyPath, remoteSurvey);
 
@@ -48,7 +48,7 @@ export class SurveysService {
     const cachedSurvey = await this.cacheService.get(surveyPath);
 
     if (!cachedSurvey) {
-      const survey = await this.verifySurvey(surveyPath, surveyId);
+      const survey = await this.verifySurvey(surveyPath);
 
       if (survey) {
         newAnswers.push(...this.createAnswers(answers, survey, surveyId));

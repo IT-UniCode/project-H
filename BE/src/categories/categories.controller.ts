@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category, CategoryWithNews } from './category.entity';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
@@ -29,8 +29,6 @@ export class CategoriesController {
     const params = getQueryParams(query, 'news');
 
     const path = `categories?${includeNews}${params}`;
-
-    console.log(path);
 
     const cachedData = null;
 

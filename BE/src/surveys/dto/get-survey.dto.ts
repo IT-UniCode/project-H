@@ -30,7 +30,7 @@ export class Survey extends Entity {
     example: 'active',
   })
   @IsNotEmpty()
-  state: string;
+  state: 'active' | 'finish';
 }
 
 export class GetSurveyDto {
