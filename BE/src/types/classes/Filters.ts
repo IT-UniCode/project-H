@@ -8,7 +8,7 @@ export class Filters {
     type: String,
     description:
       'The name of the field to filter data by (e.g., "title", "category").',
-    example: 'title',
+    example: 'documentId',
   })
   field: string;
 
@@ -16,9 +16,9 @@ export class Filters {
   @ApiProperty({
     required: false,
     type: String,
+    example: 'someDocumentId',
     description:
       'The value the specified filter field must match (e.g., "JS", "Sport", "Politics" or a numerical value).',
-    example: 'Some title',
   })
   value: string | number;
 }

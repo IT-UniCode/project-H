@@ -7,7 +7,7 @@ export class SurveyAnswerCreateDto {
   @ApiProperty({
     description: 'Id of user answer',
     type: [String],
-    example: 'aso2i3o4o9809saf',
+    example: ['a', 'b'],
     required: true,
   })
   answers: string[];

@@ -21,6 +21,23 @@ export class Survey extends Entity {
   @IsNotEmpty()
   content: string;
 
+  @ApiProperty({
+    description: 'Vote variants',
+    example: [
+      {
+        id: 1,
+        content: '1',
+        uniqueId: '1',
+      },
+      {
+        id: 2,
+        content: '2',
+        uniqueId: '2',
+      },
+    ],
+  })
+  variants: [];
+
   @ApiProperty({ example: 'some-name', description: 'Slug of the survey' })
   slug: string;
 
