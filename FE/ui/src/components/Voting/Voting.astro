@@ -1,5 +1,7 @@
 ---
+import { ButtonAstro } from "@components/Button";
 import type { IVoting } from "@interfaces/index";
+import { routes } from "src/routes";
 
 interface Props {
   voting: IVoting;
@@ -9,6 +11,5 @@ const { voting } = Astro.props;
 ---
 
 <section class="rounded bg-gray-300 px-2 py-3">
-  <p class="text-lg">{voting.name}</p>
-  {}
+  <a class="text-lg" href={routes.Votings + `/${voting.slug}`}>{voting.name}</a>
 </section>

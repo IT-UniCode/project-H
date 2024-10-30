@@ -7,6 +7,12 @@ class VotingService {
   async getAll(query?: QueryApi) {
     return apiService.get<ResponseBody<IVoting>>(ApiPath.votings, { query });
   }
+
+  async vote(data: { votingId: string; answer: string }) {
+    return apiService.post<ResponseBody<IVoting>>(ApiPath.votings, {
+      body: data,
+    });
+  }
 }
 
 export default new VotingService();
