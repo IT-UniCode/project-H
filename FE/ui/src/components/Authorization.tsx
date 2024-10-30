@@ -1,12 +1,12 @@
 import { routes } from "src/routes";
 import Link from "./Link";
 import { storageName } from "src/constant/storageName";
-import { useEffect } from "preact/hooks";
-import { getLocalStorage } from "@helpers/localStorageHelper";
-import { jwtDecode } from "jwt-decode";
+import { useAuth } from "@hooks/useAuth";
 
 function Authorization() {
-  if (!globalThis.window || !localStorage.getItem(storageName.AccessToken)) {
+  const { isAuth } = useAuth();
+
+  if (!isAuth) {
     return (
       <section class="flex gap-x-4">
         <Link href={routes.Login}>Login</Link>
@@ -14,17 +14,6 @@ function Authorization() {
       </section>
     );
   }
-
-  useEffect(() => {
-    const token = getLocalStorage<string>(storageName.AccessToken);
-    if (!token) return;
-    const decode = jwtDecode(token);
-
-    if (!decode.exp || decode.exp * 1000 < Date.now()) {
-      localStorage.removeItem(storageName.AccessToken);
-      return;
-    }
-  }, []);
 
   return (
     <section class="flex gap-x-4">

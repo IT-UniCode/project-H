@@ -12,7 +12,7 @@ export const getStaticPaths = (async () => {
   const res = await newsService.getAll({ pagination: "max" });
 
   return res.data.map((news) => ({
-    params: { id: news.documentId },
+    params: { id: news.slug.trim() },
     props: { news },
   }));
 }) satisfies GetStaticPaths;

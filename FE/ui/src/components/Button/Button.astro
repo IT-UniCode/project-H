@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import clsx from "clsx";
+
+type Props = HTMLAttributes<"button">;
+
+const { class: className, type = "button" } = Astro.props;
+---
+
+<button
+  type={type}
+  class={clsx(
+    "bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline",
+    "disabled:bg-blue-200",
+    className,
+  )}
+  type={type}
+>
+  <slot />
+</button>

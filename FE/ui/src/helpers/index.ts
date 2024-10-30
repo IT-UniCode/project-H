@@ -3,12 +3,13 @@ import {
   confMarldownNewsSmall,
 } from "./configuration.markdown";
 import { extractFirstTextAndImage } from "./extractors";
-import { getLocalStorage, setLocalStorage } from "./localStorageHelper";
+import { useLocalStorage } from "./localStorageHelper";
+import { useSessionStorage } from "./sessionStorageHelper";
 
 export {
   confMarkdownNews,
   confMarldownNewsSmall,
-  getLocalStorage,
-  setLocalStorage,
+  useLocalStorage,
+  useSessionStorage,
   extractFirstTextAndImage,
 };

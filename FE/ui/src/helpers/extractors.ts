@@ -7,8 +7,6 @@ export function extractFirstTextAndImage(markdown: string) {
   const imageMatch = markdown.match(/!\[.*?\]\((.*?)\)/);
   const firstImage = imageMatch ? imageMatch[0] : ""; // Зберігаємо весь рядок зображення
 
-  //   console.log("test: " + firstText, "image: " + firstImage);
-
   let newMarkdown = "";
   if (firstText) {
     newMarkdown += firstText + "\n\n";

@@ -11,7 +11,12 @@ class CommentService {
     return apiService.post<IComments>(ApiPath.comments, { body });
   }
 
-  async getAll(query: { documentType: string; documentId: string }) {
+  async getAll(query: {
+    documentType: string;
+    documentId: string;
+    page?: number;
+    pageSize?: number;
+  }) {
     return apiService.get<ResponseBody<IComments>>(ApiPath.comments, { query });
   }
 }
