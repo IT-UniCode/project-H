@@ -1,6 +1,10 @@
-interface ImgType {
-  formats: { small: { url: string } };
-}
-export function getImageUrl(imgObject: ImgType): string {
-  return process.env.STRAPI_URL + imgObject.formats.small.url;
+import { StrapiImage } from 'src/types/types/previewImage';
+
+type Format = 'small' | 'medium' | 'thumbnail';
+
+export function getImageUrl(
+  imgObject: StrapiImage,
+  size: Format = 'small',
+): string {
+  return process.env.STRAPI_URL.split('/api')[0] + imgObject.formats[size].url;
 }
