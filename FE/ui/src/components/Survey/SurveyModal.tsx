@@ -1,10 +1,9 @@
 import { createPortal, useRef, useState } from "preact/compat";
-import { useCanvass } from "./useCanvass";
-import clsx from "clsx";
+import { useSurvey } from "./useSurvey";
 
-function CanvassModal() {
+function SurveyModal() {
   const container = document.getElementById("root");
-  const { show, hideModal } = useCanvass();
+  const { show, hideModal } = useSurvey();
   const [state, setState] = useState({ showDetails: false, canvass: false });
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -56,4 +55,4 @@ function CanvassModal() {
   );
 }
 
-export default CanvassModal;
+export default SurveyModal;
