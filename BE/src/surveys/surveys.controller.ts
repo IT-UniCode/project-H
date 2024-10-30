@@ -55,7 +55,7 @@ export class SurveysController {
     const includeVariants = query.includeVariants ? 'populate=variants&' : '';
 
     const params = getQueryParams(query);
-    const path = `surveys?${includeVariants}${params}`;
+    const path = `/surveys?${includeVariants}${params}`;
 
     return this.requestService.get(path);
   }
@@ -72,7 +72,7 @@ export class SurveysController {
     example: 'ew1da2sss678yd4yhu3lrje2',
   })
   async getById(@Param() params: { id: string }) {
-    const path = `surveys/${params.id}`;
+    const path = `/surveys/${params.id}`;
 
     return this.requestService.get(path);
   }
