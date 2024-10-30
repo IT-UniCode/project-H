@@ -57,7 +57,7 @@ export class VotingsController {
     query?: VotingQuery,
   ) {
     const params = getQueryParams(query);
-    const path = `votings?${params}&populate=variants`;
+    const path = `/votings?${params}&populate=variants`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
@@ -88,7 +88,7 @@ export class VotingsController {
       id: string;
     },
   ) {
-    const path = `votings/${params.id}&populate=variants`;
+    const path = `/votings/${params.id}&populate=variants`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
@@ -122,7 +122,7 @@ export class VotingsController {
     await Promise.all(
       ids.map(async (id) => {
         const ans = await this.requestService.get(
-          `answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
+          `/answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
         );
         a[id] = ans.data[0]?.answer || null;
       }),
