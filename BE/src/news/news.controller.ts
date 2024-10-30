@@ -5,7 +5,6 @@ import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
 import { getImageUrl, getQueryParams } from 'src/utils';
-import { getQueryParams } from 'src/utils';
 import { HttpStatusCode } from 'axios';
 
 @ApiTags('news')
