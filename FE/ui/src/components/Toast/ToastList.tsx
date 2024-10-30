@@ -20,11 +20,11 @@ function ToastList() {
   return (
     <div>
       {createPortal(
-        <section class="fixed right-2 top-2 flex flex-col">
+        <section class="fixed right-2 top-2 flex flex-col gap-y-2">
           {toasts.map((toast, index) => (
             <div
               key={index}
-              class={`flex gap-x-4 px-3 rounded items-center justify-center w-full min-h-10 text-white ${
+              class={`flex gap-x-4 px-3 rounded items-center justify-between w-full min-h-10 text-white ${
                 toast.type === "success" ? "bg-green-500" : "bg-red-500"
               }`}
               style={{ transition: "opacity 0.5s" }}

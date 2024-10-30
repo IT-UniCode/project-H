@@ -4,10 +4,8 @@ import { useEffect, useState } from "preact/hooks";
 
 export default function useToast() {
   const toastKey = "toast-list";
-  const toasts = getLocalStorage<Toast[]>(toastKey);
-  if (!toasts) setLocalStorage(toastKey, []);
 
-  const [toastList, setToastList] = useState(toasts || []);
+  const [toastList, setToastList] = useState<Toast[]>([]);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
@@ -15,6 +13,9 @@ export default function useToast() {
         setToastList(JSON.parse(e.newValue));
       }
     });
+    const toasts = getLocalStorage<Toast[]>(toastKey);
+    if (!toasts) setLocalStorage(toastKey, []);
+    else setToastList(toasts);
   }, []);
 
   const addToast = (toast: Toast) => {
