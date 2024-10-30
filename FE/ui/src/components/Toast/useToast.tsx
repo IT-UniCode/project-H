@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "@helpers/localStorageHelper";
+import { useLocalStorage } from "@helpers/index";
 import type { Toast } from "./ToastList";
 import { useEffect, useState } from "preact/hooks";
 
@@ -6,6 +6,7 @@ export default function useToast() {
   const toastKey = "toast-list";
 
   const [toastList, setToastList] = useState<Toast[]>([]);
+  const { get, remove, set } = useLocalStorage(toastKey);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
@@ -13,28 +14,25 @@ export default function useToast() {
         setToastList(JSON.parse(e.newValue));
       }
     });
-    const toasts = getLocalStorage<Toast[]>(toastKey);
-    if (!toasts) setLocalStorage(toastKey, []);
+    const toasts = get<Toast[]>();
+    if (!toasts) set([]);
     else setToastList(toasts);
   }, []);
 
   const addToast = (toast: Toast) => {
-    const list = getLocalStorage<Toast[]>(toastKey) || [];
+    const list = get<Toast[]>() || [];
     const exist = list.find((v) => v.id === toast.id);
 
     if (exist) {
       return;
     }
 
-    setLocalStorage(toastKey, [...list, toast]);
+    set([...list, toast]);
   };
 
   const removeToast = (id: string) => {
-    const list = getLocalStorage<Toast[]>(toastKey) || [];
-    setLocalStorage(
-      toastKey,
-      list.filter((v) => v.id !== id),
-    );
+    const list = get<Toast[]>() || [];
+    set(list.filter((v) => v.id !== id));
   };
   return { addToast, removeToast, toasts: toastList };
 }

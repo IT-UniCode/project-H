@@ -1,9 +1,10 @@
 import { storageName } from "@constant/storageName";
-import { getSessionStorage, setSessionStorage } from "@helpers/sessionStorage";
+import { useSessionStorage } from "@helpers/index";
 import { useEffect, useState } from "preact/hooks";
 
 export function useCanvass() {
   const [show, setShow] = useState(true);
+  const { get, set } = useSessionStorage(storageName.CanvassModal);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
@@ -12,12 +13,12 @@ export function useCanvass() {
       }
     });
 
-    const state = getSessionStorage<boolean>(storageName.CanvassModal) ?? true;
+    const state = get<boolean>() ?? true;
     setShow(state);
   }, []);
 
   const hideModal = () => {
-    setSessionStorage(storageName.CanvassModal, false);
+    set(false);
   };
 
   return { hideModal, show };

@@ -1,10 +1,11 @@
 import { storageName } from "@constant/storageName";
-import { getLocalStorage, setLocalStorage } from "@helpers/index";
+import { useLocalStorage } from "@helpers/index";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "preact/hooks";
 
 export function useAuth() {
   const [isAuth, setIsAuth] = useState(false);
+  const { get, set } = useLocalStorage(storageName.AccessToken);
 
   const logOut = () => {
     localStorage.removeItem(storageName.AccessToken);
@@ -19,13 +20,13 @@ export function useAuth() {
       return false;
     }
 
-    setLocalStorage(storageName.AccessToken, token);
+    set(token);
     setIsAuth(true);
     return true;
   };
 
   const checkLiveToken = () => {
-    const token = getLocalStorage<string>(storageName.AccessToken);
+    const token = get<string>();
     if (!token) return;
     const decode = jwtDecode(token);
 
