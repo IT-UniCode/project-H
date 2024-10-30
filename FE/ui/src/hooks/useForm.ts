@@ -6,26 +6,34 @@ export interface FormOptions<F> {
   values: {
     [key in Extract<keyof F, string>]: { type?: string };
   };
+  onlyKeys?: boolean;
 }
 
 export type FormValues<F> = {
   [key in Extract<keyof F, string>]: string;
 };
 
-export function useForm<F>({ onError, onSubmit, values }: FormOptions<F>) {
+export function useForm<F>({
+  onError,
+  onSubmit,
+  values,
+  onlyKeys,
+}: FormOptions<F>) {
+  const keys: any = {};
+  Object.keys(values).forEach((key) => (keys[key] = key));
+
   const defaultOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const form = new FormData(event.currentTarget as HTMLFormElement);
-    const values: FormValues<F> = extractFields<F>(form);
+    const data: FormValues<F> = !onlyKeys
+      ? extractFields<F>(form)
+      : extractFieldsByKey<F>(form, Object.keys(keys));
 
     if (onSubmit) {
-      onSubmit(values, event.currentTarget);
+      onSubmit(data, event.currentTarget);
     }
   };
-
-  const keys: any = {};
-  Object.keys(values).forEach((key) => (keys[key] = key));
 
   return {
     onSubmit: defaultOnSubmit,
@@ -38,5 +46,15 @@ function extractFields<T>(data: FormData) {
   Array.from(data.keys()).forEach((key) => {
     fields[key] = data.get(key);
   });
-  return fields;
+  return fields as FormValues<T>;
+}
+
+function extractFieldsByKey<T>(data: FormData, keys: string[]) {
+  const fields: any = {};
+
+  keys.forEach((key) => {
+    fields[key] = data.get(key) || null;
+  });
+
+  return fields as FormValues<T>;
 }
