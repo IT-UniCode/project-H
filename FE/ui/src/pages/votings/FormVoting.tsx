@@ -30,7 +30,6 @@ function FormVoting({ children, class: style, votingId }: FormVotingProps) {
           answer: values.voting,
           votingId,
         });
-        console.log("Vote: ", res);
       } catch (err) {
         addToast({
           message: "Fail to vote. You alredy have vote!",

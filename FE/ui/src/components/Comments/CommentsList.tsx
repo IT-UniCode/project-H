@@ -46,15 +46,7 @@ function CommentsList({ documentId, documentType }: CommentsListProps) {
     },
   });
 
-  useEffect(() => {
-    console.log(comments.response.meta);
-  }, [comments]);
-
   async function getComments() {
-    console.log({
-      pageSize: comments.pagination.page * comments.pagination.pageSize,
-    });
-
     const res = await commentService.getAll({
       documentId,
       documentType,
@@ -69,7 +61,6 @@ function CommentsList({ documentId, documentType }: CommentsListProps) {
 
   async function loadMoreComments() {
     const nextPage = comments?.pagination.page + 1;
-    console.log(nextPage);
 
     const res = await commentService.getAll({
       documentId,
@@ -77,8 +68,6 @@ function CommentsList({ documentId, documentType }: CommentsListProps) {
       page: nextPage,
       pageSize: comments.pagination.pageSize,
     });
-
-    console.log(res.meta);
 
     setComments((prev) => ({
       ...prev,
