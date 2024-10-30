@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { News } from 'src/news/news.enetity';
+import { News } from 'src/news/dto/news.dto';
 import { Entity } from 'src/dto-classes';
 
 export class Category extends Entity {

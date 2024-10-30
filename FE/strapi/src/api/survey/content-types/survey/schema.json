@@ -1,0 +1,46 @@
+{
+  "kind": "collectionType",
+  "collectionName": "surveys",
+  "info": {
+    "singularName": "survey",
+    "pluralName": "surveys",
+    "displayName": "Survey",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "finish"
+      ]
+    },
+    "variants": {
+      "type": "component",
+      "repeatable": true,
+      "component": "variant.variant"
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "unique": true,
+      "required": true
+    },
+    "survey_answers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::survey-answer.survey-answer",
+      "mappedBy": "survey"
+    }
+  }
+}

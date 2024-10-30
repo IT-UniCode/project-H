@@ -7,23 +7,20 @@ import {
   Body,
   Req,
   UseGuards,
-  BadRequestException,
 } from '@nestjs/common';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { getQueryParams } from 'src/utils';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiParam,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
-import { AnswerCreateDto } from './dto/answer.create.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
+import { AnswerGetDto } from './dto/answer.get.dto';
+import { VotingAnswerCreateDto } from './dto/voting.answer.create.dto';
+import { VotingsPostService } from './votings.post.service';
+import { HttpStatusCode } from 'axios';
+import { PostVoteDto } from './dto/post-vote.dto';
 
 @ApiTags('votings')
 @Controller('votings')
@@ -31,17 +28,22 @@ export class VotingsController {
   constructor(
     private readonly requestService: RequestService,
     private readonly cacheService: CacheService,
+    private readonly votingsPostService: VotingsPostService,
   ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiResponse({
+    status: HttpStatusCode.Created,
+    type: PostVoteDto,
+  })
   @Post()
-  async vote(@Body() body: AnswerCreateDto, @Req() req: { user: JwtPayload }) {
-    const path = `answers`;
-
-    return this.requestService.post(path, {
-      body: { data: { ...body, userId: req.user.id } },
-    });
+  async vote(@Body() body: VotingAnswerCreateDto, @Req() req) {
+    return this.votingsPostService.post(
+      body.votingId,
+      body.answer,
+      req.user.id,
+    );
   }
 
   @Get()
@@ -98,5 +100,34 @@ export class VotingsController {
     } else {
       return cachedData;
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    type: AnswerGetDto,
+  })
+  @Get('/answers/:id')
+  async getResults(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    const a = {};
+    const ids = params.id.split(',');
+
+    await Promise.all(
+      ids.map(async (id) => {
+        const ans = await this.requestService.get(
+          `answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
+        );
+        a[id] = ans.data[0]?.answer || null;
+      }),
+    );
+
+    return a;
   }
 }

@@ -578,6 +578,8 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
+    previewText: Schema.Attribute.String & Schema.Attribute.Required;
+    previewImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -587,6 +589,78 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::new.new'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSurveySurvey extends Struct.CollectionTypeSchema {
+  collectionName: 'surveys';
+  info: {
+    singularName: 'survey';
+    pluralName: 'surveys';
+    displayName: 'Survey';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Schema.Attribute.String;
+    content: Schema.Attribute.RichText;
+    state: Schema.Attribute.Enumeration<['active', 'finish']>;
+    variants: Schema.Attribute.Component<'variant.variant', true>;
+    slug: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    survey_answers: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::survey-answer.survey-answer'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::survey.survey'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSurveyAnswerSurveyAnswer
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'survey_answers';
+  info: {
+    singularName: 'survey-answer';
+    pluralName: 'survey-answers';
+    displayName: 'SurveyAnswer';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    surveyId: Schema.Attribute.String;
+    userId: Schema.Attribute.Integer;
+    survey: Schema.Attribute.Relation<'manyToOne', 'api::survey.survey'>;
+    answers: Schema.Attribute.JSON;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::survey-answer.survey-answer'
+    > &
       Schema.Attribute.Private;
   };
 }
@@ -1012,6 +1086,8 @@ declare module '@strapi/strapi' {
       'api::answer.answer': ApiAnswerAnswer;
       'api::category.category': ApiCategoryCategory;
       'api::new.new': ApiNewNew;
+      'api::survey.survey': ApiSurveySurvey;
+      'api::survey-answer.survey-answer': ApiSurveyAnswerSurveyAnswer;
       'api::voting.voting': ApiVotingVoting;
       'admin::permission': AdminPermission;
       'admin::user': AdminUser;

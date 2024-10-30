@@ -29,6 +29,18 @@
       "unique": true,
       "required": true,
       "regex": "^[^\\s/\\\\]+$"
+    },
+    "previewText": {
+      "type": "string",
+      "required": true
+    },
+    "previewImage": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
     }
   }
 }
