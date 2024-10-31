@@ -84,17 +84,7 @@ export class ForumsController {
     const params = getQueryParams(query);
     const path = `/forums?${params}`;
 
-    const cachedData = await this.cacheService.get(path);
-
-    if (!cachedData) {
-      const data = await this.requestService.get(path);
-
-      await this.cacheService.set(path, data);
-
-      return data;
-    } else {
-      return cachedData;
-    }
+    return this.requestService.get(path);
   }
 
   @Get('/:id')
@@ -109,17 +99,7 @@ export class ForumsController {
   async getById(@Param() params: { id: string }) {
     const path = `/forums/${params.id}`;
 
-    const cachedData = await this.requestService.get(path);
-
-    if (!cachedData) {
-      const data = await this.requestService.get(path);
-
-      await this.cacheService.set(path, data);
-
-      return data;
-    } else {
-      return cachedData;
-    }
+    return this.requestService.get(path);
   }
 
   @ApiBearerAuth()
