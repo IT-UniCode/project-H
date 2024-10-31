@@ -26,10 +26,10 @@ import { ForumsModule } from './forums/forums.module';
     PrismaModule,
     NewsModule,
     CategoriesModule,
-    CacheModule,
     VotingsModule,
     SurveysModule,
     ForumsModule,
+    CacheModule,
   ],
   controllers: [
     AppController,

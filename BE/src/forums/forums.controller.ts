@@ -9,7 +9,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ForumsService } from './forums.service';
 import { RequestService } from 'src/request/request.service';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetForumsDto } from './dto/get-forums.dto';
@@ -20,14 +19,14 @@ import { generateSlug, getQueryParams } from 'src/utils';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
-import { Forum } from './dto/forum.dto';
+import { CacheService } from 'src/cache/cache.service';
 
 @ApiTags('forums')
 @Controller('forums')
 export class ForumsController {
   constructor(
-    private readonly forumsService: ForumsService,
     private readonly requestService: RequestService,
+    private readonly cacheService: CacheService,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -35,21 +34,14 @@ export class ForumsController {
   @Post()
   @ApiResponse({
     status: HttpStatusCode.Created,
-    example: Forum, // TODO: create response dto
+    type: GetForumByIdDto,
   })
   @ApiResponse({
     status: HttpStatusCode.BadRequest,
     example: {
-      message: 'This user already have forum with this name Some t12312344itle',
+      message: 'This user already have forum with this name Some title',
       error: 'Bad Request',
       statusCode: 400,
-    },
-  })
-  @ApiResponse({
-    status: HttpStatusCode.Unauthorized,
-    example: {
-      message: 'Unauthorized',
-      statusCode: 401,
     },
   })
   async createForum(
@@ -88,7 +80,19 @@ export class ForumsController {
   })
   async getAll(@Query() query: GetAllQuery) {
     const params = getQueryParams(query);
-    return this.requestService.get(`/forums?${params}`);
+    const path = `/forums?${params}`;
+
+    const cachedData = await this.cacheService.get(path);
+
+    if (!cachedData) {
+      const data = await this.requestService.get(path);
+
+      await this.cacheService.set(path, data);
+
+      return data;
+    } else {
+      return cachedData;
+    }
   }
 
   @Get('/:id')
@@ -101,6 +105,18 @@ export class ForumsController {
     status: HttpStatusCode.Ok,
   })
   async getById(@Param() params: { id: string }) {
-    return this.requestService.get(`/forums/${params.id}`);
+    const path = `/forums/${params.id}`;
+
+    const cachedData = await this.requestService.get(path);
+
+    if (!cachedData) {
+      const data = await this.requestService.get(path);
+
+      await this.cacheService.set(path, data);
+
+      return data;
+    } else {
+      return cachedData;
+    }
   }
 }
