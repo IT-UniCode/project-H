@@ -122,7 +122,7 @@ export class VotingsController {
     await Promise.all(
       ids.map(async (id) => {
         const ans = await this.requestService.get(
-          `/answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
+          `/answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}&populate=variants`,
         );
         a[id] = ans.data[0]?.answer || null;
       }),
