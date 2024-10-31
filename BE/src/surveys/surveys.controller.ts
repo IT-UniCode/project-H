@@ -72,7 +72,7 @@ export class SurveysController {
     example: 'ew1da2sss678yd4yhu3lrje2',
   })
   async getById(@Param() params: { id: string }) {
-    const path = `/surveys/${params.id}`;
+    const path = `/surveys/${params.id}?populate=variants`;
 
     return this.requestService.get(path);
   }
