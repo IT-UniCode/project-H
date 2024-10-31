@@ -4,6 +4,7 @@ export const routes = {
   SignUp: "/auth/sign-up",
   Profile: "/user/profile",
   News: "/news",
+  Forum: "/forum",
   Votings: "/votings",
   NewsById: "/news/info/",
 };

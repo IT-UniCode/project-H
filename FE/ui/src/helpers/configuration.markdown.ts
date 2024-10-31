@@ -4,7 +4,6 @@ export function confMarkdownNews() {
   const renderer = new marked.Renderer();
 
   renderer.image = ({ href, title, text }) => {
-    // Повертаємо кастомну HTML-структуру для зображень
     return `
     <div>
       <img src="${href}" class="w-full" alt="${text}" title="${title || text}"/>
@@ -38,6 +37,35 @@ export function confMarldownNewsSmall() {
       <img src="${href}" class="h-40" alt="${text}" title="${title || text}"/>
     </div>
   `;
+  };
+
+  return renderer;
+}
+
+export function confMarkdownForum() {
+  const renderer = new marked.Renderer();
+
+  renderer.heading = ({ depth, raw, text, tokens, type }) => {
+    // console.log({ depth, raw, text, tokens, type });
+
+    return `<h${depth} class='text-${6 - depth}xl'>${text}</h${depth}>`;
+  };
+
+  // renderer.paragraph = ({ raw, text, tokens, type }) => {
+  //   return `<p class='text-base'>${text}</p>`;
+  // };
+
+  renderer.listitem = ({ text, type, loose, raw, task, checked }) => {
+    console.log({
+      text,
+      type,
+      loose,
+      raw,
+      task,
+      checked,
+    });
+
+    return `<li class='list-decimal'>${text}</li>`;
   };
 
   return renderer;

@@ -1,14 +1,18 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { ISurvey, QueryApi, ResponseBody } from "@interfaces/index";
+import type { ISurvey, QueryApi, ResponseBodyList } from "@interfaces/index";
 
 class SurveyService {
   async getAll(query: QueryApi) {
-    return apiService.get<ResponseBody<ISurvey>>(ApiPath.surveys, { query });
+    return apiService.get<ResponseBodyList<ISurvey>>(ApiPath.surveys, {
+      query,
+    });
   }
 
   async vote(body: { surveyId: string; answers: string[] }) {
-    return apiService.post<ResponseBody<ISurvey>>(ApiPath.surveys, { body });
+    return apiService.post<ResponseBodyList<ISurvey>>(ApiPath.surveys, {
+      body,
+    });
   }
 }
 

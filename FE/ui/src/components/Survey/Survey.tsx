@@ -26,10 +26,12 @@ function Survey({ survey }: SurveyProps) {
 
       await surveyService.vote({
         surveyId: survey.documentId,
-        answers: [values.voting],
+        answers: values.voting as string[],
       });
     },
   });
+
+  
 
   return (
     <form class="pb-3" onSubmit={onSubmit}>
@@ -44,7 +46,7 @@ function Survey({ survey }: SurveyProps) {
           <div>
             <input
               id={v.uniqueId + survey.documentId}
-              type="radio"
+              type="checkbox"
               name="voting"
               value={v.uniqueId}
             />

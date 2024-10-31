@@ -1,11 +1,16 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { News, Pagination, QueryApi, ResponseBody } from "src/interfaces";
+import type {
+  News,
+  Pagination,
+  QueryApi,
+  ResponseBodyList,
+} from "src/interfaces";
 
 class NewsService {
   async getAll(query?: QueryApi) {
     return apiService.get<
-      ResponseBody<
+      ResponseBodyList<
         News,
         {
           pagination: Pagination;

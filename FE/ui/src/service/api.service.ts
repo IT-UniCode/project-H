@@ -63,7 +63,7 @@ class ApiService {
     } = {},
   ): Promise<T> {
     const query = convertToQueryString(init.query);
-    const res = await this.requst(path + `?${query}`, "GET", init);
+    const res = await this.requst(path + query, "GET", init);
 
     return await res.json();
   }
@@ -72,10 +72,8 @@ class ApiService {
 function convertToQueryString(params: QueryApi): string {
   if (!params) return "";
 
-  const queryObject: any = {};
-
-  // Перетворюємо об'єкт на query string
-  return queryString.stringify(params);
+  const query = queryString.stringify(params);
+  return query ? `?${query}` : "";
 }
 
 export default new ApiService();

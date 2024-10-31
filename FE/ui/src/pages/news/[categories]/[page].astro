@@ -3,7 +3,7 @@ import type { GetStaticPaths } from "astro";
 import Layout from "@layouts/Layout.astro";
 import newsService from "@service/news.service";
 import News from "@components/News/News.astro";
-import Pagination from "@components/Pagination/Pagination.astro";
+import { PaginationStatic } from "@components/Pagination/index";
 import categoryService from "@service/category.service";
 
 export const prerender = true;
@@ -47,5 +47,5 @@ const { categories } = Astro.params;
     {page.data.map((v) => <News news={v} />)}
   </section>
 
-  <Pagination page={page} />
+  <PaginationStatic page={page} />
 </Layout>
