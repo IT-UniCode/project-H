@@ -42,7 +42,7 @@ export class SurveysService {
   }
 
   async postVote(surveyId: string, answers: string[], userId: number) {
-    const surveyPath = `surveys/${surveyId}?populate=variants&filters[state][$eq]=active`;
+    const surveyPath = `/surveys/${surveyId}?populate=variants&filters[state][$eq]=active`;
     const newAnswers = [];
 
     const cachedSurvey = await this.cacheService.get(surveyPath);
@@ -57,7 +57,7 @@ export class SurveysService {
       newAnswers.push(...this.createAnswers(answers, cachedSurvey, surveyId));
     }
 
-    const answersPath = `survey-answers?filters[userId][$eq]=${userId}&filters[surveyId][$eq]=${surveyId}`;
+    const answersPath = `/survey-answers?filters[userId][$eq]=${userId}&filters[surveyId][$eq]=${surveyId}`;
 
     const cachedAnswers = await this.cacheService.get(answersPath);
 
@@ -79,7 +79,7 @@ export class SurveysService {
       }
     }
 
-    return this.requestService.post(`survey-answers`, {
+    return this.requestService.post(`/survey-answers`, {
       body: { data: { userId, surveyId, answers: JSON.stringify(newAnswers) } },
     });
   }
