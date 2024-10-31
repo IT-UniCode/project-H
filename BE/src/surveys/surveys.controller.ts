@@ -17,6 +17,7 @@ import { SurveysService } from './surveys.service';
 import { SurveyAnswerCreateDto } from './dto/survey.answer.create.dto';
 import { GetSurveyQuery } from './queries/get-survey.query';
 import { getQueryParams } from 'src/utils';
+import { AnswerGetDto } from './dto/survey.answer.get.dto';
 
 @ApiTags('surveys')
 @Controller('surveys')
@@ -75,5 +76,34 @@ export class SurveysController {
     const path = `/surveys/${params.id}?populate=variants`;
 
     return this.requestService.get(path);
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    type: AnswerGetDto,
+  })
+  @Get('/answers/:id')
+  async getResults(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    const answers = {};
+    const ids = params.id.split(',');
+
+    await Promise.all(
+      ids.map(async (id) => {
+        const ans = await this.requestService.get(
+          `/survey-answers?filters[userId][$eq]=${req.user.id}&filters[surveyId][$eq]=${id}`,
+        );
+        answers[id] = ans.data[0]?.answer || null;
+      }),
+    );
+
+    return answers;
   }
 }
