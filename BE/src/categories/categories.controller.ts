@@ -28,7 +28,7 @@ export class CategoriesController {
 
     const params = getQueryParams(query, 'news');
 
-    const path = `categories?${includeNews}${params}`;
+    const path = `/categories?${includeNews}${params}`;
 
     const cachedData = null;
 
@@ -57,9 +57,9 @@ export class CategoriesController {
     const data = await this.cacheService.get(`categories_${params.id}`);
 
     if (!data) {
-      const data = await this.requestService.get(`categories/${params.id}`);
+      const data = await this.requestService.get(`/categories/${params.id}`);
 
-      this.cacheService.set(`categories_${params.id}`, data);
+      this.cacheService.set(`/categories_${params.id}`, data);
 
       return data;
     } else {

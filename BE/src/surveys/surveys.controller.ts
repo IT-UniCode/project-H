@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,8 @@ import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 import { SurveysService } from './surveys.service';
 import { SurveyAnswerCreateDto } from './dto/survey.answer.create.dto';
+import { GetSurveyQuery } from './queries/get-survey.query';
+import { getQueryParams } from 'src/utils';
 
 @ApiTags('surveys')
 @Controller('surveys')
@@ -48,8 +51,11 @@ export class SurveysController {
     description: 'Surveys',
     type: GetSurveyDto,
   })
-  async getAll() {
-    const path = `surveys`;
+  async getAll(@Query() query: GetSurveyQuery) {
+    const includeVariants = query.includeVariants ? 'populate=variants&' : '';
+
+    const params = getQueryParams(query);
+    const path = `/surveys?${includeVariants}${params}`;
 
     return this.requestService.get(path);
   }
@@ -66,7 +72,7 @@ export class SurveysController {
     example: 'ew1da2sss678yd4yhu3lrje2',
   })
   async getById(@Param() params: { id: string }) {
-    const path = `surveys/${params.id}`;
+    const path = `/surveys/${params.id}`;
 
     return this.requestService.get(path);
   }

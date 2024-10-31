@@ -18,6 +18,12 @@ export class News extends Entity {
   })
   previewText: string;
 
+  @ApiProperty({
+    description: 'Preview image url',
+    example: 'http://some.host.com/uploads/image_hash.jpeg',
+  })
+  previewImage: string;
+
   @ApiProperty({ example: 'some-name', description: 'Slug of the new' })
   slug: string;
 }

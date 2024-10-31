@@ -4,7 +4,7 @@ import { News, NewsWithCategories } from './dto/news.dto';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
-import { getQueryParams } from 'src/utils';
+import { getImageUrl, getQueryParams } from 'src/utils';
 
 @ApiTags('news')
 @Controller('news')
@@ -30,15 +30,24 @@ export class NewsController {
 
     const params = getQueryParams(query, 'category');
 
-    const path = `news?${includeCategories}${params}`;
-    const cachedData = await this.cacheService.get(path);
+    const path = `/news?populate=previewImage&${includeCategories}${params}`;
+    const cachedData = null;
 
     if (!cachedData) {
       const data = await this.requestService.get(path);
 
-      this.cacheService.set(path, data);
+      const newData = [
+        ...data.data.map((obj) => {
+          return {
+            ...obj,
+            previewImage: getImageUrl(obj.previewImage),
+          };
+        }),
+      ];
 
-      return data;
+      this.cacheService.set(path, { data: newData, meta: data.meta });
+
+      return { data: newData, meta: data.meta };
     } else {
       return cachedData;
     }
@@ -59,7 +68,7 @@ export class NewsController {
 
     if (!data) {
       const data = await this.requestService.get(
-        `news/${params.id}?populate=category`,
+        `/news/${params.id}?populate=category`,
       );
       this.cacheService.set(`news_${params.id}`, data);
       return data;
