@@ -40,7 +40,7 @@ function SurveyModal() {
           ref={dialogRef}
           class="backdrop:bg-gray-500 backdrop:bg-opacity-40 max-w-xl w-full rounded"
         >
-          <section class="flex flex-col py-3 px-2">
+          <section class="flex flex-col gap-y-4 py-3 px-2">
             <SurveyList />
             <button
               onClick={hideDialog}

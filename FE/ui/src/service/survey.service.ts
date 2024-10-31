@@ -7,7 +7,7 @@ class SurveyService {
     return apiService.get<ResponseBody<ISurvey>>(ApiPath.surveys, { query });
   }
 
-  async vote(body: {}) {
+  async vote(body: { surveyId: string; answers: string[] }) {
     return apiService.post<ResponseBody<ISurvey>>(ApiPath.surveys, { body });
   }
 }

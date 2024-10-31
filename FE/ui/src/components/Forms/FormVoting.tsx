@@ -25,7 +25,7 @@ function FormVoting({ children, class: style, votingId }: FormVotingProps) {
       voting: {},
     },
     async onSubmit(values, context) {
-      if (!isAuth) return;
+      if (!isAuth || !values.voting) return;
 
       try {
         await votingService.vote({

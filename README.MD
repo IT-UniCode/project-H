@@ -10,6 +10,7 @@ yarn start:dev
 ## Strapi
 
 ```sh
+
 cd fe/strapi
 yarn develop
 
