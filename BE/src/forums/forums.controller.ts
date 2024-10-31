@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -150,5 +151,33 @@ export class ForumsController {
     return this.requestService.put(path, {
       body: { data: body },
     });
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    status: HttpStatusCode.Ok,
+    example: 204,
+  })
+  @Delete('/:id')
+  async deleteForum(
+    @Req() req: { user: JwtPayload },
+    @Param() params: { id: string },
+  ) {
+    const path = `/forums/${params.id}`;
+
+    const forum = await this.requestService.get(path);
+
+    if (forum.data.userId !== req.user.id) {
+      throw new BadRequestException(
+        `This user with id ${req.user.id} is not a author of forum with id ${params.id}`,
+      );
+    }
+
+    return this.requestService.delete(path);
   }
 }
