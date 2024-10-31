@@ -20,6 +20,7 @@ import { generateSlug, getQueryParams } from 'src/utils';
 import { CreateForumDto } from './dto/create-forum.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
+import { Forum } from './dto/forum.dto';
 
 @ApiTags('forums')
 @Controller('forums')
@@ -32,6 +33,25 @@ export class ForumsController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   @Post()
+  @ApiResponse({
+    status: HttpStatusCode.Created,
+    example: Forum, // TODO: create response dto
+  })
+  @ApiResponse({
+    status: HttpStatusCode.BadRequest,
+    example: {
+      message: 'This user already have forum with this name Some t12312344itle',
+      error: 'Bad Request',
+      statusCode: 400,
+    },
+  })
+  @ApiResponse({
+    status: HttpStatusCode.Unauthorized,
+    example: {
+      message: 'Unauthorized',
+      statusCode: 401,
+    },
+  })
   async createForum(
     @Body() body: CreateForumDto,
     @Req() req: { user: JwtPayload },
@@ -42,7 +62,7 @@ export class ForumsController {
       `/forums?filters[slug][$eq]=${slug}`,
     );
 
-    if (isForumExist) {
+    if (isForumExist.data.length > 0) {
       throw new BadRequestException(
         `This user already have forum with this name ${body.title}`,
       );
