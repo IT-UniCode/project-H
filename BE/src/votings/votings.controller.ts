@@ -17,7 +17,7 @@ import { ResponseVoting } from './entities/voting.entity';
 import { VotingQuery } from './queries/query-voting.query';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
-import { AnswerGetDto } from './dto/answer.get.dto';
+import { AnswerGetDto } from './dto/voting.answer.get.dto';
 import { VotingAnswerCreateDto } from './dto/voting.answer.create.dto';
 import { VotingsPostService } from './votings.post.service';
 import { PostVoteDto } from './dto/post-vote.dto';
@@ -116,7 +116,7 @@ export class VotingsController {
     @Param() params: { id: string },
     @Req() req: { user: JwtPayload },
   ) {
-    const a = {};
+    const answers = {};
     const ids = params.id.split(',');
 
     await Promise.all(
@@ -124,10 +124,10 @@ export class VotingsController {
         const ans = await this.requestService.get(
           `/answers?filters[userId][$eq]=${req.user.id}&filters[votingId][$eq]=${id}`,
         );
-        a[id] = ans.data[0]?.answer || null;
+        answers[id] = ans.data[0]?.answer || null;
       }),
     );
 
-    return a;
+    return answers;
   }
 }
