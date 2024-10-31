@@ -1,0 +1,22 @@
+---
+import { confMarkdownForum } from "@helpers/index";
+import Layout from "@layouts/Layout.astro";
+import forumService from "@service/forum.service";
+import { marked } from "marked";
+
+export const prerender = false;
+
+const { slug, id } = Astro.params;
+
+const forum = await forumService.getById(id!);
+---
+
+<Layout title={forum.data.title}>
+  <section class="max-w-4xl w-full mx-auto">
+    <article
+      set:html={marked.parse(forum.data.content, {
+        renderer: confMarkdownForum(),
+      })}
+    />
+  </section>
+</Layout>

@@ -1,0 +1,10 @@
+---
+import { ForumEditor } from "@components/Forum";
+import Layout from "@layouts/Layout.astro";
+---
+
+<Layout title="Create">
+  <section class="max-w-4xl w-full mx-auto">
+    <ForumEditor client:only="preact" />
+  </section>
+</Layout>
