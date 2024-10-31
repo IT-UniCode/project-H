@@ -17,6 +17,7 @@ import { VotingsModule } from './votings/votings.module';
 import { VotingsController } from './votings/votings.controller';
 import { SurveysModule } from './surveys/surveys.module';
 import { VotingsPostService } from './votings/votings.post.service';
+import { ForumsModule } from './forums/forums.module';
 
 @Module({
   imports: [
@@ -25,9 +26,10 @@ import { VotingsPostService } from './votings/votings.post.service';
     PrismaModule,
     NewsModule,
     CategoriesModule,
-    CacheModule,
     VotingsModule,
     SurveysModule,
+    ForumsModule,
+    CacheModule,
   ],
   controllers: [
     AppController,

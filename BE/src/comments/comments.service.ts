@@ -22,7 +22,7 @@ export class CommentService {
     documentId: string,
     user: JwtPayload,
   ) {
-    await this.requestService.get(`${documentType}/${documentId}`);
+    await this.requestService.get(`/${documentType}/${documentId}`);
 
     return this.prisma.comment.create({
       data: {

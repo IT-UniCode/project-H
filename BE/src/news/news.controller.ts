@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News, NewsWithCategories } from './dto/news.dto';
 import { RequestService } from 'src/request/request.service';
@@ -16,7 +16,7 @@ export class NewsController {
 
   @Get()
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'News',
     type: NewsWithCategories,
   })
@@ -55,7 +55,7 @@ export class NewsController {
 
   @Get('/:id')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'News',
     type: News,
   })
