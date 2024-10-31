@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -15,7 +16,6 @@ import { RequestService } from 'src/request/request.service';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetForumsDto } from './dto/get-forums.dto';
 import { GetForumByIdDto } from './dto/get-forum-by-id.dto';
-import { HttpStatusCode } from 'axios';
 import { GetAllQuery } from './queries/get-all.query';
 import { generateSlug, getQueryParams } from 'src/utils';
 import { CreateForumDto } from './dto/create-forum.dto';
@@ -36,11 +36,11 @@ export class ForumsController {
   @ApiBearerAuth()
   @Post()
   @ApiResponse({
-    status: HttpStatusCode.Created,
+    status: HttpStatus.CREATED,
     type: GetForumByIdDto,
   })
   @ApiResponse({
-    status: HttpStatusCode.BadRequest,
+    status: HttpStatus.BAD_REQUEST,
     example: {
       message: 'This user already have forum with this name Some title',
       error: 'Bad Request',
@@ -51,7 +51,7 @@ export class ForumsController {
     @Body() body: CreateForumDto,
     @Req() req: { user: JwtPayload },
   ) {
-    const slug = generateSlug(body.title, req.user.name);
+    const slug = generateSlug(body.title);
 
     const isForumExist = await this.requestService.get(
       `/forums?filters[slug][$eq]=${slug}`,
@@ -68,7 +68,6 @@ export class ForumsController {
         data: {
           ...body,
           userId: req.user.id,
-          userName: req.user.name,
           state: 'active',
           slug,
         },
@@ -78,7 +77,7 @@ export class ForumsController {
 
   @Get()
   @ApiResponse({
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
     type: GetForumsDto,
   })
   async getAll(@Query() query: GetAllQuery) {
@@ -105,7 +104,7 @@ export class ForumsController {
   })
   @ApiResponse({
     type: GetForumByIdDto,
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
   })
   async getById(@Param() params: { id: string }) {
     const path = `/forums/${params.id}`;
@@ -130,7 +129,7 @@ export class ForumsController {
     type: String,
   })
   @ApiResponse({
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
   })
   @Put('/:id')
   async updateForum(
@@ -160,7 +159,7 @@ export class ForumsController {
     type: String,
   })
   @ApiResponse({
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
     example: 204,
   })
   @Delete('/:id')

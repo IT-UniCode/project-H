@@ -1,11 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query } from '@nestjs/common';
 import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { News, NewsWithCategories } from './dto/news.dto';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
 import { NewsQuery } from './query/query-news.query';
 import { getImageUrl, getQueryParams } from 'src/utils';
-import { HttpStatusCode } from 'axios';
 
 @ApiTags('news')
 @Controller('news')
@@ -17,7 +16,7 @@ export class NewsController {
 
   @Get()
   @ApiResponse({
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
     description: 'News',
     type: NewsWithCategories,
   })
@@ -56,7 +55,7 @@ export class NewsController {
 
   @Get('/:id')
   @ApiResponse({
-    status: HttpStatusCode.Ok,
+    status: HttpStatus.OK,
     description: 'News',
     type: News,
   })

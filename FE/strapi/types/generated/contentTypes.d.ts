@@ -573,7 +573,6 @@ export interface ApiForumForum extends Struct.CollectionTypeSchema {
   };
   attributes: {
     title: Schema.Attribute.String;
-    userName: Schema.Attribute.String;
     userId: Schema.Attribute.Integer;
     content: Schema.Attribute.RichText;
     slug: Schema.Attribute.String &

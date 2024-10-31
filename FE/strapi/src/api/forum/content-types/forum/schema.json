@@ -15,9 +15,6 @@
     "title": {
       "type": "string"
     },
-    "userName": {
-      "type": "string"
-    },
     "userId": {
       "type": "integer"
     },

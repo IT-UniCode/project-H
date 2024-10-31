@@ -9,12 +9,6 @@ export class Forum extends Entity {
   title: string;
 
   @ApiProperty({
-    description: 'Author user name',
-    example: 'UserName',
-  })
-  userName: string;
-
-  @ApiProperty({
     description: 'Author user id',
     example: 1,
   })

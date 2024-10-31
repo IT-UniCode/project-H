@@ -7,6 +7,7 @@ import {
   Body,
   Req,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { RequestService } from 'src/request/request.service';
 import { CacheService } from 'src/cache/cache.service';
@@ -19,7 +20,6 @@ import { AuthGuard } from 'src/guard/user.guard';
 import { AnswerGetDto } from './dto/answer.get.dto';
 import { VotingAnswerCreateDto } from './dto/voting.answer.create.dto';
 import { VotingsPostService } from './votings.post.service';
-import { HttpStatusCode } from 'axios';
 import { PostVoteDto } from './dto/post-vote.dto';
 
 @ApiTags('votings')
@@ -34,7 +34,7 @@ export class VotingsController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: HttpStatusCode.Created,
+    status: HttpStatus.CREATED,
     type: PostVoteDto,
   })
   @Post()
