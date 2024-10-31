@@ -6,5 +6,9 @@ export function getImageUrl(
   imgObject: StrapiImage,
   size: Format = 'small',
 ): string {
-  return process.env.STRAPI_URL.split('/api')[0] + imgObject.formats[size].url;
+  const imgEndpoint = imgObject.formats
+    ? imgObject.formats[size].url
+    : imgObject.url;
+
+  return process.env.STRAPI_URL.split('/api')[0] + imgEndpoint;
 }
