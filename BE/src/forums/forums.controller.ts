@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -20,6 +21,7 @@ import { CreateForumDto } from './dto/create-forum.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 import { CacheService } from 'src/cache/cache.service';
+import { UpdateForumDto } from './dto/update-forum.dto';
 
 @ApiTags('forums')
 @Controller('forums')
@@ -118,5 +120,35 @@ export class ForumsController {
     } else {
       return cachedData;
     }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    status: HttpStatusCode.Ok,
+  })
+  @Put('/:id')
+  async updateForum(
+    @Body() body: UpdateForumDto,
+    @Req() req: { user: JwtPayload },
+    @Param() params: { id: string },
+  ) {
+    const path = `/forums/${params.id}`;
+
+    const forum = await this.requestService.get(path);
+
+    if (forum.data.userId !== req.user.id) {
+      throw new BadRequestException(
+        `This user with id ${req.user.id} is not a author of forum with id ${params.id}`,
+      );
+    }
+
+    return this.requestService.put(path, {
+      body: { data: body },
+    });
   }
 }
