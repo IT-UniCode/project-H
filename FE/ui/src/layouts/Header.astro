@@ -27,10 +27,64 @@ const links: HeaderLink[] = [
 <header class="container mx-auto py-3 px-5">
   <section class="flex items-center justify-between">
     <nav class="flex gap-x-3">
-      {links.map((v) => <a href={v.href}>{v.title}</a>)}
+      {
+        links.map((v) => (
+          <a class="text-lg link" href={v.href}>
+            {v.title}
+          </a>
+        ))
+      }
     </nav>
 
     <ToastList client:only="preact" />
     <Authorization client:load />
   </section>
 </header>
+
+<style>
+  .link {
+    position: relative;
+    transition: all 0.5s ease-out;
+  }
+
+  /* .link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #000;
+    transform: scaleX(0);
+    transition: transform 0.5s ease-out;
+    transform-origin: left;
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+  } */
+
+  .link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: aqua;
+    transform: scaleX(0);
+    transition: transform 0.5s ease-out;
+  }
+
+  .link:nth-child(odd)::after {
+    transform-origin: left;
+  }
+
+  .link:nth-child(even)::after {
+    transform-origin: right;
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+  }
+</style>

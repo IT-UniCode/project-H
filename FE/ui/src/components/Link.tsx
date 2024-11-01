@@ -15,6 +15,7 @@ function Link({ children, href, class: className, onClick }: LinkProps) {
       onClick={onClick}
       class={clsx(
         "bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline",
+        "duration-700",
         className,
       )}
     >

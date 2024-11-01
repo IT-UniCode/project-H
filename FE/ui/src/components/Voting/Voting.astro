@@ -10,6 +10,7 @@ interface Props {
 const { voting } = Astro.props;
 ---
 
-<section class="rounded bg-gray-300 px-2 py-3">
+<section class="rounded bg-gray-200 px-2 py-3 hover:scale-x-105 duration-300">
+  <!-- hover:border hover:border-gray-600 -->
   <a class="text-lg" href={routes.Votings + `/${voting.slug}`}>{voting.name}</a>
 </section>
