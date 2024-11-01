@@ -30,7 +30,7 @@ export class CategoriesController {
 
     const path = `/categories?${includeNews}${params}`;
 
-    const cachedData = null;
+    const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
       const data = await this.requestService.get(path);
@@ -53,7 +53,7 @@ export class CategoriesController {
     description: 'Category',
     type: Category,
   })
-  async getById(@Param() params: { id: number }) {
+  async getById(@Param() params: { id: string }) {
     const data = await this.cacheService.get(`categories_${params.id}`);
 
     if (!data) {

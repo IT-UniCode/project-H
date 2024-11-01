@@ -1,26 +1,8 @@
 services:
-  db:
-    ports:
-      - 5433:5432
-    container_name: 'database'
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_DB: tets
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   redis:
     ports:
       - 6380:6379
-    container_name: 'redis-back'
+    container_name: "redis"
     image: redis:alpine
 
   api:
@@ -29,10 +11,10 @@ services:
         condition: service_started
       redis:
         condition: service_started
-    container_name: 'nest-api'
+    container_name: "api"
     tty: true
     build:
-      context: .
+      context: ./BE
       dockerfile: Dockerfile.dev
     restart: always
     ports:
@@ -42,6 +24,24 @@ services:
       PORT: 3000
       REDIS_URL: redis://redis:6379
       DATABASE_URL: postgresql://postgres:1234@db/herson_api?schema=public
+
+  db:
+    ports:
+      - 5433:5432
+    container_name: "db"
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: herson_api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres:

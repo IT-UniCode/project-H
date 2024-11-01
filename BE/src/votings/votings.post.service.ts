@@ -10,8 +10,8 @@ export class VotingsPostService {
   ) {}
 
   async post(votingId: string, answer: string, userId: number) {
-    const votingPath = `votings/${votingId}?populate=variants&filters[state][$eq]=active`;
-    const answersPath = `answers?filters[userId][$eq]=${userId}&filters[votingId][$eq]=${votingId}`;
+    const votingPath = `/votings/${votingId}?populate=variants&filters[state][$eq]=active`;
+    const answersPath = `/answers?filters[userId][$eq]=${userId}&filters[votingId][$eq]=${votingId}`;
 
     const cachedVoting = await this.cacheService.get(votingPath);
 
@@ -66,7 +66,7 @@ export class VotingsPostService {
       }
     }
 
-    return this.requestService.post(`answers`, {
+    return this.requestService.post(`/answers`, {
       body: { data: { answer, userId, votingId } },
     });
   }

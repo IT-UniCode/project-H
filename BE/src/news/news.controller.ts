@@ -31,7 +31,7 @@ export class NewsController {
     const params = getQueryParams(query, 'category');
 
     const path = `/news?populate=previewImage&${includeCategories}${params}`;
-    const cachedData = null;
+    const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
       const data = await this.requestService.get(path);
@@ -63,7 +63,7 @@ export class NewsController {
     name: 'id',
     type: Number,
   })
-  async getById(@Param() params: { id: number }) {
+  async getById(@Param() params: { id: string }) {
     const data = await this.cacheService.get(`news_${params.id}`);
 
     if (!data) {
