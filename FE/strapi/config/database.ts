@@ -2,14 +2,6 @@ import path from "path";
 
 export default ({ env }) => {
   const client = env("DATABASE_CLIENT", "sqlite");
-
-  console.log("Database Client:", env("DATABASE_CLIENT"));
-  console.log("Database Host:", env("DATABASE_HOST"));
-  console.log("Database Port:", env("DATABASE_PORT"));
-  console.log("Database Name:", env("DATABASE_NAME"));
-  console.log("Database Username:", env("DATABASE_USERNAME"));
-  console.log("Database Password:", env("DATABASE_PASSWORD"));
-
   const connections = {
     mysql: {
       connection: {
