@@ -22,7 +22,9 @@ const forums = await forumService.getAll({
 ---
 
 <Layout title="Forum">
-  <section class="flex flex-col flex-grow max-w-4xl w-full mx-auto mt-10">
+  <section
+    class="flex flex-col flex-grow gap-y-6 max-w-4xl w-full mx-auto mt-10"
+  >
     <section class="flex justify-between items-center mb-4">
       <p class="text-3xl mb-2">Forums</p>
       <LinkAstro href={pathname + "/create"}>Create</LinkAstro>
@@ -34,7 +36,7 @@ const forums = await forumService.getAll({
     <PaginationServer
       page={pagination.page}
       pageSize={pagination.pageSize}
-      total={pagination.total}
+      total={forums.meta.pagination.total}
     />
   </section>
 </Layout>
