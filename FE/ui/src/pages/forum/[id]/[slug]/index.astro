@@ -19,6 +19,10 @@ const forum = await forumService.getById(id!);
 
 <Layout title={forum.data.title}>
   <section class="max-w-4xl w-full mx-auto flex-grow">
+    <article class="mb-3">
+      <h2 class="text-3xl">{forum.data.title}</h2>
+      <p>{new Date(forum.data.createdAt).toLocaleString()}</p>
+    </article>
     <article
       class="mb-6"
       set:html={marked.parse(forum.data.content, {

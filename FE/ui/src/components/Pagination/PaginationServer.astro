@@ -17,5 +17,6 @@ const hasNextPage = page + 1 > Math.ceil(total / pageSize);
 
 <section class={clsx("flex gap-x-2", className)}>
   <Link>Previues</Link>
-  <Link disable={hasNextPage}>Next</Link>
+  <p>{page}</p>
+  <Link disable={hasNextPage}>Next {Math.ceil(total / pageSize)}</Link>
 </section>
