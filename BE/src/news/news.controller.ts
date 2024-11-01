@@ -31,7 +31,7 @@ export class NewsController {
     const params = getQueryParams(query, 'category');
 
     const path = `/news?populate=previewImage&${includeCategories}${params}`;
-    const cachedData = null;
+    const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
       const data = await this.requestService.get(path);
