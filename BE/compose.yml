@@ -2,7 +2,7 @@ services:
   db:
     ports:
       - 5433:5432
-    container_name: 'db'
+    container_name: 'database'
     image: postgres:14
     restart: always
     environment:
@@ -20,7 +20,7 @@ services:
   redis:
     ports:
       - 6380:6379
-    container_name: 'redis'
+    container_name: 'redis-back'
     image: redis:alpine
 
   api:
@@ -29,7 +29,7 @@ services:
         condition: service_started
       redis:
         condition: service_started
-    container_name: 'api'
+    container_name: 'nest-api'
     tty: true
     build:
       context: .
