@@ -1,0 +1,90 @@
+services:
+  redis:
+    ports:
+      - 6380:6379
+    container_name: "redis"
+    image: redis:alpine
+
+  api:
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    container_name: "api"
+    tty: true
+    build:
+      context: ./BE
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 3000:3000
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    environment:
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://postgres:1234@db/herson_api?schema=public
+
+  db:
+    ports:
+      - 5433:5432
+    container_name: "db"
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: tets
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mystrapi:
+    container_name: mystrapi
+    build:
+      context: ./FE/strapi
+    image: mystrapi:latest
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PORT: ${DATABASE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      NODE_ENV: ${NODE_ENV}
+    volumes:
+      - ./config:/opt/app/config
+      - ./src:/opt/app/src
+      - ./package.json:/opt/package.json
+      - ./yarn.lock:/opt/yarn.lock
+
+      - ./.env:/opt/app/.env
+      - ./public/uploads:/opt/app/public/uploads
+    ports:
+      - "1337:1337"
+    depends_on:
+      - db
+
+  mystrapiAdminer:
+    container_name: mystrapiAdminer
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "9090:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=mystrapiDB
+    depends_on:
+      - db
+
+volumes:
+  postgres:
+    name: postgres
+  mystrapi-data:
