@@ -63,7 +63,7 @@ export class NewsController {
     name: 'id',
     type: Number,
   })
-  async getById(@Param() params: { id: number }) {
+  async getById(@Param() params: { id: string }) {
     const data = await this.cacheService.get(`news_${params.id}`);
 
     if (!data) {

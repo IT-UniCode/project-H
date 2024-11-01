@@ -53,7 +53,7 @@ export class CategoriesController {
     description: 'Category',
     type: Category,
   })
-  async getById(@Param() params: { id: number }) {
+  async getById(@Param() params: { id: string }) {
     const data = await this.cacheService.get(`categories_${params.id}`);
 
     if (!data) {
