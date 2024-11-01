@@ -1,35 +1,28 @@
 services:
-  proxy:
-    depends_on:
-      - redis
-      - postgres
-    container_name: 'proxy'
-    tty: true
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    restart: always
-    # develop:
-    #   watch:
-    #     - action: sync+restart
-    #       path: .
-    #       target: /
-    #       ignore:
-    #         - node_modules
-    # volumes:
-    #   - .:/app
-    #   - /app/node_modules
-    ports:
-      - 3000:3000
-    command: npm run start:dev
-    environment:
-      PORT: 3000
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://postgres:1234@postgres:1234/postgres?schema=public
-
+  # proxy:
+  #   # links:
+  #   #   - postgres:postgres
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_started
+  #   container_name: 'proxy'
+  #   tty: true
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   command: npm run start:dev
+  #   environment:
+  #     PORT: 3000
+  #     REDIS_URL: redis://redis:6379
+  #     DATABASE_URL: postgresql://postgres:1234@postgres:5432/postgres?schema=public
   postgres:
     ports:
-      - 1234:5432
+      - 5433:5432
     container_name: 'postgres'
     image: postgres:14
     restart: always
@@ -41,6 +34,11 @@ services:
       - postgres-network
     volumes:
       - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
   redis:
     ports:
       - 6380:6379

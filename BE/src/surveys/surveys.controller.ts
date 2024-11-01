@@ -98,9 +98,9 @@ export class SurveysController {
     await Promise.all(
       ids.map(async (id) => {
         const ans = await this.requestService.get(
-          `/survey-answers?filters[userId][$eq]=${req.user.id}&filters[surveyId][$eq]=${id}`,
+          `/survey-answers?filters[$and][0][userId][$eq]=${req.user.id}&filters[$and][1][surveyId][$eq]=${id}`,
         );
-        answers[id] = ans.data[0]?.answer || null;
+        answers[id] = ans.data[0]?.answers || null;
       }),
     );
 
