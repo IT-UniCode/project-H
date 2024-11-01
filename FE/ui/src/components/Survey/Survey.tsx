@@ -18,8 +18,6 @@ function Survey({ survey }: SurveyProps) {
   const { onSubmit } = useForm<FormType>({
     values: { voting: {} },
     async onSubmit(values, context) {
-      console.log(values);
-
       if (!isAuth) {
         return;
       }
@@ -30,8 +28,6 @@ function Survey({ survey }: SurveyProps) {
       });
     },
   });
-
-  
 
   return (
     <form class="pb-3" onSubmit={onSubmit}>
