@@ -4,13 +4,13 @@ import type {
   Category,
   Pagination,
   QueryApi,
-  ResponseBody,
+  ResponseBodyList,
 } from "src/interfaces";
 
 class CategoryService {
   async getAll(query?: QueryApi) {
     return apiService.get<
-      ResponseBody<
+      ResponseBodyList<
         Category,
         {
           pagination: Pagination;

@@ -1,0 +1,23 @@
+---
+import type { IForum } from "@interfaces/forum";
+import { routes } from "src/routes";
+
+interface Props {
+  forum: IForum;
+}
+
+const { forum } = Astro.props;
+---
+
+<section class="px-3 py-2 border rounded">
+  <p class="text-xl">
+    <a href={routes.Forum + `/${forum.documentId}/${forum.slug}`}
+      >{forum.title}</a
+    >
+  </p>
+  <section>
+    <span class="text-base"
+      >{new Date(forum.createdAt).toLocaleDateString()}</span
+    >
+  </section>
+</section>

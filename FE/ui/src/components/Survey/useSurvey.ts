@@ -2,13 +2,13 @@ import { storageName } from "@constant/storageName";
 import { useSessionStorage } from "@helpers/index";
 import { useEffect, useState } from "preact/hooks";
 
-export function useCanvass() {
+export function useSurvey() {
   const [show, setShow] = useState(true);
-  const { get, set } = useSessionStorage(storageName.CanvassModal);
+  const { get, set } = useSessionStorage(storageName.SurveyModal);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
-      if (e.key === storageName.CanvassModal && e.newValue) {
+      if (e.key === storageName.SurveyModal && e.newValue) {
         setShow(JSON.parse(e.newValue));
       }
     });

@@ -1,10 +1,10 @@
 import { useToast } from "@components/Toast/index";
 import { useAuth } from "@hooks/useAuth";
-import { useForm } from "@hooks/useForm";
+import { disableInput, useForm } from "@hooks/useForm";
 import votingService from "@service/voting.service";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
-import type { ReactNode } from "preact/compat";
+import { useEffect, useRef, type ReactNode } from "preact/compat";
 
 export interface FormVotingProps {
   children?: ReactNode;
@@ -19,14 +19,17 @@ interface FormType {
 function FormVoting({ children, class: style, votingId }: FormVotingProps) {
   const { isAuth } = useAuth();
   const { addToast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
   const { onSubmit } = useForm<FormType>({
     onlyKeys: true,
     values: {
       voting: {},
     },
     async onSubmit(values, context) {
+      if (!isAuth || !values.voting) return;
+
       try {
-        const res = await votingService.vote({
+        await votingService.vote({
           answer: values.voting,
           votingId,
         });
@@ -38,15 +41,31 @@ function FormVoting({ children, class: style, votingId }: FormVotingProps) {
         });
       }
 
-      const formElements = Array.from(context.elements) as HTMLInputElement[];
-      formElements.forEach((element) => {
-        element.disabled = true;
-      });
+      disableInput(context);
     },
   });
 
+  async function getAnswer() {
+    const res = await votingService.getAnswer([votingId]);
+    if (res[votingId] && formRef.current) {
+      disableInput(formRef.current);
+    }
+  }
+
+  useEffect(() => {
+    if (!isAuth) {
+      return;
+    }
+
+    getAnswer();
+  }, [isAuth]);
+
   return (
-    <form onSubmit={onSubmit} class={clsx("flex flex-col gap-y-2", style)}>
+    <form
+      onSubmit={onSubmit}
+      ref={formRef}
+      class={clsx("flex flex-col gap-y-2", style)}
+    >
       {children}
     </form>
   );

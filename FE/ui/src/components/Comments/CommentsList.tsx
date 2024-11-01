@@ -6,7 +6,7 @@ import type { IComments } from "@interfaces/comments";
 import Button from "@components/Button/Button";
 import { useAuth } from "@hooks/useAuth";
 import { useForm } from "@hooks/useForm";
-import type { ResponseBody } from "@interfaces/index";
+import type { ResponseBodyList } from "@interfaces/index";
 
 export interface CommentsListProps {
   documentType: string;
@@ -15,7 +15,7 @@ export interface CommentsListProps {
 
 function CommentsList({ documentId, documentType }: CommentsListProps) {
   const [comments, setComments] = useState<{
-    response: ResponseBody<IComments>;
+    response: ResponseBodyList<IComments>;
     pagination: {
       page: number;
       pageSize: number;

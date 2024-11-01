@@ -10,7 +10,7 @@ export interface FormOptions<F> {
 }
 
 export type FormValues<F> = {
-  [key in Extract<keyof F, string>]: string;
+  [key in Extract<keyof F, string>]: any;
 };
 
 export function useForm<F>({
@@ -41,10 +41,18 @@ export function useForm<F>({
   };
 }
 
+export function disableInput(context: HTMLFormElement) {
+  const formElements = Array.from(context.elements) as HTMLInputElement[];
+  formElements.forEach((element) => {
+    element.disabled = true;
+  });
+}
+
 function extractFields<T>(data: FormData) {
   const fields: any = {};
   Array.from(data.keys()).forEach((key) => {
-    fields[key] = data.get(key);
+    if (data.getAll(key).length > 1) fields[key] = data.getAll(key);
+    else fields[key] = data.get(key);
   });
   return fields as FormValues<T>;
 }

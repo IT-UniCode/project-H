@@ -1,0 +1,35 @@
+---
+import { CommentsList } from "@components/Comments";
+import { confMarkdownForum } from "@helpers/index";
+import Layout from "@layouts/Layout.astro";
+import forumService from "@service/forum.service";
+import { marked } from "marked";
+import { routes } from "src/routes";
+
+export const prerender = false;
+
+const { slug, id } = Astro.params;
+
+if (!slug || !id) {
+  return Astro.redirect(routes.Forum);
+}
+
+const forum = await forumService.getById(id!);
+---
+
+<Layout title={forum.data.title}>
+  <section class="max-w-4xl w-full mx-auto flex-grow">
+    <article class="mb-3">
+      <h2 class="text-3xl">{forum.data.title}</h2>
+      <p>{new Date(forum.data.createdAt).toLocaleString()}</p>
+    </article>
+    <article
+      class="mb-6"
+      set:html={marked.parse(forum.data.content, {
+        renderer: confMarkdownForum(),
+      })}
+    />
+
+    <CommentsList client:load documentId={id} documentType="forum" />
+  </section>
+</Layout>

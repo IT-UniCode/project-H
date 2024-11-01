@@ -1,0 +1,36 @@
+---
+import Link from "@components/Link.astro";
+import clsx from "clsx";
+
+interface Props {
+  class?: string;
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+const { pathname, searchParams, search } = Astro.url;
+const { class: className, page, pageSize, total } = Astro.props;
+
+const hasNextPage = page + 1 > Math.ceil(total / pageSize);
+const hasPreviousPage = page - 1 < 1;
+
+const searchNext = new URLSearchParams(search);
+if (!hasNextPage) {
+  searchNext.set("page", (page + 1).toString());
+}
+const nextPage = pathname + `?${searchNext.toString()}`;
+
+const searchPrevious = new URLSearchParams(search);
+if (!hasPreviousPage) {
+  searchPrevious.set("page", (page - 1).toString());
+}
+const previousPage = pathname + `?${searchPrevious.toString()}`;
+---
+
+<section class={clsx("flex gap-x-2", className)}>
+  <Link href={!hasPreviousPage ? previousPage : "#"} disable={hasPreviousPage}>
+    Previues
+  </Link>
+  <Link href={!hasNextPage ? nextPage : "#"} disable={hasNextPage}> Next</Link>
+</section>

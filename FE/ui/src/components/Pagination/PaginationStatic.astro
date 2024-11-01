@@ -1,7 +1,6 @@
 ---
 import Link from "@components/Link.astro";
 import type { Page } from "astro";
-import type { HTMLAttributes } from "astro/types";
 import clsx from "clsx";
 
 interface Props {
@@ -9,7 +8,6 @@ interface Props {
   class?: string;
 }
 
-const url = Astro.url;
 const { page, class: className } = Astro.props;
 ---
 

@@ -14,6 +14,10 @@ const links: HeaderLink[] = [
     href: routes.News,
   },
   {
+    title: "Forum",
+    href: routes.Forum,
+  },
+  {
     title: "Votings",
     href: routes.Votings,
   },
@@ -27,6 +31,6 @@ const links: HeaderLink[] = [
     </nav>
 
     <ToastList client:only="preact" />
-    <Authorization client:only="preact" />
+    <Authorization client:load />
   </section>
 </header>

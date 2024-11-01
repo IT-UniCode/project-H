@@ -1,6 +1,6 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { IComments, ResponseBody } from "src/interfaces";
+import type { IComments, ResponseBodyList } from "src/interfaces";
 
 class CommentService {
   async create(body: {
@@ -17,7 +17,9 @@ class CommentService {
     page?: number;
     pageSize?: number;
   }) {
-    return apiService.get<ResponseBody<IComments>>(ApiPath.comments, { query });
+    return apiService.get<ResponseBodyList<IComments>>(ApiPath.comments, {
+      query,
+    });
   }
 }
 

@@ -1,10 +1,10 @@
 import { createPortal, useRef, useState } from "preact/compat";
-import { useCanvass } from "./useCanvass";
-import clsx from "clsx";
+import { useSurvey } from "./useSurvey";
+import SurveyList from "./SurveyList";
 
-function CanvassModal() {
+function SurveyModal() {
   const container = document.getElementById("root");
-  const { show, hideModal } = useCanvass();
+  const { show, hideModal } = useSurvey();
   const [state, setState] = useState({ showDetails: false, canvass: false });
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -40,11 +40,11 @@ function CanvassModal() {
           ref={dialogRef}
           class="backdrop:bg-gray-500 backdrop:bg-opacity-40 max-w-xl w-full rounded"
         >
-          <section class="flex flex-col py-3 px-2">
-            Modal
+          <section class="flex flex-col gap-y-4 py-3 px-2">
+            <SurveyList />
             <button
               onClick={hideDialog}
-              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:underline"
+              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:bg-gray-400"
             >
               Close
             </button>
@@ -56,4 +56,4 @@ function CanvassModal() {
   );
 }
 
-export default CanvassModal;
+export default SurveyModal;

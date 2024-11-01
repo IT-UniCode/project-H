@@ -5,8 +5,7 @@ import votingService from "@service/voting.service";
 import { ButtonAstro } from "@components/Button";
 import { marked } from "marked";
 import { confMarkdownNews } from "@helpers/index";
-import FormVoting from "./FormVoting";
-import TextField from "@components/TextFields/TextField.astro";
+import FormVoting from "../../components/Forms/FormVoting";
 
 export const prerender = true;
 
@@ -35,21 +34,21 @@ const { vote } = Astro.props;
     />
 
     <FormVoting client:load votingId={vote.documentId}>
-      <section>
+      <fieldset id="voting">
         {
           vote.variants.map((v) => (
             <div>
               <input
-                id={v.uniqueId}
+                id={v.uniqueId + vote.documentId}
                 type="radio"
                 name="voting"
                 value={v.uniqueId}
               />
-              <label for={v.uniqueId}>{v.content}</label>
+              <label for={v.uniqueId + vote.documentId}>{v.content}</label>
             </div>
           ))
         }
-      </section>
+      </fieldset>
 
       <ButtonAstro type="submit" class="py-1">Vote</ButtonAstro>
     </FormVoting>

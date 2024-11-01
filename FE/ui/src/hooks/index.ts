@@ -1,4 +1,4 @@
 import { useAuth } from "./useAuth";
-import { useForm } from "./useForm";
+import { useForm, disableInput } from "./useForm";
 
-export { useAuth, useForm };
+export { useAuth, useForm, disableInput };

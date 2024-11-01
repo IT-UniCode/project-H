@@ -1,37 +1,14 @@
 services:
-  # proxy:
-  #   # links:
-  #   #   - postgres:postgres
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_started
-  #   container_name: 'proxy'
-  #   tty: true
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile.dev
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
-  #   command: npm run start:dev
-  #   environment:
-  #     PORT: 3000
-  #     REDIS_URL: redis://redis:6379
-  #     DATABASE_URL: postgresql://postgres:1234@postgres:5432/postgres?schema=public
-  postgres:
+  db:
     ports:
       - 5433:5432
-    container_name: 'postgres'
+    container_name: 'db'
     image: postgres:14
     restart: always
     environment:
-      POSTGRES_DB: postgres
+      POSTGRES_DB: tets
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-    networks:
-      - postgres-network
     volumes:
       - postgres:/var/lib/postgresql/data
     healthcheck:
@@ -39,18 +16,33 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   redis:
     ports:
       - 6380:6379
     container_name: 'redis'
     image: redis:alpine
 
+  api:
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+    container_name: 'api'
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - 3000:3000
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
+    environment:
+      PORT: 3000
+      REDIS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://postgres:1234@db/herson_api?schema=public
+
 volumes:
   postgres:
     name: postgres
-
-networks:
-  postgres-network:
-    driver: bridge
-  redis-network:
-    driver: bridge

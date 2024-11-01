@@ -1,0 +1,42 @@
+---
+import { ForumCard } from "@components/Forum";
+import LinkAstro from "@components/Link.astro";
+import { PaginationServer } from "@components/Pagination";
+import Layout from "@layouts/Layout.astro";
+import forumService from "@service/forum.service";
+
+export const prerender = false;
+
+const { searchParams, pathname } = Astro.url;
+
+const pagination = {
+  page: parseInt(searchParams.get("page") || "1"),
+  pageSize: parseInt(searchParams.get("pageSize") || "10"),
+  total: parseInt(searchParams.get("total") || "0"),
+};
+
+const forums = await forumService.getAll({
+  pageSize: pagination.pageSize,
+  page: pagination.page,
+});
+---
+
+<Layout title="Forum">
+  <section
+    class="flex flex-col flex-grow gap-y-6 max-w-4xl w-full mx-auto mt-10"
+  >
+    <section class="flex justify-between items-center mb-4">
+      <p class="text-3xl mb-2">Forums</p>
+      <LinkAstro href={pathname + "/create"}>Create</LinkAstro>
+    </section>
+    <section class="flex-grow flex flex-col gap-y-4">
+      {forums.data.map((v) => <ForumCard forum={v} />)}
+    </section>
+
+    <PaginationServer
+      page={pagination.page}
+      pageSize={pagination.pageSize}
+      total={forums.meta.pagination.total}
+    />
+  </section>
+</Layout>

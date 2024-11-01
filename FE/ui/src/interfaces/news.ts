@@ -9,4 +9,6 @@ export interface News extends BaseEntity {
   content: string;
   category: Category;
   slug: string;
+  previewText: string;
+  previewImage: string;
 }
