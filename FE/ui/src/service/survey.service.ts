@@ -14,6 +14,12 @@ class SurveyService {
       body,
     });
   }
+
+  async getAnswer(id: string[]) {
+    return apiService.get<{ [key: string]: string }>(
+      `${ApiPath.surveysAnswers}/${id.join(",")}`,
+    );
+  }
 }
 
 export default new SurveyService();

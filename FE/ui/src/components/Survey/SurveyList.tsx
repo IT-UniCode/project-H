@@ -14,7 +14,22 @@ function SurveyList() {
       pageSize: -1,
       includeVariants: true,
     });
-    setSurveys(res.data);
+
+    const ids = res.data.map((v) => v.documentId);
+    console.log(ids);
+
+    const surveyAnswers = await surveyService.getAnswer(ids);
+    const serveys: ISurvey[] = [];
+    console.log(surveyAnswers);
+
+    res.data.forEach((survey) => {
+      const answers = surveyAnswers[survey.documentId];
+      if (!answers) {
+        serveys.push(survey);
+      }
+    });
+
+    setSurveys(serveys);
   }
 
   useEffect(() => {

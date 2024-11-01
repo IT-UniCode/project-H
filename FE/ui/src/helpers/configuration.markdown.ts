@@ -45,9 +45,7 @@ export function confMarldownNewsSmall() {
 export function confMarkdownForum() {
   const renderer = new marked.Renderer();
 
-  renderer.heading = ({ depth, raw, text, tokens, type }) => {
-    // console.log({ depth, raw, text, tokens, type });
-
+  renderer.heading = ({ depth, text }) => {
     return `<h${depth} class='text-${6 - depth}xl'>${text}</h${depth}>`;
   };
 
@@ -55,17 +53,8 @@ export function confMarkdownForum() {
   //   return `<p class='text-base'>${text}</p>`;
   // };
 
-  renderer.listitem = ({ text, type, loose, raw, task, checked }) => {
-    console.log({
-      text,
-      type,
-      loose,
-      raw,
-      task,
-      checked,
-    });
-
-    return `<li class='list-decimal'>${text}</li>`;
+  renderer.listitem = ({ text }) => {
+    return `<li class='list-decimal list-inside'>${text}</li>`;
   };
 
   return renderer;
