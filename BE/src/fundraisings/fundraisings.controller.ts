@@ -1,0 +1,81 @@
+import { Controller, Get, HttpStatus, Param, Query } from '@nestjs/common';
+import { ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CacheService } from 'src/cache/cache.service';
+import { RequestService } from 'src/request/request.service';
+import { getQueryParams, getImageUrl } from 'src/utils';
+import { FundraisingQuery } from './query/fundraising.query.dto';
+import { GetFundraisingsDto } from './dto/get-fund.sto';
+import { GetFundraisingByIdDto } from './dto/get-fund-by-id.dto';
+
+@ApiTags('fundraisings')
+@Controller('fundraisings')
+export class FundraisingsController {
+  constructor(
+    private readonly requestService: RequestService,
+    private readonly cacheService: CacheService,
+  ) {}
+
+  @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Fundraisings',
+    type: GetFundraisingsDto,
+  })
+  async getAll(
+    @Query()
+    query?: FundraisingQuery,
+  ) {
+    const includeCategories = query.includeCategories
+      ? 'populate=fundraising_category&'
+      : '';
+
+    const params = getQueryParams(query, 'category');
+
+    const path = `/fundraisings?populate=previewImage&${includeCategories}${params}`;
+    const cachedData = await this.cacheService.get(path);
+
+    if (!cachedData) {
+      const data = await this.requestService.get(path);
+
+      const newData = [
+        ...data.data.map((obj) => {
+          return {
+            ...obj,
+            previewImage: getImageUrl(obj.previewImage),
+          };
+        }),
+      ];
+
+      this.cacheService.set(path, { data: newData, meta: data.meta });
+
+      return { data: newData, meta: data.meta };
+    } else {
+      return cachedData;
+    }
+  }
+
+  @Get('/:id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'News',
+    type: GetFundraisingByIdDto,
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  async getById(@Param() params: { id: string }) {
+    const path = `/fundraisings/${params.id}`;
+    const data = await this.cacheService.get(path);
+
+    if (!data) {
+      const data = await this.requestService.get(
+        `${path}?populate=fundraising_category`,
+      );
+      this.cacheService.set(path, data);
+      return data;
+    } else {
+      return data;
+    }
+  }
+}

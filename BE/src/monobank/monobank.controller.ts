@@ -1,11 +1,21 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CheckoutBodyDto } from './dto/checkout.body.dto';
 import { MonobankCurrencyEnum } from 'src/types';
 
 @ApiTags('monobank')
 @Controller('monobank')
 export class MonobankController {
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    example: { url: 'https://pay.monobank.ua/2411049WJtiaShSv7qmJ' },
+  })
   @Post('/checkout')
   async getInvoice(
     @Body()
@@ -18,10 +28,10 @@ export class MonobankController {
     const req = await fetch(
       'https://api.monobank.ua/api/merchant/invoice/create',
       {
-        headers: { 'X-Token': 'uMVo10oSK6-2LhhvOtvHP6eYXvy5anOyS_2Ym8t6NVqA' },
+        headers: { 'X-Token': process.env.MONOBANK_TOKEN },
         body: JSON.stringify({
           amount: body.amount * 100,
-          webHookUrl: 'https://web-hook-test.onrender.com/',
+          webHookUrl: process.env.MONOBANK_WEBHOOK_URL,
           ccy: +MonobankCurrencyEnum[body?.currency || 'uah'],
           ...body.merchantPaymInfo,
         }),
