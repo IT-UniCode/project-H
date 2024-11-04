@@ -9,7 +9,7 @@ interface Props {
 const { forum } = Astro.props;
 ---
 
-<section class="px-3 py-2 border rounded">
+<section class="px-3 py-2 border rounded hover:shadow-xl duration-1000">
   <p class="text-xl">
     <a href={routes.Forum + `/${forum.documentId}/${forum.slug}`}
       >{forum.title}</a

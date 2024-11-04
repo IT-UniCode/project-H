@@ -1,6 +1,6 @@
 import { Button } from "@components/Button";
 import { useAuth } from "@hooks/useAuth";
-import { useForm } from "@hooks/useForm";
+import { disableInput, useForm } from "@hooks/useForm";
 import type { ISurvey } from "@interfaces/survey";
 import surveyService from "@service/survey.service";
 import { marked } from "marked";
@@ -26,6 +26,8 @@ function Survey({ survey }: SurveyProps) {
         surveyId: survey.documentId,
         answers: values.voting as string[],
       });
+
+      disableInput(context);
     },
   });
 

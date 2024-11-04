@@ -9,10 +9,11 @@ interface Props {
 const { news } = Astro.props;
 ---
 
-<article class="rounded py-3 px-2 border">
-  <h5 class="text-3xl hover:underline underline-offset-2">
-    <a href={routes.NewsById + news.slug}>{news.title}</a>
+<article class="rounded py-3 px-2 border hover:shadow-xl duration-1000">
+  <h5 class="text-3xl">
+    <a class="link" href={routes.NewsById + news.slug}>{news.title}</a>
   </h5>
+  <p class="text-xs">{new Date(news.createdAt).toLocaleString()}</p>
 
   <article class="flex gap-x-2 mt-2">
     {
@@ -29,3 +30,27 @@ const { news } = Astro.props;
     <p>{news.previewText}</p>
   </article>
 </article>
+
+<style>
+  .link {
+    position: relative;
+    transition: all 0.5s ease-out;
+  }
+
+  .link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #000;
+    transform: scaleX(0);
+    transition: transform 0.5s ease-out;
+    transform-origin: left;
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+  }
+</style>

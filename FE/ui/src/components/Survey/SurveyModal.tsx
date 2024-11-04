@@ -44,7 +44,7 @@ function SurveyModal() {
             <SurveyList />
             <button
               onClick={hideDialog}
-              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:bg-gray-400"
+              class="bg-gray-300 rounded py-1 text-lg hover:text-black hover:bg-gray-400 duration-300"
             >
               Close
             </button>
