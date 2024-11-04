@@ -7,3 +7,9 @@ export enum CommentsDocumentType {
   news = 'news',
   forum = 'forum',
 }
+
+export enum MonobankCurrencyEnum {
+  usd = '840',
+  uah = '980',
+  eur = '978',
+}

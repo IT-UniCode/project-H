@@ -18,6 +18,9 @@ import { VotingsController } from './votings/votings.controller';
 import { SurveysModule } from './surveys/surveys.module';
 import { VotingsPostService } from './votings/votings.post.service';
 import { ForumsModule } from './forums/forums.module';
+import { PaymentModule } from './payment/payment.module';
+import { FundraisingsModule } from './fundraisings/fundraisings.module';
+import { FundraisingCategoriesModule } from './fundraising-categories/fundraising-categories.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { ForumsModule } from './forums/forums.module';
     SurveysModule,
     ForumsModule,
     CacheModule,
+    PaymentModule,
+    FundraisingsModule,
+    FundraisingCategoriesModule,
   ],
   controllers: [
     AppController,
