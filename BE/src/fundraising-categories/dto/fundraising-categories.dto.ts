@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Fundraising } from 'src/fundraisings/dto/fundraising.dto';
+import { FundraisingPreview } from 'src/fundraisings/dto/fundraising-preview.dto';
 import { Entity, Meta } from 'src/types';
 
 export class FundraisingCategoryDto extends Entity {
@@ -17,7 +17,7 @@ export class FundraisingCategoryDto extends Entity {
 
   @ApiProperty({
     description: 'Relation with fundraising',
-    type: [Fundraising],
+    type: [FundraisingPreview],
   })
   fundraisings: [];
 }

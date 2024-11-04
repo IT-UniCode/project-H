@@ -63,7 +63,7 @@ export class FundraisingsController {
     name: 'id',
   })
   async getById(@Param() params: { id: string }) {
-    const path = `/fundraisings/${params.id}?fields=title,previewText,slug,createdAt`;
+    const path = `/fundraisings/${params.id}?fields=title,slug,createdAt`;
 
     const data = await this.cacheService.get(path);
 

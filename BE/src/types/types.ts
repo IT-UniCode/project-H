@@ -5,7 +5,7 @@ export enum ModesEnum {
 
 export enum CommentsDocumentType {
   news = 'news',
-  forum = 'forum',
+  forums = 'forums',
 }
 
 export enum MonobankCurrencyEnum {
