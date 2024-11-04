@@ -19,8 +19,6 @@ import { SurveysModule } from './surveys/surveys.module';
 import { VotingsPostService } from './votings/votings.post.service';
 import { ForumsModule } from './forums/forums.module';
 import { PaymentModule } from './payment/payment.module';
-import { MonobankModule } from './monobank/monobank.module';
-import { FundraisingModule } from './fundraising/fundraising.module';
 import { FundraisingsModule } from './fundraisings/fundraisings.module';
 import { FundraisingCategoriesModule } from './fundraising-categories/fundraising-categories.module';
 
@@ -36,8 +34,6 @@ import { FundraisingCategoriesModule } from './fundraising-categories/fundraisin
     ForumsModule,
     CacheModule,
     PaymentModule,
-    MonobankModule,
-    FundraisingModule,
     FundraisingsModule,
     FundraisingCategoriesModule,
   ],

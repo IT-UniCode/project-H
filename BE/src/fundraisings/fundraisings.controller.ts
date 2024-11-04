@@ -6,7 +6,6 @@ import { getQueryParams, getImageUrl } from 'src/utils';
 import { FundraisingQuery } from './query/fundraising.query.dto';
 import { GetFundraisingsDto } from './dto/get-fund.sto';
 import { GetFundraisingByIdDto } from './dto/get-fund-by-id.dto';
-
 @ApiTags('fundraisings')
 @Controller('fundraisings')
 export class FundraisingsController {
@@ -31,7 +30,7 @@ export class FundraisingsController {
 
     const params = getQueryParams(query, 'category');
 
-    const path = `/fundraisings?populate=previewImage&${includeCategories}${params}`;
+    const path = `/fundraisings?populate[fundraising_category][fields]=documentId,name,slug&populate[previewImage][fields]=url,formats&fields=id,title,previewText,slug,createdAt&${includeCategories}${params}`;
     const cachedData = await this.cacheService.get(path);
 
     if (!cachedData) {
@@ -57,20 +56,20 @@ export class FundraisingsController {
   @Get('/:id')
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'News',
+    description: 'Fundraisings',
     type: GetFundraisingByIdDto,
   })
   @ApiParam({
     name: 'id',
-    type: String,
   })
   async getById(@Param() params: { id: string }) {
-    const path = `/fundraisings/${params.id}`;
+    const path = `/fundraisings/${params.id}?fields=title,previewText,slug,createdAt`;
+
     const data = await this.cacheService.get(path);
 
     if (!data) {
       const data = await this.requestService.get(
-        `${path}?populate=fundraising_category`,
+        `${path}&populate[fundraising_category][fields]=documentId,name,slug`,
       );
       this.cacheService.set(path, data);
       return data;
