@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Fundraising } from './fundraising.dto';
+import { FundraisingPreview } from './fundraising-preview.dto';
 import { Meta } from 'src/types';
 
 export class GetFundraisingsDto {
   @ApiProperty({
-    type: [Fundraising],
+    type: [FundraisingPreview],
   })
   data: [];
 

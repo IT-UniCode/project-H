@@ -1,42 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity } from 'src/types';
 
-export class Fundraising extends Entity {
+export class FundraisingDto {
+  @ApiProperty({
+    description: 'Unique id of entity (changes after updating)',
+    type: Number,
+  })
+  id: number;
+
+  @ApiProperty({
+    description: 'Unique id of entity (never changes)',
+    type: String,
+  })
+  documentId: string;
+
+  @ApiProperty({
+    description: 'Date as string',
+    example: '2024-10-22T13:40:49.782Z',
+  })
+  createdAt: string;
+
   @ApiProperty({
     example: 'Fundraiser Title',
     description: 'Title of the fundraiser',
   })
   title: string;
-
-  @ApiProperty({
-    example: 'Some text',
-    description: 'Preview text for the fundraiser',
-  })
-  previewText: string;
-
-  @ApiProperty({
-    example: 'http://some.host.com/uploads/preview_image.jpeg',
-    description: 'URL of the preview image',
-  })
-  previewImage: string;
-
-  @ApiProperty({
-    example: 'Some text',
-    description: 'Fundraising content can be string or markdown',
-  })
-  content: string;
-
-  @ApiProperty({
-    example: 10000,
-    description: 'The fundraising goal amount',
-  })
-  goal_sum: number;
-
-  @ApiProperty({
-    example: 2500,
-    description: 'The current amount raised so far',
-  })
-  current_sum: number;
 
   @ApiProperty({
     example: 'fundraiser-title',
@@ -45,8 +32,12 @@ export class Fundraising extends Entity {
   slug: string;
 
   @ApiProperty({
-    example: 'active',
-    description: 'State of the fundraiser (e.g., active, completed, pending)',
+    example: {
+      id: 0,
+      documentId: 's3lme3bmk1dcyy79sjr95so9',
+      name: 'Some category',
+      slug: 'some-slug',
+    },
   })
-  state: string;
+  fundraising_category: object;
 }
