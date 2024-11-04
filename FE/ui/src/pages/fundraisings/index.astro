@@ -1,0 +1,22 @@
+---
+import { PaginationServer } from "@components/Pagination";
+import Layout from "@layouts/Layout.astro";
+
+export const prerender = false;
+
+const { searchParams, pathname } = Astro.url;
+
+const pagination = {
+  page: parseInt(searchParams.get("page") || "1"),
+  pageSize: parseInt(searchParams.get("pageSize") || "10"),
+  total: parseInt(searchParams.get("total") || "0"),
+};
+---
+
+<Layout title="Fundraisings">
+  <section class="flex-grow"></section>
+
+  <div class="mx-auto">
+    <PaginationServer page={1} pageSize={2} total={3} />
+  </div>
+</Layout>

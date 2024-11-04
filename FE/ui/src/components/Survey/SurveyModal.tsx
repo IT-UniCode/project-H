@@ -5,19 +5,16 @@ import SurveyList from "./SurveyList";
 function SurveyModal() {
   const container = document.getElementById("root");
   const { show, hideModal } = useSurvey();
-  const [state, setState] = useState({ showDetails: false, canvass: false });
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   function showDialog() {
     dialogRef?.current?.showModal();
     document.body.classList.add("overflow-hidden");
-    setState((prev) => ({ ...prev, canvass: true }));
   }
 
   function hideDialog() {
     dialogRef?.current?.close();
     document.body.classList.remove("overflow-hidden");
-    setState((prev) => ({ ...prev, canvass: false }));
   }
 
   if (!container) throw new Error("Not found container");
