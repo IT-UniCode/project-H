@@ -592,6 +592,81 @@ export interface ApiForumForum extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiFundraisingFundraising extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraisings';
+  info: {
+    singularName: 'fundraising';
+    pluralName: 'fundraisings';
+    displayName: 'Fundraising';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Schema.Attribute.String;
+    previewText: Schema.Attribute.String & Schema.Attribute.Required;
+    previewImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText;
+    goal_sum: Schema.Attribute.Integer;
+    current_sum: Schema.Attribute.Integer;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    state: Schema.Attribute.Enumeration<
+      ['active', 'finish', 'pending', 'rejected']
+    >;
+    fundraising_category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::fundraising-category.fundraising-category'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising.fundraising'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFundraisingCategoryFundraisingCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraising_categories';
+  info: {
+    singularName: 'fundraising-category';
+    pluralName: 'fundraising-categories';
+    displayName: 'FundraisingCategory';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Schema.Attribute.String;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    fundraisings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising.fundraising'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising-category.fundraising-category'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiNewNew extends Struct.CollectionTypeSchema {
   collectionName: 'news';
   info: {
@@ -1118,6 +1193,8 @@ declare module '@strapi/strapi' {
       'api::answer.answer': ApiAnswerAnswer;
       'api::category.category': ApiCategoryCategory;
       'api::forum.forum': ApiForumForum;
+      'api::fundraising.fundraising': ApiFundraisingFundraising;
+      'api::fundraising-category.fundraising-category': ApiFundraisingCategoryFundraisingCategory;
       'api::new.new': ApiNewNew;
       'api::survey.survey': ApiSurveySurvey;
       'api::survey-answer.survey-answer': ApiSurveyAnswerSurveyAnswer;

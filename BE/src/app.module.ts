@@ -18,6 +18,8 @@ import { VotingsController } from './votings/votings.controller';
 import { SurveysModule } from './surveys/surveys.module';
 import { VotingsPostService } from './votings/votings.post.service';
 import { ForumsModule } from './forums/forums.module';
+import { PaymentModule } from './payment/payment.module';
+import { MonobankModule } from './monobank/monobank.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { ForumsModule } from './forums/forums.module';
     SurveysModule,
     ForumsModule,
     CacheModule,
+    PaymentModule,
+    MonobankModule,
   ],
   controllers: [
     AppController,

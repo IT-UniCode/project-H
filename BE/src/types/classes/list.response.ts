@@ -1,4 +1,4 @@
-import { MetaPagination } from '.';
+import { MetaPagination } from './MetaPagination';
 
 export class ListResponse<D, M = MetaPagination> {
   data: D[];

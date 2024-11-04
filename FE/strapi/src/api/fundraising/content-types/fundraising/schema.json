@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fundraisings",
+  "info": {
+    "singularName": "fundraising",
+    "pluralName": "fundraisings",
+    "displayName": "Fundraising"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "previewText": {
+      "type": "string",
+      "required": true
+    },
+    "previewImage": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false,
+      "required": true
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "goal_sum": {
+      "type": "integer"
+    },
+    "current_sum": {
+      "type": "integer"
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "required": true
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "finish",
+        "pending",
+        "rejected"
+      ]
+    },
+    "fundraising_category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::fundraising-category.fundraising-category",
+      "inversedBy": "fundraisings"
+    }
+  }
+}
