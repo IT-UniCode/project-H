@@ -17,6 +17,10 @@ const pagination = {
   <section class="flex-grow"></section>
 
   <div class="mx-auto">
-    <PaginationServer page={1} pageSize={2} total={3} />
+    <PaginationServer
+      page={pagination.page}
+      pageSize={pagination.pageSize}
+      total={1}
+    />
   </div>
 </Layout>
