@@ -14,10 +14,6 @@ export class StripeService {
     this.stripe = new Stripe(this.apiKey, {
       apiVersion: '2024-10-28.acacia',
     });
-    this.stripe.webhookEndpoints.create({
-      enabled_events: ['checkout.session.completed'],
-      url: process.env.STRIPE_WEBHOOK_URL,
-    });
   }
 
   async pay(body: CheckoutBodyDto, userId: number) {
