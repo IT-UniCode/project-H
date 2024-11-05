@@ -1,15 +1,40 @@
 ---
 import { FundraisingsPay } from "@components/Fundraisings";
+import { confMarkdownNews } from "@helpers/index";
 import Layout from "@layouts/Layout.astro";
 import fundraisingsService from "@service/fundraisings.service";
+import clsx from "clsx";
+import { marked } from "marked";
 
 const { id, slug } = Astro.params;
 
-const data = await fundraisingsService.get(id!);
+const fundraising = await fundraisingsService.get(id!);
 ---
 
-<Layout title="">
-  <h1>Title</h1>
+<Layout title={fundraising.data.title}>
+  <section
+    class={clsx("hero")}
+    style=`background-image: url('${fundraising.data.previewImage}');`
+  >
+    <h1 class="text-5xl">
+      {fundraising.data.title}
+    </h1>
+  </section>
+
   <FundraisingsPay />
-  <div>{JSON.stringify(data)}</div>
+  <article
+    class="max-w-4xl w-full mx-auto"
+    set:html={marked.parse(fundraising.data.content, {
+      renderer: confMarkdownNews(),
+    })}
+  />
 </Layout>
+
+<style>
+  .hero {
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+</style>
