@@ -10,6 +10,22 @@ export function confMarkdownNews() {
     </div>
   `;
   };
+
+  renderer.heading = ({ depth, text }) => {
+    return `<h${depth} class='text-${6 - depth}xl'>${text}</h${depth}>`;
+  };
+
+  renderer.listitem = ({ loose, text, raw, task, type }) => {
+    // console.log({ loose, text, raw, task, type });
+
+    return `<li class="list-decimal list-inside">${text}</li>`;
+  };
+
+  // renderer.list = ({ loose, items, ordered, raw, start, type }) => {
+  //   console.log({ loose, items, ordered, raw, start, type });
+  //   return `<ol></ol>`;
+  // };
+
   return renderer;
 }
 
