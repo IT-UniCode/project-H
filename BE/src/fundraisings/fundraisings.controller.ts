@@ -63,18 +63,23 @@ export class FundraisingsController {
     name: 'id',
   })
   async getById(@Param() params: { id: string }) {
-    const path = `/fundraisings/${params.id}?fields=title,slug,createdAt`;
+    const path = `/fundraisings/${params.id}`;
 
-    const data = await this.cacheService.get(path);
+    const cachedData = await this.cacheService.get(path);
 
-    if (!data) {
-      const data = await this.requestService.get(
-        `${path}&populate[fundraising_category][fields]=documentId,name,slug`,
+    if (!cachedData) {
+      const fetchedData = await this.requestService.get(
+        `${path}?populate[fundraising_category][fields]=documentId,name,slug&populate[previewImage][fields]=url,formats`,
       );
-      this.cacheService.set(path, data);
-      return data;
+      this.cacheService.set(path, fetchedData);
+      return {
+        data: {
+          ...fetchedData.data,
+          previewImage: getImageUrl(fetchedData.data.previewImage),
+        },
+      };
     } else {
-      return data;
+      return cachedData;
     }
   }
 }

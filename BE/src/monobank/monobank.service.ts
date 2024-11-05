@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { MonobankCurrencyEnum } from 'src/types';
-import { CheckoutBodyDto } from './dto/checkout.body.dto';
+import { CheckoutBodyDto } from '../payment/dto/checkout.body.dto';
 
 @Injectable()
 export class MonobankService {
@@ -15,7 +15,7 @@ export class MonobankService {
         amount: body.amount * 100,
         webHookUrl: process.env.MONOBANK_WEBHOOK_URL,
         ccy: +MonobankCurrencyEnum[body?.currency || 'uah'],
-        ...body.merchantPaymInfo,
+        ...body,
       },
       {
         headers: { 'X-Token': process.env.MONOBANK_TOKEN },

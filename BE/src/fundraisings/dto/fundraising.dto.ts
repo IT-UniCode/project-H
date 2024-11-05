@@ -1,29 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Entity } from 'src/types';
 
-export class FundraisingDto {
-  @ApiProperty({
-    description: 'Unique id of entity (changes after updating)',
-    type: Number,
-  })
-  id: number;
-
-  @ApiProperty({
-    description: 'Unique id of entity (never changes)',
-    type: String,
-  })
-  documentId: string;
-
-  @ApiProperty({
-    description: 'Date as string',
-    example: '2024-10-22T13:40:49.782Z',
-  })
-  createdAt: string;
-
+export class FundraisingDto extends Entity {
   @ApiProperty({
     example: 'Fundraiser Title',
     description: 'Title of the fundraiser',
   })
   title: string;
+
+  @ApiProperty({
+    description: 'Content of fundraising (can be string or markdown)',
+    example: 'Some content',
+  })
+  content: string;
+
+  @ApiProperty({
+    description: 'Goal sum of fundraising',
+  })
+  goal_sum: number;
+
+  @ApiProperty({
+    description: 'Total sum of fundraising',
+  })
+  total_sum: number;
 
   @ApiProperty({
     example: 'fundraiser-title',
@@ -40,4 +39,10 @@ export class FundraisingDto {
     },
   })
   fundraising_category: object;
+
+  @ApiProperty({
+    description: 'Preview image url',
+    example: 'https://some-host.com/uploads/some_img_name_hash.jpeg',
+  })
+  previewImage: string;
 }
