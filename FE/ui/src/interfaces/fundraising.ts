@@ -10,3 +10,20 @@ export interface Fundraising {
   fundraising_category: FundraisingCategory;
   previewImage: string;
 }
+
+export interface FundraisingDetails {
+  id: number;
+  documentId: string;
+  title: string;
+  previewText: string;
+  content: string;
+  goal_sum: number;
+  current_sum: any;
+  slug: string;
+  state: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  fundraising_category: FundraisingCategory;
+  previewImage: string;
+}
