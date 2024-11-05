@@ -2,6 +2,7 @@ import type {
   Fundraising,
   FundraisingCategory,
   QueryApi,
+  ResponseBody,
   ResponseBodyList,
 } from "@interfaces/index";
 import apiService from "./api.service";
@@ -26,7 +27,9 @@ class FundraisingsService {
   }
 
   async get(id: string) {
-    return apiService.get(`${ApiPath.fundraisings}/${id}`);
+    return apiService.get<ResponseBody<object>>(
+      `${ApiPath.fundraisings}/${id}`,
+    );
   }
 }
 

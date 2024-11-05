@@ -1,4 +1,5 @@
 ---
+import FundraisingsCard from "@components/Fundraisings/FundraisingsCard.astro";
 import { PaginationServer } from "@components/Pagination";
 import Layout from "@layouts/Layout.astro";
 import fundraisingsService from "@service/fundraisings.service";
@@ -25,10 +26,8 @@ const category = await fundraisingsService.category({ pageSize: -1 });
 const fundraisings = await fundraisingsService.getAll({
   pageSize: pagination.pageSize,
   page: pagination.page,
-  // field: "fundraising_category",
-  // value:
-  //   category.data.find((v) => v.slug === searchParams.get("category"))
-  //     ?.documentId || "",
+  value: category.data.find((v) => v.slug === searchParams.get(Search.category))
+    ?.documentId,
 });
 
 const allCategory = new URL(href);
@@ -36,15 +35,31 @@ allCategory.searchParams.delete(Search.category);
 ---
 
 <Layout title="Fundraisings">
-  <section class="flex-grow mx-auto">
-    <section class="flex gap-x-3">
-      <a href={allCategory}>All</a>
+  <section class="flex-grow">
+    <section class="flex gap-x-3 justify-center mb-4">
+      <a
+        class="link py-1 px-3 hover:bg-gray-200 rounded-2xl duration-500"
+        href={allCategory}>All</a
+      >
       {
         category.data.map((v) => {
           url.searchParams.set(Search.category, v.slug);
-          return <a href={url}>{v.name}</a>;
+          return (
+            <a
+              class="link py-1 px-3 hover:bg-gray-200 rounded-2xl duration-500"
+              href={url}
+            >
+              {v.name}
+            </a>
+          );
         })
       }
+    </section>
+
+    <section
+      class="flex flex-col divide-y divide-dashed max-w-6xl w-full mx-auto"
+    >
+      {fundraisings.data.map((v) => <FundraisingsCard data={v} />)}
     </section>
   </section>
 
@@ -56,12 +71,3 @@ allCategory.searchParams.delete(Search.category);
     />
   </div>
 </Layout>
-
-<style>
-  .link {
-  }
-
-  .link:hover {
-    background: #696666;
-  }
-</style>

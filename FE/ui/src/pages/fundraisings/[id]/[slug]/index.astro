@@ -1,12 +1,15 @@
 ---
 import { FundraisingsPay } from "@components/Fundraisings";
 import Layout from "@layouts/Layout.astro";
+import fundraisingsService from "@service/fundraisings.service";
 
 const { id, slug } = Astro.params;
+
+const data = await fundraisingsService.get(id!);
 ---
 
 <Layout title="">
   <h1>Title</h1>
   <FundraisingsPay />
-  <div></div>
+  <div>{JSON.stringify(data)}</div>
 </Layout>
