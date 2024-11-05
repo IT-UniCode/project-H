@@ -5,7 +5,7 @@ import { useEffect, useRef } from "preact/hooks";
 export interface ModalProps {
   open: boolean;
   children: ReactNode;
-  class: string;
+  class?: string;
 }
 
 function Modal({ open, children, class: className }: ModalProps) {
@@ -15,8 +15,14 @@ function Modal({ open, children, class: className }: ModalProps) {
   useEffect(() => {
     if (open) {
       modalRef.current?.showModal();
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      document.body.classList.add("overflow-hidden");
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
       modalRef.current?.close();
+      document.body.classList.remove("overflow-hidden");
+      document.body.style.paddingRight = "";
     }
   }, [open]);
 
