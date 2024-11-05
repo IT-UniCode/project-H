@@ -21,16 +21,18 @@ const fundraising = await fundraisingsService.get(id!);
         alt="hero"
       />
     </div>
-    <section class="flex justify-between items-center max-w-5xl w-full mx-auto">
+    <section
+      class="flex flex-col md:flex-row justify-between md:items-center max-w-5xl w-full mx-auto"
+    >
       <article class="">
         <h1 class="text-5xl">
           {fundraising.data.title}
         </h1>
-        <p>
+        <p class="pl-3 pt-2">
           {fundraising.data.previewText}
         </p>
       </article>
-      <FundraisingsPay />
+      <FundraisingsPay client:only="preact" />
     </section>
   </section>
 
