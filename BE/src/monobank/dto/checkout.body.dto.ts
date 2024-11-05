@@ -33,5 +33,5 @@ export class CheckoutBodyDto {
   @ApiProperty({
     type: MerchantPaymInfo,
   })
-  merchantPaymInfo: MerchantPaymInfo;
+  merchantPaymInfo?: MerchantPaymInfo;
 }
