@@ -71,13 +71,14 @@ export class FundraisingsController {
       const fetchedData = await this.requestService.get(
         `${path}?populate[fundraising_category][fields]=documentId,name,slug&populate[previewImage][fields]=url,formats`,
       );
-      this.cacheService.set(path, fetchedData);
-      return {
+      const data = {
         data: {
           ...fetchedData.data,
           previewImage: getImageUrl(fetchedData.data.previewImage),
         },
       };
+      this.cacheService.set(path, data);
+      return data;
     } else {
       return cachedData;
     }

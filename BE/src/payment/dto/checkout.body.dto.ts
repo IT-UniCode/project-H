@@ -16,5 +16,8 @@ export class CheckoutBodyDto {
   @IsString()
   currency: string;
 
+  @ApiProperty({
+    description: 'Fundraising id',
+  })
   fundraisingId: string;
 }
