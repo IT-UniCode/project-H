@@ -667,6 +667,40 @@ export interface ApiFundraisingCategoryFundraisingCategory
   };
 }
 
+export interface ApiFundraisingPaymentFundraisingPayment
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraising_payments';
+  info: {
+    singularName: 'fundraising-payment';
+    pluralName: 'fundraising-payments';
+    displayName: 'FundraisingPayment';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    fundraisingId: Schema.Attribute.String & Schema.Attribute.Required;
+    paymentApi: Schema.Attribute.String & Schema.Attribute.Required;
+    total: Schema.Attribute.Integer;
+    currency: Schema.Attribute.Enumeration<['uah', 'eur', 'usd']> &
+      Schema.Attribute.DefaultTo<'uah'>;
+    userId: Schema.Attribute.Integer;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising-payment.fundraising-payment'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiNewNew extends Struct.CollectionTypeSchema {
   collectionName: 'news';
   info: {
@@ -1195,6 +1229,7 @@ declare module '@strapi/strapi' {
       'api::forum.forum': ApiForumForum;
       'api::fundraising.fundraising': ApiFundraisingFundraising;
       'api::fundraising-category.fundraising-category': ApiFundraisingCategoryFundraisingCategory;
+      'api::fundraising-payment.fundraising-payment': ApiFundraisingPaymentFundraisingPayment;
       'api::new.new': ApiNewNew;
       'api::survey.survey': ApiSurveySurvey;
       'api::survey-answer.survey-answer': ApiSurveyAnswerSurveyAnswer;

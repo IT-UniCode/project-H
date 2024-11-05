@@ -3,7 +3,9 @@ export class CheckoutResponseDto {
 
   currency: string;
 
-  uniqueId: string;
+  fundraisingId: string;
 
-  metadata: object;
+  paymentApi: string;
+
+  userId: number;
 }
