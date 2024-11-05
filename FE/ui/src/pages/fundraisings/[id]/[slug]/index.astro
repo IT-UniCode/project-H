@@ -12,16 +12,28 @@ const fundraising = await fundraisingsService.get(id!);
 ---
 
 <Layout title={fundraising.data.title}>
-  <section
-    class={clsx("hero")}
-    style=`background-image: url('${fundraising.data.previewImage}');`
-  >
-    <h1 class="text-5xl">
-      {fundraising.data.title}
-    </h1>
+  <section class="mb-10">
+    <!-- style=`background-image: url('${fundraising.data.previewImage}');` -->
+    <div class="h-[300px] overflow-hidden">
+      <img
+        class="max-h-full h-full w-full object-top object-cover"
+        src=`${fundraising.data.previewImage}`
+        alt="hero"
+      />
+    </div>
+    <section class="flex justify-between items-center max-w-5xl w-full mx-auto">
+      <article class="">
+        <h1 class="text-5xl">
+          {fundraising.data.title}
+        </h1>
+        <p>
+          {fundraising.data.previewText}
+        </p>
+      </article>
+      <FundraisingsPay />
+    </section>
   </section>
 
-  <FundraisingsPay />
   <article
     class="max-w-4xl w-full mx-auto"
     set:html={marked.parse(fundraising.data.content, {
