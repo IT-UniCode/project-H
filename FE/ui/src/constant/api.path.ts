@@ -11,4 +11,5 @@ export enum ApiPath {
   forums = "/forums",
   fundraisings = "/fundraisings",
   fundraisingsCategories = "/fundraising-categories",
+  paymentCheckout = "/payment/checkout",
 }
