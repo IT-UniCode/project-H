@@ -41,7 +41,7 @@ export class PaymentController {
     body: CheckoutBodyDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.paymentService.pay(body, req.user?.id || -1);
+    return this.paymentService.pay(body, req.user?.id || 0);
   }
 
   @ApiExcludeEndpoint()

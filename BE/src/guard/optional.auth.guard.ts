@@ -15,17 +15,15 @@ export class OptionalAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const token = this.extractTokenFromHeader(request);
 
-    if (!token) {
-      return true;
-    }
-
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRET,
-      });
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException();
+    if (token) {
+      try {
+        const payload = await this.jwtService.verifyAsync(token, {
+          secret: process.env.SECRET,
+        });
+        request['user'] = payload;
+      } catch {
+        throw new UnauthorizedException();
+      }
     }
     return true;
   }
