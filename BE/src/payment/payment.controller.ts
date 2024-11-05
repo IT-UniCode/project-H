@@ -1,12 +1,13 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CheckoutBodyDto } from 'src/monobank/dto/checkout.body.dto';
-import { MonobankService } from 'src/monobank/monobank.service';
+// import { MonobankService } from 'src/monobank/monobank.service';
+import { StripeService } from 'src/stripe/stripe.service';
 
 @ApiTags('payment')
 @Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: MonobankService) {}
+  constructor(private readonly paymentService: StripeService) {}
   @ApiResponse({
     status: HttpStatus.CREATED,
     example: { url: 'https://pay.monobank.ua/2411049WJtiaShSv7qmJ' },
