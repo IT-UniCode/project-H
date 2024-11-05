@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { CheckoutBodyDto } from 'src/monobank/dto/checkout.body.dto';
+import { CheckoutBodyDto } from 'src/payment/dto/checkout.body.dto';
 import Stripe from 'stripe';
 
 @Injectable()
@@ -25,7 +25,7 @@ export class StripeService {
           price_data: {
             currency: body.currency,
             product_data: {
-              name: body.merchantPaymInfo.destination || 'Donation',
+              name: 'Donation',
             },
             unit_amount: body.amount * 100,
           },
@@ -35,6 +35,7 @@ export class StripeService {
       payment_intent_data: {
         setup_future_usage: 'on_session',
       },
+      metadata: { fundraisingId: body.fundraisingId },
     });
     return { url: session.url };
   }

@@ -1,8 +1,9 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CheckoutBodyDto } from 'src/monobank/dto/checkout.body.dto';
+import { CheckoutBodyDto } from 'src/payment/dto/checkout.body.dto';
 // import { MonobankService } from 'src/monobank/monobank.service';
 import { StripeService } from 'src/stripe/stripe.service';
+// import { CheckoutResponseDto } from './dto/checkout.response.dto';
 
 @ApiTags('payment')
 @Controller('payment')
@@ -19,4 +20,14 @@ export class PaymentController {
   ) {
     return this.paymentService.pay(body);
   }
+
+  //   @Post('/webhook')
+  //   async postEcho(@Body() body: any): Promise<CheckoutResponseDto> {
+  //     console.log('body:', body);
+  //     console.log('metadata:', body.data.object.metadata);
+  //
+  //     const
+  //
+  //     return {};
+  //   }
 }
