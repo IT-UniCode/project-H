@@ -18,8 +18,8 @@ import { StripeService } from 'src/stripe/stripe.service';
 import { CheckoutResponseDto } from './dto/checkout.response.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { WebhookBodyDto } from './dto/webhook.body.dto';
-import { AuthGuard } from 'src/guard/user.guard';
 import { RequestService } from 'src/request/request.service';
+import { OptionalAuthGuard } from 'src/guard/optional.auth.guard';
 
 @ApiTags('payment')
 @Controller('payment')
@@ -33,15 +33,15 @@ export class PaymentController {
     status: HttpStatus.CREATED,
     example: { url: 'https://pay.monobank.ua/2411049WJtiaShSv7qmJ' },
   })
+  @UseGuards(OptionalAuthGuard)
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post('/checkout')
   async getCheckoutUrl(
     @Body()
     body: CheckoutBodyDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.paymentService.pay(body, req.user.id);
+    return this.paymentService.pay(body, req.user?.id || -1);
   }
 
   @ApiExcludeEndpoint()
