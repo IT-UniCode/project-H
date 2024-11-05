@@ -13,3 +13,5 @@ export type { ISurvey } from "./survey";
 export type { IForum } from "./forum";
 export type { BaseDate } from "./base.date";
 export type { BaseEntity } from "./base.entity";
+export type { FundraisingCategory } from "./fundraising.category";
+export type { Fundraising } from "./fundraising";

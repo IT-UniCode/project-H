@@ -1,26 +1,67 @@
 ---
 import { PaginationServer } from "@components/Pagination";
 import Layout from "@layouts/Layout.astro";
+import fundraisingsService from "@service/fundraisings.service";
 
 export const prerender = false;
 
-const { searchParams, pathname } = Astro.url;
+enum Search {
+  category = "category",
+  page = "page",
+  pageSize = "pageSize",
+}
+
+const { searchParams, pathname, href } = Astro.url;
+
+const url = Astro.url;
 
 const pagination = {
-  page: parseInt(searchParams.get("page") || "1"),
-  pageSize: parseInt(searchParams.get("pageSize") || "10"),
-  total: parseInt(searchParams.get("total") || "0"),
+  page: parseInt(searchParams.get(Search.page) || "1"),
+  pageSize: parseInt(searchParams.get(Search.pageSize) || "10"),
+  category: searchParams.get(Search.category),
 };
+
+const category = await fundraisingsService.category({ pageSize: -1 });
+const fundraisings = await fundraisingsService.getAll({
+  pageSize: pagination.pageSize,
+  page: pagination.page,
+  // field: "fundraising_category",
+  // value:
+  //   category.data.find((v) => v.slug === searchParams.get("category"))
+  //     ?.documentId || "",
+});
+
+const allCategory = new URL(href);
+allCategory.searchParams.delete(Search.category);
 ---
 
 <Layout title="Fundraisings">
-  <section class="flex-grow"></section>
+  <section class="flex-grow mx-auto">
+    <section class="flex gap-x-3">
+      <a href={allCategory}>All</a>
+      {
+        category.data.map((v) => {
+          url.searchParams.set(Search.category, v.slug);
+          return <a href={url}>{v.name}</a>;
+        })
+      }
+    </section>
+  </section>
 
   <div class="mx-auto">
     <PaginationServer
       page={pagination.page}
       pageSize={pagination.pageSize}
-      total={1}
+      total={fundraisings.meta.pagination.total}
     />
   </div>
 </Layout>
+
+<style>
+  .link {
+  }
+
+  .link:hover {
+    background: #696666;
+  }
+</style>
