@@ -28,7 +28,7 @@ export class FundraisingsController {
       ? 'populate=fundraising_category&'
       : '';
 
-    const params = getQueryParams(query, 'category');
+    const params = getQueryParams(query, 'fundraising_category');
 
     const path = `/fundraisings?populate[fundraising_category][fields]=documentId,name,slug&populate[previewImage][fields]=url,formats&fields=id,title,previewText,slug,createdAt&${includeCategories}${params}`;
     const cachedData = await this.cacheService.get(path);

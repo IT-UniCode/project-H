@@ -25,7 +25,7 @@ export class StripeService {
           price_data: {
             currency: body.currency,
             product_data: {
-              name: 'Donation',
+              name: body.merchantPaymInfo.destination || 'Donation',
             },
             unit_amount: body.amount * 100,
           },
