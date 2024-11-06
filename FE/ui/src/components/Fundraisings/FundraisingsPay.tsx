@@ -71,6 +71,7 @@ function FundraisingsPay({ fundraisingId }: FundraisingsPayProps) {
         amount: values.amount,
         currency: values.currency,
         fundraisingId,
+        redirectUrl: window.location.href,
       });
 
       setPayments((prev) => ({ ...prev, url: res.url, loading: false }));
@@ -94,10 +95,13 @@ function FundraisingsPay({ fundraisingId }: FundraisingsPayProps) {
   return (
     <section>
       <Button
-        class={clsx({
-          "animate-pulse bg-gray-600 hover:bg-gray-600":
-            payments.loading || payments.open,
-        })}
+        class={clsx(
+          {
+            "animate-pulse bg-gray-600 hover:bg-gray-600":
+              payments.loading || payments.open,
+          },
+          "text-nowrap",
+        )}
         onClick={handlerOnClick}
         disabled={payments.loading || payments.open}
       >
