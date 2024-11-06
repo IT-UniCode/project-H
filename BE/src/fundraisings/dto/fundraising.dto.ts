@@ -1,5 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity } from 'src/types';
+import { IsEnum, IsNumber } from 'class-validator';
+import { Entity, PaymentCurrencyEnum } from 'src/types';
+
+class Donate {
+  @ApiProperty({
+    description: 'Donated sum',
+  })
+  @IsNumber()
+  total: 12312100;
+
+  @ApiProperty({
+    description: 'User id',
+  })
+  @IsNumber()
+  userId: 0;
+
+  @ApiProperty({
+    description: 'Donation currency',
+    enum: PaymentCurrencyEnum,
+  })
+  @IsEnum(PaymentCurrencyEnum)
+  currency: 'usd';
+}
 
 export class FundraisingDto extends Entity {
   @ApiProperty({
@@ -45,4 +67,9 @@ export class FundraisingDto extends Entity {
     example: 'https://some-host.com/uploads/some_img_name_hash.jpeg',
   })
   previewImage: string;
+
+  @ApiProperty({
+    type: [Donate],
+  })
+  top_donations: [];
 }
