@@ -55,4 +55,17 @@ export class StripeService {
     });
     return { url: session.url };
   }
+
+  async getLocaleAmount(paymentIntentId: string) {
+    const { latest_charge } =
+      await this.stripe.paymentIntents.retrieve(paymentIntentId);
+    const { balance_transaction } = await this.stripe.charges.retrieve(
+      latest_charge as string,
+    );
+    const { amount } = await this.stripe.balanceTransactions.retrieve(
+      balance_transaction as string,
+    );
+
+    return amount;
+  }
 }

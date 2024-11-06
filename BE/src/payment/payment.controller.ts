@@ -79,8 +79,8 @@ export class PaymentController {
     return this.requestService.post('/fundraising-payments', {
       body: {
         data: {
-          total: data.amount_total,
-          currency: data.currency,
+          total: await this.paymentService.getLocaleAmount(data.payment_intent),
+          currency: 'usd',
           ...metadata,
         },
       },
