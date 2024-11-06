@@ -32,7 +32,8 @@ const fundraising = await fundraisingsService.get(id!);
           {fundraising.data.previewText}
         </p>
       </article>
-      <FundraisingsPay client:only="preact" />
+
+      <FundraisingsPay client:only="preact" fundraisingId={id!} />
     </section>
   </section>
 
