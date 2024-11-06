@@ -89,18 +89,13 @@ export class FundraisingsController {
           const { total, userId, currency } = pay;
           topDonations.push({ total, userId, currency });
         });
-      } else {
-        topDonations.push(null);
       }
 
-      if (topDonations) {
-        topDonations.sort(this.sortByTotal).slice(0, 10);
-      }
       const data = {
         data: {
           ...fetchedData.data,
           previewImage: getImageUrl(fetchedData.data.previewImage),
-          topDonations,
+          topDonations: topDonations.sort(this.sortByTotal).slice(0, 10),
         },
       };
       this.cacheService.set(path, data);

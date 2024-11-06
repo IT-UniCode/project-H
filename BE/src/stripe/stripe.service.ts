@@ -56,14 +56,32 @@ export class StripeService {
     return { url: session.url };
   }
 
+  public getType(request, rawBody) {
+    const sig = request.headers['stripe-signature'];
+
+    const event = this.stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      'whsec_emCAW0OwjNteGLwg9sVL7XgaBr52UaRX',
+    );
+
+    return event.type;
+  }
+
   async getLocaleAmount(paymentIntentId: string) {
     const { latest_charge } =
       await this.stripe.paymentIntents.retrieve(paymentIntentId);
+
     const { balance_transaction } = await this.stripe.charges.retrieve(
       latest_charge as string,
     );
+
+    if (!balance_transaction) {
+      throw new BadRequestException();
+    }
+
     const { amount } = await this.stripe.balanceTransactions.retrieve(
-      balance_transaction as string,
+      String(balance_transaction),
     );
 
     return amount;

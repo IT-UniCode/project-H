@@ -5,6 +5,8 @@ import {
   HttpStatus,
   Param,
   Post,
+  RawBody,
+  RawBodyRequest,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -18,7 +20,6 @@ import {
 import { CheckoutBodyDto } from 'src/payment/dto/checkout.body.dto';
 // import { MonobankService } from 'src/monobank/monobank.service';
 import { StripeService } from 'src/stripe/stripe.service';
-import { CheckoutResponseDto } from './dto/checkout.response.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { WebhookBodyDto } from './dto/webhook.body.dto';
 import { RequestService } from 'src/request/request.service';
@@ -60,35 +61,44 @@ export class PaymentController {
   async webhook(
     @Body()
     body: WebhookBodyDto,
-  ): Promise<CheckoutResponseDto> {
-    const data = body.data.object;
-    const metadata = body.data.object.metadata;
+    @RawBody()
+    rawBody: Buffer,
+    @Req() req: RawBodyRequest<Request>,
+  ) {
+    if (
+      this.paymentService.getType(req, rawBody) === 'checkout.session.completed'
+    ) {
+      const data = body.data.object;
+      const metadata = body.data.object.metadata;
 
-    const fundraising = await this.requestService.get(
-      `/fundraisings/${metadata.fundraisingId}`,
-    );
+      const fundraising = await this.requestService.get(
+        `/fundraisings/${metadata.fundraisingId}`,
+      );
 
-    const localeAmount = await this.paymentService.getLocaleAmount(
-      data.payment_intent,
-    );
+      const localeAmount = await this.paymentService.getLocaleAmount(
+        data.payment_intent,
+      );
 
-    await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
-      body: {
-        data: {
-          current_sum: fundraising.data.current_sum + localeAmount / 100,
+      await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
+        body: {
+          data: {
+            current_sum: fundraising.data.current_sum + localeAmount / 100,
+          },
         },
-      },
-    });
+      });
 
-    return this.requestService.post('/fundraising-payments', {
-      body: {
-        data: {
-          total: localeAmount,
-          currency: 'usd',
-          ...metadata,
+      await this.requestService.post('/fundraising-payments', {
+        body: {
+          data: {
+            total: localeAmount,
+            currency: 'usd',
+            ...metadata,
+          },
         },
-      },
-    });
+      });
+    }
+
+    return HttpStatus.OK;
   }
 
   @ApiParam({
