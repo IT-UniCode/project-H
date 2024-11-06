@@ -1,5 +1,5 @@
 ---
-import { confMarkdownAsParagraph, confMarkdownNews } from "@helpers/index";
+import { confMarkdownAsParagraph } from "@helpers/index";
 import type { IForum } from "@interfaces/forum";
 import { marked } from "marked";
 import { routes } from "src/routes";
@@ -21,6 +21,7 @@ const textOnly = paragraphs[0].replace(/<[^>]+>/g, "");
     >
   </p>
   <article
+    class="text-gray-800"
     set:html={marked.parse(textOnly, { renderer: confMarkdownAsParagraph() })}
   />
   <p class="text-sm">{new Date(forum.createdAt).toLocaleDateString()}</p>
