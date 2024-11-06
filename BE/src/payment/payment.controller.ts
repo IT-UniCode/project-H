@@ -64,7 +64,17 @@ export class PaymentController {
     const data = body.data.object;
     const metadata = body.data.object.metadata;
 
-    await this.requestService.put(`/fundraising/${metadata.fundraisingId}`, {});
+    const fundraising = await this.requestService.get(
+      `/fundraisings/${metadata.fundraisingId}`,
+    );
+
+    await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
+      body: {
+        data: {
+          current_sum: fundraising.data.current_sum + data.amount_total / 100,
+        },
+      },
+    });
 
     return this.requestService.post('/fundraising-payments', {
       body: {
