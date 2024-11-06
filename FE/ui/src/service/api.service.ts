@@ -20,8 +20,8 @@ class ApiService {
       "Content-Type": "application/json",
       Authorization: `Bearer ${
         globalThis.window
-          ? useLocalStorage(storageName.AccessToken).get()
-          : "none"
+          ? useLocalStorage(storageName.AccessToken).get() || ""
+          : ""
       }`,
       ...init.headers,
     };

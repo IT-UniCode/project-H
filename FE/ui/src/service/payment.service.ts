@@ -7,6 +7,7 @@ class PaymentService {
     amount: number;
     currency: Currency;
     fundraisingId: string;
+    redirectUrl?: string;
   }) {
     return apiService.post<PaymentUrl>(ApiPath.paymentCheckout, { body });
   }

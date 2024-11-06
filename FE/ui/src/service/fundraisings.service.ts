@@ -10,8 +10,6 @@ import apiService from "./api.service";
 import { ApiPath } from "@constant/api.path";
 
 class FundraisingsService {
-  async create() {}
-
   async category(query: QueryApi) {
     return apiService.get<ResponseBodyList<FundraisingCategory>>(
       ApiPath.fundraisingsCategories,
