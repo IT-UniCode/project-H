@@ -6,16 +6,17 @@ import fundraisingsService from "@service/fundraisings.service";
 import clsx from "clsx";
 import { marked } from "marked";
 
+export const prerender = false;
+
 const { id, slug } = Astro.params;
 
 const fundraising = await fundraisingsService.get(id!);
 const { goal_sum, current_sum } = fundraising.data;
-const interest = 100 - current_sum / goal_sum;
+const interest = 100 - (current_sum / goal_sum) * 100;
 ---
 
 <Layout title={fundraising.data.title}>
   <section class="mb-10">
-    <!-- style=`background-image: url('${fundraising.data.previewImage}');` -->
     <div class="h-[300px] overflow-hidden">
       <img
         class="max-h-full h-full w-full object-top object-cover"
@@ -27,7 +28,7 @@ const interest = 100 - current_sum / goal_sum;
       <section
         class="flex flex-col md:flex-row justify-between md:items-center"
       >
-        <article class="">
+        <article>
           <h1 class="text-5xl">
             {fundraising.data.title}
           </h1>
@@ -40,7 +41,10 @@ const interest = 100 - current_sum / goal_sum;
       </section>
 
       <section class="flex flex-col gap-y-2 text-lg max-w-xl w-full mx-auto">
-        <p class="text-start">Goal sum: {fundraising.data.goal_sum}</p>
+        <article class="flex justify-between">
+          <p class="text-start">Goal sum: {fundraising.data.goal_sum}</p>
+          <p>{(100 - interest).toFixed(1)}%</p>
+        </article>
         <section class={clsx("h-2 w-full rounded overflow-hidden relative")}>
           <div
             class={clsx(
@@ -52,7 +56,7 @@ const interest = 100 - current_sum / goal_sum;
           </div>
           <div
             class={clsx("h-full bg-gray-300", "absolute top-0 right-0 z-10")}
-            style=`width: ${interest}%;`
+            style=`width: ${interest <= 0 ? 0 : interest}%;`
           >
           </div>
         </section>
