@@ -9,6 +9,8 @@ import { marked } from "marked";
 const { id, slug } = Astro.params;
 
 const fundraising = await fundraisingsService.get(id!);
+const { goal_sum, current_sum } = fundraising.data;
+const interest = 100 - current_sum / goal_sum;
 ---
 
 <Layout title={fundraising.data.title}>
@@ -21,20 +23,45 @@ const fundraising = await fundraisingsService.get(id!);
         alt="hero"
       />
     </div>
-    <section
-      class="flex flex-col md:flex-row justify-between md:items-center max-w-5xl w-full mx-auto"
-    >
-      <article class="">
-        <h1 class="text-5xl">
-          {fundraising.data.title}
-        </h1>
-        <p class="pl-3 pt-2">
-          {fundraising.data.previewText}
-        </p>
-      </article>
+    <div class="max-w-5xl w-full mx-auto">
+      <section
+        class="flex flex-col md:flex-row justify-between md:items-center"
+      >
+        <article class="">
+          <h1 class="text-5xl">
+            {fundraising.data.title}
+          </h1>
+          <p class="pl-3 pt-2">
+            {fundraising.data.previewText}
+          </p>
+        </article>
 
-      <FundraisingsPay client:only="preact" fundraisingId={id!} />
-    </section>
+        <FundraisingsPay client:only="preact" fundraisingId={id!} />
+      </section>
+
+      <section class="flex flex-col gap-y-2 text-lg max-w-xl w-full mx-auto">
+        <p class="text-start">Goal sum: {fundraising.data.goal_sum}</p>
+        <section class={clsx("h-2 w-full rounded overflow-hidden relative")}>
+          <div
+            class={clsx(
+              "w-full h-full ",
+              "absolute top-0",
+              "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%",
+            )}
+          >
+          </div>
+          <div
+            class={clsx("h-full bg-gray-300", "absolute top-0 right-0 z-10")}
+            style=`width: ${interest}%;`
+          >
+          </div>
+        </section>
+
+        <p class="text-end">
+          Current sum: {fundraising.data.current_sum || 0}
+        </p>
+      </section>
+    </div>
   </section>
 
   <article
