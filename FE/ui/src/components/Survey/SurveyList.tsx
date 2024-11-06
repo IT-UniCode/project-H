@@ -39,7 +39,7 @@ function SurveyList() {
 
   useEffect(() => {
     getSurvey();
-  }, []);
+  }, [isAuth]);
 
   return (
     <section>
