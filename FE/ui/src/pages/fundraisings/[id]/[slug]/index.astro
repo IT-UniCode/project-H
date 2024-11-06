@@ -1,6 +1,6 @@
 ---
 import { FundraisingsPay } from "@components/Fundraisings";
-import { confMarkdownNews } from "@helpers/index";
+import { confMarkdownNews, clamp } from "@helpers/index";
 import Layout from "@layouts/Layout.astro";
 import fundraisingsService from "@service/fundraisings.service";
 import clsx from "clsx";
@@ -10,17 +10,17 @@ export const prerender = false;
 
 const { id, slug } = Astro.params;
 
-const fundraising = await fundraisingsService.get(id!);
-const { goal_sum, current_sum } = fundraising.data;
+const { data } = await fundraisingsService.get(id!);
+const { goal_sum, current_sum } = data;
 const interest = 100 - (current_sum / goal_sum) * 100;
 ---
 
-<Layout title={fundraising.data.title}>
+<Layout title={data.title}>
   <section class="mb-10">
     <div class="h-[300px] overflow-hidden">
       <img
         class="max-h-full h-full w-full object-top object-cover"
-        src=`${fundraising.data.previewImage}`
+        src=`${data.previewImage}`
         alt="hero"
       />
     </div>
@@ -28,22 +28,24 @@ const interest = 100 - (current_sum / goal_sum) * 100;
       <section
         class="flex flex-col md:flex-row justify-between md:items-center"
       >
-        <article>
+        <article class="pr-4">
           <h1 class="text-5xl">
-            {fundraising.data.title}
+            {data.title}
           </h1>
           <p class="pl-3 pt-2">
-            {fundraising.data.previewText}
+            {data.previewText}
           </p>
         </article>
 
         <FundraisingsPay client:only="preact" fundraisingId={id!} />
       </section>
 
-      <section class="flex flex-col gap-y-2 text-lg max-w-xl w-full mx-auto">
+      <section
+        class="flex flex-col gap-y-2 text-lg max-w-xl w-full mx-auto mt-2"
+      >
         <article class="flex justify-between">
-          <p class="text-start">Goal sum: {fundraising.data.goal_sum}</p>
-          <p>{(100 - interest).toFixed(1)}%</p>
+          <p class="text-start">Goal sum: {data.goal_sum}</p>
+          <p>{clamp(100 - interest, 0, 100).toFixed(1)}%</p>
         </article>
         <section class={clsx("h-2 w-full rounded overflow-hidden relative")}>
           <div
@@ -62,7 +64,7 @@ const interest = 100 - (current_sum / goal_sum) * 100;
         </section>
 
         <p class="text-end">
-          Current sum: {fundraising.data.current_sum || 0}
+          Current sum: {data.current_sum || 0}
         </p>
       </section>
     </div>
@@ -70,10 +72,21 @@ const interest = 100 - (current_sum / goal_sum) * 100;
 
   <article
     class="max-w-4xl w-full mx-auto px-2 sm:px-0"
-    set:html={marked.parse(fundraising.data.content, {
+    set:html={marked.parse(data.content, {
       renderer: confMarkdownNews(),
     })}
   />
+
+  <section class="max-w-4xl w-full mx-auto px-2 sm:px-0 mt-4">
+    <p class="text-2xl">Top donation</p>
+    <ol class="flex flex-col gap-y-2 mt-2">
+      {
+        data.topDonations.map((v) => (
+          <li class="list-decimal list-inside">{v?.total || 10 / 100}</li>
+        ))
+      }
+    </ol>
+  </section>
 </Layout>
 
 <style>
