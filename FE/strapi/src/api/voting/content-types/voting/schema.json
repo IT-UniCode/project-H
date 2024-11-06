@@ -13,17 +13,21 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "content": {
-      "type": "richtext"
+      "type": "richtext",
+      "required": true
     },
     "state": {
       "type": "enumeration",
       "enum": [
         "active",
         "finish"
-      ]
+      ],
+      "default": "active",
+      "required": true
     },
     "answers": {
       "type": "relation",
@@ -34,7 +38,8 @@
     "variants": {
       "type": "component",
       "repeatable": true,
-      "component": "variant.variant"
+      "component": "variant.variant",
+      "required": true
     },
     "slug": {
       "type": "string",

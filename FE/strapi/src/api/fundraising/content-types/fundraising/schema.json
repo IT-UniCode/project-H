@@ -4,7 +4,8 @@
   "info": {
     "singularName": "fundraising",
     "pluralName": "fundraisings",
-    "displayName": "Fundraising"
+    "displayName": "Fundraising",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,28 +13,33 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
-    },
-    "previewText": {
       "type": "string",
       "required": true
     },
-    "previewImage": {
-      "allowedTypes": [
-        "images"
-      ],
-      "type": "media",
-      "multiple": false,
+    "previewText": {
+      "type": "text",
       "required": true
     },
+    "previewImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
     "content": {
-      "type": "richtext"
+      "type": "richtext",
+      "required": true
     },
     "goal_sum": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "current_sum": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0,
+      "required": true
     },
     "slug": {
       "type": "string",
@@ -47,7 +53,9 @@
         "finish",
         "pending",
         "rejected"
-      ]
+      ],
+      "required": true,
+      "default": "pending"
     },
     "fundraising_category": {
       "type": "relation",

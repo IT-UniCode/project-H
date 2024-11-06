@@ -15,10 +15,11 @@
     "surveyId": {
       "type": "string",
       "unique": false,
-      "required": false
+      "required": true
     },
     "userId": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "survey": {
       "type": "relation",
@@ -27,7 +28,8 @@
       "inversedBy": "survey_answers"
     },
     "answers": {
-      "type": "json"
+      "type": "json",
+      "required": true
     }
   }
 }

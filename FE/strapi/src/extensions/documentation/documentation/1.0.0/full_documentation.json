@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-11-06T09:40:46.154Z"
+    "x-generation-date": "2024-11-06T11:46:43.535Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -6557,6 +6557,11 @@
         ],
         "properties": {
           "data": {
+            "required": [
+              "votingId",
+              "userId",
+              "answer"
+            ],
             "type": "object",
             "properties": {
               "votingId": {
@@ -6637,6 +6642,11 @@
       },
       "Answer": {
         "type": "object",
+        "required": [
+          "votingId",
+          "userId",
+          "answer"
+        ],
         "properties": {
           "id": {
             "type": "number"
@@ -7160,6 +7170,7 @@
         "properties": {
           "data": {
             "required": [
+              "name",
               "slug"
             ],
             "type": "object",
@@ -7243,6 +7254,7 @@
       "Category": {
         "type": "object",
         "required": [
+          "name",
           "slug"
         ],
         "properties": {
@@ -8087,7 +8099,11 @@
         "properties": {
           "data": {
             "required": [
-              "slug"
+              "title",
+              "userId",
+              "content",
+              "slug",
+              "state"
             ],
             "type": "object",
             "properties": {
@@ -8169,7 +8185,11 @@
       "Forum": {
         "type": "object",
         "required": [
-          "slug"
+          "title",
+          "userId",
+          "content",
+          "slug",
+          "state"
         ],
         "properties": {
           "id": {
@@ -8591,9 +8611,14 @@
         "properties": {
           "data": {
             "required": [
+              "title",
               "previewText",
               "previewImage",
-              "slug"
+              "content",
+              "goal_sum",
+              "current_sum",
+              "slug",
+              "state"
             ],
             "type": "object",
             "properties": {
@@ -8705,9 +8730,14 @@
       "Fundraising": {
         "type": "object",
         "required": [
+          "title",
           "previewText",
           "previewImage",
-          "slug"
+          "content",
+          "goal_sum",
+          "current_sum",
+          "slug",
+          "state"
         ],
         "properties": {
           "id": {
@@ -9713,6 +9743,7 @@
         "properties": {
           "data": {
             "required": [
+              "name",
               "slug"
             ],
             "type": "object",
@@ -9796,6 +9827,7 @@
       "FundraisingCategory": {
         "type": "object",
         "required": [
+          "name",
           "slug"
         ],
         "properties": {
@@ -10656,7 +10688,10 @@
           "data": {
             "required": [
               "fundraisingId",
-              "paymentApi"
+              "paymentApi",
+              "total",
+              "currency",
+              "userId"
             ],
             "type": "object",
             "properties": {
@@ -10740,7 +10775,10 @@
         "type": "object",
         "required": [
           "fundraisingId",
-          "paymentApi"
+          "paymentApi",
+          "total",
+          "currency",
+          "userId"
         ],
         "properties": {
           "id": {
@@ -11164,6 +11202,8 @@
         "properties": {
           "data": {
             "required": [
+              "title",
+              "content",
               "slug",
               "previewText",
               "previewImage"
@@ -11263,6 +11303,8 @@
       "New": {
         "type": "object",
         "required": [
+          "title",
+          "content",
           "slug",
           "previewText",
           "previewImage"
@@ -12241,6 +12283,10 @@
         "properties": {
           "data": {
             "required": [
+              "name",
+              "content",
+              "state",
+              "variants",
               "slug"
             ],
             "type": "object",
@@ -12340,6 +12386,10 @@
       "Survey": {
         "type": "object",
         "required": [
+          "name",
+          "content",
+          "state",
+          "variants",
           "slug"
         ],
         "properties": {
@@ -12864,6 +12914,11 @@
         ],
         "properties": {
           "data": {
+            "required": [
+              "surveyId",
+              "userId",
+              "answers"
+            ],
             "type": "object",
             "properties": {
               "surveyId": {
@@ -12942,6 +12997,11 @@
       },
       "SurveyAnswer": {
         "type": "object",
+        "required": [
+          "surveyId",
+          "userId",
+          "answers"
+        ],
         "properties": {
           "id": {
             "type": "number"
@@ -13447,6 +13507,10 @@
         "properties": {
           "data": {
             "required": [
+              "name",
+              "content",
+              "state",
+              "variants",
               "slug"
             ],
             "type": "object",
@@ -13546,6 +13610,10 @@
       "Voting": {
         "type": "object",
         "required": [
+          "name",
+          "content",
+          "state",
+          "variants",
           "slug"
         ],
         "properties": {

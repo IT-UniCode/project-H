@@ -13,22 +13,27 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "content": {
-      "type": "richtext"
+      "type": "richtext",
+      "required": true
     },
     "state": {
       "type": "enumeration",
       "enum": [
         "active",
         "finish"
-      ]
+      ],
+      "required": true,
+      "default": "active"
     },
     "variants": {
       "type": "component",
       "repeatable": true,
-      "component": "variant.variant"
+      "component": "variant.variant",
+      "required": true
     },
     "slug": {
       "type": "string",

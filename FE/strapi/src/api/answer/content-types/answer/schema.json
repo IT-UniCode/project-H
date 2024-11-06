@@ -13,13 +13,16 @@
   "pluginOptions": {},
   "attributes": {
     "votingId": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "userId": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "answer": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "voting": {
       "type": "relation",
