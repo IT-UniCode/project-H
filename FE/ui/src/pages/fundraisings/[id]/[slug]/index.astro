@@ -23,7 +23,7 @@ const interest = 100 - current_sum / goal_sum;
         alt="hero"
       />
     </div>
-    <div class="max-w-5xl w-full mx-auto">
+    <div class="max-w-5xl w-full mx-auto px-2 sm:px-0">
       <section
         class="flex flex-col md:flex-row justify-between md:items-center"
       >
@@ -65,7 +65,7 @@ const interest = 100 - current_sum / goal_sum;
   </section>
 
   <article
-    class="max-w-4xl w-full mx-auto"
+    class="max-w-4xl w-full mx-auto px-2 sm:px-0"
     set:html={marked.parse(fundraising.data.content, {
       renderer: confMarkdownNews(),
     })}
