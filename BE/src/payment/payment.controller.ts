@@ -106,7 +106,7 @@ export class PaymentController {
         }
 
         if (payments[id]) {
-          payments[id].sort(this.sortByTotal);
+          payments[id].sort(this.sortByTotal).slice(0, 10);
         }
       }),
     );
