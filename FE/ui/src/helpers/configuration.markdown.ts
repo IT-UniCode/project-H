@@ -29,8 +29,8 @@ export function confMarkdownNews() {
 export function confMarkdownAsParagraph() {
   const renderer = new marked.Renderer();
 
-  renderer.paragraph = () => {
-    return ``;
+  renderer.text = ({ text }) => {
+    return `<p class='text-base'>${text}</p>`;
   };
 
   return renderer;
