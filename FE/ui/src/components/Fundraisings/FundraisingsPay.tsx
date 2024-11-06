@@ -51,8 +51,6 @@ function FundraisingsPay({ fundraisingId }: FundraisingsPayProps) {
       currency: {},
     },
     async onSubmit(values, context) {
-      console.log(values);
-
       if (!values.amount || !parseInt(values.amount)) {
         return;
       }
@@ -75,10 +73,8 @@ function FundraisingsPay({ fundraisingId }: FundraisingsPayProps) {
         fundraisingId,
       });
 
-      console.log(res);
-
       setPayments((prev) => ({ ...prev, url: res.url, loading: false }));
-      window.open(res.url, "_blank", "noopener,noreferrer");
+      window.open(res.url, "_self", "noopener,noreferrer");
     },
   });
 
