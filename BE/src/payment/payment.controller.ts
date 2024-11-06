@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -9,6 +11,7 @@ import {
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -18,8 +21,9 @@ import { StripeService } from 'src/stripe/stripe.service';
 import { CheckoutResponseDto } from './dto/checkout.response.dto';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { WebhookBodyDto } from './dto/webhook.body.dto';
-import { AuthGuard } from 'src/guard/user.guard';
 import { RequestService } from 'src/request/request.service';
+import { OptionalAuthGuard } from 'src/guard/optional.auth.guard';
+import { GetListDto } from './dto/get.list.dto';
 
 @ApiTags('payment')
 @Controller('payment')
@@ -29,19 +33,26 @@ export class PaymentController {
     private readonly requestService: RequestService,
   ) {}
 
+  private readonly sortByTotal = (a, b) => {
+    return (
+      b.total * (b.currency === 'uah' ? 1 : b.currency === 'usd' ? 2 : 3) -
+      a.total * (a.currency === 'uah' ? 1 : a.currency === 'usd' ? 2 : 3)
+    );
+  };
+
   @ApiResponse({
     status: HttpStatus.CREATED,
     example: { url: 'https://pay.monobank.ua/2411049WJtiaShSv7qmJ' },
   })
+  @UseGuards(OptionalAuthGuard)
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
   @Post('/checkout')
   async getCheckoutUrl(
     @Body()
     body: CheckoutBodyDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.paymentService.pay(body, req.user.id);
+    return this.paymentService.pay(body, req.user?.id || 0);
   }
 
   @ApiExcludeEndpoint()
@@ -62,5 +73,44 @@ export class PaymentController {
         },
       },
     });
+  }
+
+  @ApiParam({
+    name: 'id',
+    type: String,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: GetListDto,
+  })
+  @Get('/list/:id')
+  async getList(@Param() params: { id: string }) {
+    const payments = {};
+    const ids = params.id.split(',');
+
+    await Promise.all(
+      ids.map(async (id) => {
+        payments[id] = [];
+
+        const ans = await this.requestService.get(
+          `/fundraising-payments?filters[fundraisingId][$eq]=${id}&pagination[limit]=30&fields=total,userId,currency&sort[0]=currency&sort[1]=total`,
+        );
+
+        if (ans.data.length > 0) {
+          ans.data.forEach((pay) => {
+            const { total, userId, currency } = pay;
+            payments[id].push({ total, userId, currency });
+          });
+        } else {
+          payments[id] = null;
+        }
+
+        if (payments[id]) {
+          payments[id].sort(this.sortByTotal);
+        }
+      }),
+    );
+
+    return payments;
   }
 }
