@@ -14,6 +14,13 @@ export class FundraisingsController {
     private readonly cacheService: CacheService,
   ) {}
 
+  private readonly sortByTotal = (a, b) => {
+    return (
+      b.total * (b.currency === 'uah' ? 1 : b.currency === 'usd' ? 2 : 3) -
+      a.total * (a.currency === 'uah' ? 1 : a.currency === 'usd' ? 2 : 3)
+    );
+  };
+
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
@@ -71,10 +78,29 @@ export class FundraisingsController {
       const fetchedData = await this.requestService.get(
         `${path}?populate[fundraising_category][fields]=documentId,name,slug&populate[previewImage][fields]=url,formats`,
       );
+      const payments = await this.requestService.get(
+        `/fundraising-payments?filters[fundraisingId][$eq]=${params.id}&pagination[limit]=30&fields=total,userId,currency&sort[0]=currency&sort[1]=total`,
+      );
+
+      const topDonations = [];
+
+      if (payments.data.length > 0) {
+        payments.data.forEach((pay) => {
+          const { total, userId, currency } = pay;
+          topDonations.push({ total, userId, currency });
+        });
+      } else {
+        topDonations.push(null);
+      }
+
+      if (topDonations) {
+        topDonations.sort(this.sortByTotal).slice(0, 10);
+      }
       const data = {
         data: {
           ...fetchedData.data,
           previewImage: getImageUrl(fetchedData.data.previewImage),
+          topDonations,
         },
       };
       this.cacheService.set(path, data);

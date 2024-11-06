@@ -30,7 +30,7 @@ export class StripeService {
     });
 
     const session = await this.stripe.checkout.sessions.create({
-      success_url: process.env.STRIPE_SUCCESS_URL,
+      success_url: body?.redirectUrl || process.env.STRIPE_SUCCESS_URL,
       mode: 'payment',
       line_items: [
         {

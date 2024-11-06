@@ -8,8 +8,13 @@ export enum CommentsDocumentType {
   forums = 'forums',
 }
 
-export enum MonobankCurrencyEnum {
+export enum PaymentCurrencyCodeEnum {
   usd = '840',
   uah = '980',
   eur = '978',
+}
+export enum PaymentCurrencyEnum {
+  uah = 'uah',
+  usd = 'usd',
+  eur = 'eur',
 }

@@ -4,7 +4,8 @@
   "info": {
     "singularName": "fundraising-category",
     "pluralName": "fundraising-categories",
-    "displayName": "FundraisingCategory"
+    "displayName": "FundraisingCategory",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,7 +13,8 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "slug": {
       "type": "string",

@@ -64,6 +64,18 @@ export class PaymentController {
     const data = body.data.object;
     const metadata = body.data.object.metadata;
 
+    const fundraising = await this.requestService.get(
+      `/fundraisings/${metadata.fundraisingId}`,
+    );
+
+    await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
+      body: {
+        data: {
+          current_sum: fundraising.data.current_sum + data.amount_total / 100,
+        },
+      },
+    });
+
     return this.requestService.post('/fundraising-payments', {
       body: {
         data: {
@@ -85,32 +97,32 @@ export class PaymentController {
   })
   @Get('/list/:id')
   async getList(@Param() params: { id: string }) {
-    const payments = {};
+    const paymentsList = {};
     const ids = params.id.split(',');
 
     await Promise.all(
       ids.map(async (id) => {
-        payments[id] = [];
+        paymentsList[id] = [];
 
-        const ans = await this.requestService.get(
+        const payments = await this.requestService.get(
           `/fundraising-payments?filters[fundraisingId][$eq]=${id}&pagination[limit]=30&fields=total,userId,currency&sort[0]=currency&sort[1]=total`,
         );
 
-        if (ans.data.length > 0) {
-          ans.data.forEach((pay) => {
+        if (payments.data.length > 0) {
+          payments.data.forEach((pay) => {
             const { total, userId, currency } = pay;
-            payments[id].push({ total, userId, currency });
+            paymentsList[id].push({ total, userId, currency });
           });
         } else {
-          payments[id] = null;
+          paymentsList[id] = null;
         }
 
-        if (payments[id]) {
-          payments[id].sort(this.sortByTotal).slice(0, 10);
+        if (paymentsList[id]) {
+          paymentsList[id].sort(this.sortByTotal).slice(0, 10);
         }
       }),
     );
 
-    return payments;
+    return paymentsList;
   }
 }
