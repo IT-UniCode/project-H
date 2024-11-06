@@ -82,25 +82,25 @@ export class FundraisingsController {
         `/fundraising-payments?filters[fundraisingId][$eq]=${params.id}&pagination[limit]=30&fields=total,userId,currency&sort[0]=currency&sort[1]=total`,
       );
 
-      const top_donations = [];
+      const topDonations = [];
 
       if (payments.data.length > 0) {
         payments.data.forEach((pay) => {
           const { total, userId, currency } = pay;
-          top_donations.push({ total, userId, currency });
+          topDonations.push({ total, userId, currency });
         });
       } else {
-        top_donations.push(null);
+        topDonations.push(null);
       }
 
-      if (top_donations) {
-        top_donations.sort(this.sortByTotal).slice(0, 10);
+      if (topDonations) {
+        topDonations.sort(this.sortByTotal).slice(0, 10);
       }
       const data = {
         data: {
           ...fetchedData.data,
           previewImage: getImageUrl(fetchedData.data.previewImage),
-          top_donations,
+          topDonations,
         },
       };
       this.cacheService.set(path, data);

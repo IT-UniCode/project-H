@@ -71,5 +71,5 @@ export class FundraisingDto extends Entity {
   @ApiProperty({
     type: [Donate],
   })
-  top_donations: [];
+  topDonations: [];
 }
