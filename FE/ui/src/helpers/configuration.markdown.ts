@@ -5,54 +5,32 @@ export function confMarkdownNews() {
 
   renderer.image = ({ href, title, text }) => {
     return `
-    <div>
+    <figure>
       <img src="${href}" class="w-full" alt="${text}" title="${title || text}"/>
-    </div>
+    </figure>
   `;
   };
 
   renderer.heading = ({ depth, text }) => {
-    return `<h${depth} class='text-${6 - depth}xl'>${text}</h${depth}>`;
+    return `<h${depth} class='text-${6 - depth}xl mb-4'>${text}</h${depth}>`;
   };
 
-  renderer.listitem = ({ loose, text, raw, task, type }) => {
-    // console.log({ loose, text, raw, task, type });
-
+  renderer.listitem = ({ text }) => {
     return `<li class="list-decimal list-inside">${text}</li>`;
   };
 
-  // renderer.list = ({ loose, items, ordered, raw, start, type }) => {
-  //   console.log({ loose, items, ordered, raw, start, type });
-  //   return `<ol></ol>`;
-  // };
+  renderer.space = () => {
+    return "<br />";
+  };
 
   return renderer;
 }
 
-export function confMarldownNewsSmall() {
-  let firstImageRendered = false;
-  let firstTextRendered = false;
-
+export function confMarkdownAsParagraph() {
   const renderer = new marked.Renderer();
 
-  renderer.text = (text) => {
-    if (firstTextRendered) return "";
-
-    firstTextRendered = true;
-
-    return `<p>${text.text}</p>`;
-  };
-
-  renderer.image = ({ href, title, text }) => {
-    if (firstImageRendered) return "";
-
-    firstImageRendered = true;
-
-    return `
-    <div>
-      <img src="${href}" class="h-40" alt="${text}" title="${title || text}"/>
-    </div>
-  `;
+  renderer.paragraph = () => {
+    return ``;
   };
 
   return renderer;
@@ -64,10 +42,6 @@ export function confMarkdownForum() {
   renderer.heading = ({ depth, text }) => {
     return `<h${depth} class='text-${6 - depth}xl'>${text}</h${depth}>`;
   };
-
-  // renderer.paragraph = ({ raw, text, tokens, type }) => {
-  //   return `<p class='text-base'>${text}</p>`;
-  // };
 
   renderer.listitem = ({ text }) => {
     return `<li class='list-decimal list-inside'>${text}</li>`;

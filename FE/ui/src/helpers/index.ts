@@ -1,8 +1,4 @@
-export {
-  confMarkdownNews,
-  confMarldownNewsSmall,
-  confMarkdownForum,
-} from "./configuration.markdown";
+export { confMarkdownNews, confMarkdownForum } from "./configuration.markdown";
 import { extractFirstTextAndImage } from "./extractors";
 import { useLocalStorage } from "./localStorageHelper";
 import { useSessionStorage } from "./sessionStorageHelper";
