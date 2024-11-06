@@ -1,3 +1,4 @@
+import type { Donation } from "./donation";
 import type { FundraisingCategory } from "./fundraising.category";
 
 export interface Fundraising {
@@ -26,4 +27,5 @@ export interface FundraisingDetails {
   publishedAt: string;
   fundraising_category: FundraisingCategory;
   previewImage: string;
+  topDonations: Donation[];
 }
