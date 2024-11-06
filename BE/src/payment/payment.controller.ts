@@ -68,10 +68,14 @@ export class PaymentController {
       `/fundraisings/${metadata.fundraisingId}`,
     );
 
+    const localeAmount = await this.paymentService.getLocaleAmount(
+      data.payment_intent,
+    );
+
     await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
       body: {
         data: {
-          current_sum: fundraising.data.current_sum + data.amount_total / 100,
+          current_sum: fundraising.data.current_sum + localeAmount / 100,
         },
       },
     });
@@ -79,7 +83,7 @@ export class PaymentController {
     return this.requestService.post('/fundraising-payments', {
       body: {
         data: {
-          total: await this.paymentService.getLocaleAmount(data.payment_intent),
+          total: localeAmount,
           currency: 'usd',
           ...metadata,
         },
