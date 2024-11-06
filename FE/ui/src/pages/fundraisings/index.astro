@@ -56,9 +56,7 @@ allCategory.searchParams.delete(Search.category);
       }
     </section>
 
-    <section
-      class="flex flex-col divide-y divide-dashed max-w-6xl w-full mx-auto"
-    >
+    <section class="flex flex-col max-w-6xl w-full mx-auto">
       {fundraisings.data.map((v) => <FundraisingsCard data={v} />)}
     </section>
   </section>
