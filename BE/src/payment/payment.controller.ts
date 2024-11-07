@@ -25,12 +25,14 @@ import { WebhookBodyDto } from './dto/webhook.body.dto';
 import { RequestService } from 'src/request/request.service';
 import { OptionalAuthGuard } from 'src/guard/optional.auth.guard';
 import { GetListDto } from './dto/get.list.dto';
+import { StripeWebhookService } from 'src/stripe/stripe.webhook.service';
 
 @ApiTags('payment')
 @Controller('payment')
 export class PaymentController {
   constructor(
     private readonly paymentService: StripeService,
+    private readonly webhookService: StripeWebhookService,
     private readonly requestService: RequestService,
   ) {}
 
@@ -66,45 +68,16 @@ export class PaymentController {
     @Req() req: RawBodyRequest<Request>,
   ) {
     const eventType = this.paymentService.getType(req, rawBody);
-    if (eventType === 'checkout.session.completed') {
-      const data = body.data.object;
-      const metadata = body.data.object.metadata;
-
-      this.paymentService.updatePayment(data.payment_intent, metadata);
-    } else if (eventType === 'charge.updated') {
-      const { balance_transaction, payment_intent } = body.data.object;
-
-      const amount =
-        await this.paymentService.getLocaleAmount(balance_transaction);
-
-      const metadata = await this.paymentService.getMetadata(payment_intent);
-
-      const fundraising = await this.requestService.get(
-        `/fundraisings/${metadata.fundraisingId}?fields=current_sum`,
-      );
-
-      await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
-        body: {
-          data: {
-            current_sum: Number(
-              fundraising.data.current_sum + amount / 100,
-            ).toFixed(0),
-          },
-        },
-      });
-
-      await this.requestService.post('/fundraising-payments', {
-        body: {
-          data: {
-            total: amount,
-            currency: 'usd',
-            ...metadata,
-          },
-        },
-      });
+    switch (eventType) {
+      case 'checkout.session.completed':
+        this.webhookService.sessionHandler(body);
+        break;
+      case 'charge.updated':
+        this.webhookService.chargeHandler(body);
+        break;
+      default:
+        return HttpStatus.OK;
     }
-
-    return HttpStatus.OK;
   }
 
   @ApiParam({
