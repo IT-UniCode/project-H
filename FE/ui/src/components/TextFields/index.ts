@@ -1,4 +1,5 @@
 import TextFieldAstro from "./TextField.astro";
-import TextField from "./TextFiels";
+import TextField from "./TextField";
+import TextArea from "./TextArea";
 
-export { TextFieldAstro, TextField };
+export { TextFieldAstro, TextField, TextArea };
