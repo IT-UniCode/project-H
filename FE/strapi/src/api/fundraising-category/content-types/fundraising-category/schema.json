@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fundraising_categories",
+  "info": {
+    "singularName": "fundraising-category",
+    "pluralName": "fundraising-categories",
+    "displayName": "FundraisingCategory",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "required": true
+    },
+    "fundraisings": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::fundraising.fundraising",
+      "mappedBy": "fundraising_category"
+    }
+  }
+}

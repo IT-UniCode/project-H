@@ -507,9 +507,9 @@ export interface ApiAnswerAnswer extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    votingId: Schema.Attribute.String;
-    userId: Schema.Attribute.Integer;
-    answer: Schema.Attribute.String;
+    votingId: Schema.Attribute.String & Schema.Attribute.Required;
+    userId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    answer: Schema.Attribute.String & Schema.Attribute.Required;
     voting: Schema.Attribute.Relation<'manyToOne', 'api::voting.voting'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -539,7 +539,7 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    name: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     news: Schema.Attribute.Relation<'oneToMany', 'api::new.new'>;
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
@@ -572,13 +572,15 @@ export interface ApiForumForum extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    title: Schema.Attribute.String;
-    userId: Schema.Attribute.Integer;
-    content: Schema.Attribute.RichText;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    userId: Schema.Attribute.Integer & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
-    state: Schema.Attribute.Enumeration<['active', 'finish']>;
+    state: Schema.Attribute.Enumeration<['active', 'finish']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'active'>;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -588,6 +590,125 @@ export interface ApiForumForum extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::forum.forum'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFundraisingFundraising extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraisings';
+  info: {
+    singularName: 'fundraising';
+    pluralName: 'fundraisings';
+    displayName: 'Fundraising';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    previewText: Schema.Attribute.Text & Schema.Attribute.Required;
+    previewImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
+    goal_sum: Schema.Attribute.Integer & Schema.Attribute.Required;
+    current_sum: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    state: Schema.Attribute.Enumeration<
+      ['active', 'finish', 'pending', 'rejected']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending'>;
+    fundraising_category: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::fundraising-category.fundraising-category'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising.fundraising'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFundraisingCategoryFundraisingCategory
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraising_categories';
+  info: {
+    singularName: 'fundraising-category';
+    pluralName: 'fundraising-categories';
+    displayName: 'FundraisingCategory';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    slug: Schema.Attribute.String & Schema.Attribute.Required;
+    fundraisings: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising.fundraising'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising-category.fundraising-category'
+    > &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiFundraisingPaymentFundraisingPayment
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'fundraising_payments';
+  info: {
+    singularName: 'fundraising-payment';
+    pluralName: 'fundraising-payments';
+    displayName: 'FundraisingPayment';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    fundraisingId: Schema.Attribute.String & Schema.Attribute.Required;
+    paymentApi: Schema.Attribute.String & Schema.Attribute.Required;
+    total: Schema.Attribute.Integer & Schema.Attribute.Required;
+    currency: Schema.Attribute.Enumeration<['uah', 'eur', 'usd']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'uah'>;
+    userId: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
+    createdAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::fundraising-payment.fundraising-payment'
+    > &
       Schema.Attribute.Private;
   };
 }
@@ -604,13 +725,13 @@ export interface ApiNewNew extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    title: Schema.Attribute.String;
-    content: Schema.Attribute.RichText;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
-    previewText: Schema.Attribute.String & Schema.Attribute.Required;
+    previewText: Schema.Attribute.Text & Schema.Attribute.Required;
     previewImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -637,10 +758,13 @@ export interface ApiSurveySurvey extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    name: Schema.Attribute.String;
-    content: Schema.Attribute.RichText;
-    state: Schema.Attribute.Enumeration<['active', 'finish']>;
-    variants: Schema.Attribute.Component<'variant.variant', true>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
+    state: Schema.Attribute.Enumeration<['active', 'finish']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'active'>;
+    variants: Schema.Attribute.Component<'variant.variant', true> &
+      Schema.Attribute.Required;
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
@@ -677,10 +801,10 @@ export interface ApiSurveyAnswerSurveyAnswer
     draftAndPublish: true;
   };
   attributes: {
-    surveyId: Schema.Attribute.String;
-    userId: Schema.Attribute.Integer;
+    surveyId: Schema.Attribute.String & Schema.Attribute.Required;
+    userId: Schema.Attribute.Integer & Schema.Attribute.Required;
     survey: Schema.Attribute.Relation<'manyToOne', 'api::survey.survey'>;
-    answers: Schema.Attribute.JSON;
+    answers: Schema.Attribute.JSON & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
@@ -709,11 +833,14 @@ export interface ApiVotingVoting extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    name: Schema.Attribute.String;
-    content: Schema.Attribute.RichText;
-    state: Schema.Attribute.Enumeration<['active', 'finish']>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
+    state: Schema.Attribute.Enumeration<['active', 'finish']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'active'>;
     answers: Schema.Attribute.Relation<'oneToMany', 'api::answer.answer'>;
-    variants: Schema.Attribute.Component<'variant.variant', true>;
+    variants: Schema.Attribute.Component<'variant.variant', true> &
+      Schema.Attribute.Required;
     slug: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
@@ -1118,6 +1245,9 @@ declare module '@strapi/strapi' {
       'api::answer.answer': ApiAnswerAnswer;
       'api::category.category': ApiCategoryCategory;
       'api::forum.forum': ApiForumForum;
+      'api::fundraising.fundraising': ApiFundraisingFundraising;
+      'api::fundraising-category.fundraising-category': ApiFundraisingCategoryFundraisingCategory;
+      'api::fundraising-payment.fundraising-payment': ApiFundraisingPaymentFundraisingPayment;
       'api::new.new': ApiNewNew;
       'api::survey.survey': ApiSurveySurvey;
       'api::survey-answer.survey-answer': ApiSurveyAnswerSurveyAnswer;

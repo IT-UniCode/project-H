@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "fundraising_payments",
+  "info": {
+    "singularName": "fundraising-payment",
+    "pluralName": "fundraising-payments",
+    "displayName": "FundraisingPayment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "fundraisingId": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "required": true
+    },
+    "paymentApi": {
+      "type": "string",
+      "regex": "^[^\\s/\\\\]+$",
+      "required": true
+    },
+    "total": {
+      "type": "integer",
+      "required": true
+    },
+    "currency": {
+      "type": "enumeration",
+      "enum": [
+        "uah",
+        "eur",
+        "usd"
+      ],
+      "default": "uah",
+      "required": true
+    },
+    "userId": {
+      "type": "integer",
+      "required": true,
+      "default": 0
+    }
+  }
+}
