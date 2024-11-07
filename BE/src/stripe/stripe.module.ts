@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RequestService } from 'src/request/request.service';
+import { StripeWebhookService } from './stripe.webhook.service';
 
 @Module({
   providers: [StripeService],
@@ -13,6 +14,7 @@ export class StripeModule {
       imports: [ConfigModule.forRoot()],
       providers: [
         StripeService,
+        StripeWebhookService,
         RequestService,
         {
           provide: 'STRIPE_API_KEY',
@@ -21,7 +23,7 @@ export class StripeModule {
           inject: [ConfigService],
         },
       ],
-      exports: [StripeService],
+      exports: [StripeService, StripeWebhookService],
     };
   }
 }
