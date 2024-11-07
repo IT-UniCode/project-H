@@ -15,14 +15,16 @@ const textOnly = paragraphs[0].replace(/<[^>]+>/g, "");
 ---
 
 <section class="px-3 py-2 border rounded hover:shadow-xl duration-1000">
-  <p class="text-xl">
+  <p class="text-xl text-blue-500 hover:text-blue-800 first-letter:uppercase">
     <a href={routes.Forum + `/${forum.documentId}/${forum.slug}`}
       >{forum.title}</a
     >
   </p>
   <article
     class="text-gray-800"
-    set:html={marked.parse(textOnly, { renderer: confMarkdownAsParagraph() })}
+    set:html={marked.parse(textOnly, {
+      renderer: confMarkdownAsParagraph({ classText: "line-clamp-2 my-1" }),
+    })}
   />
   <p class="text-sm">{new Date(forum.createdAt).toLocaleDateString()}</p>
 </section>
