@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import Comments from "./Comments";
-import { TextField } from "@components/TextFields";
+import { TextArea, TextField } from "@components/TextFields";
 import commentService from "@service/comment.service";
 import type { IComments } from "@interfaces/comments";
 import Button from "@components/Button/Button";
@@ -25,7 +25,7 @@ function CommentsList({ documentId, documentType }: CommentsListProps) {
       data: [],
       meta: { pagination: { page: 1, pageSize: 3, pageCount: 0, total: 0 } },
     },
-    pagination: { page: 1, pageSize: 3 },
+    pagination: { page: 1, pageSize: 10 },
   });
   const { isAuth } = useAuth();
   const { onSubmit: useOnSubmit, keys } = useForm<{ content: string }>({
@@ -88,7 +88,12 @@ function CommentsList({ documentId, documentType }: CommentsListProps) {
       <p class="text-2xl mb-2">Comments</p>
       {isAuth && (
         <form onSubmit={useOnSubmit} class="flex flex-col gap-y-4 mb-8">
-          <TextField type="text" placeholder="Comments" name={keys.content} />
+          <TextArea
+            type="text"
+            placeholder="Comments"
+            name={keys.content}
+            class="min-h-28 max-h-64"
+          />
           <Button class=" justify-self-end ml-auto">Submit</Button>
         </form>
       )}

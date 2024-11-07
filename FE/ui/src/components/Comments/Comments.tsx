@@ -14,7 +14,9 @@ function Comments({ comment }: CommentsProps) {
         Date created: {date.toLocaleDateString()} {date.toLocaleTimeString()}
       </p>
       <div class="bg-black w-full h-[1px] my-1"></div>
-      <p class="text-xl">{comment.content}</p>
+      <p class="text-xl max-h-52 overflow-y-auto whitespace-pre-line">
+        {comment.content}
+      </p>
     </section>
   );
 }
