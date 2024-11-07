@@ -14,7 +14,7 @@ const { pathname } = Astro.url;
   <div>
     <p class="px-2 py-1 bg-gray-200 w-fit">{data.fundraising_category.name}</p>
     <article class="p-4">
-      <h2 class="text-3xl mb-2">
+      <h2 class="text-3xl mb-2 hover:text-blue-900">
         <a
           class="line-clamp-1"
           href={pathname + `/${data.documentId}/${data.slug}`}>{data.title}</a
