@@ -62,7 +62,7 @@ export class StripeService {
     const event = this.stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      'whsec_emCAW0OwjNteGLwg9sVL7XgaBr52UaRX',
+      process.env.STRIPE_WEBHOOK_SECRET,
     );
 
     return event.type;
@@ -77,11 +77,13 @@ export class StripeService {
     );
 
     if (!balance_transaction) {
-      throw new BadRequestException();
+      throw new BadRequestException(
+        'Balance transaction object does not contains',
+      );
     }
 
     const { amount } = await this.stripe.balanceTransactions.retrieve(
-      String(balance_transaction),
+      balance_transaction as string,
     );
 
     return amount;

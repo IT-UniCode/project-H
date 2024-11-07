@@ -72,7 +72,7 @@ export class PaymentController {
       const metadata = body.data.object.metadata;
 
       const fundraising = await this.requestService.get(
-        `/fundraisings/${metadata.fundraisingId}`,
+        `/fundraisings/${metadata.fundraisingId}?fields=current_sum`,
       );
 
       const localeAmount = await this.paymentService.getLocaleAmount(
@@ -82,7 +82,9 @@ export class PaymentController {
       await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
         body: {
           data: {
-            current_sum: fundraising.data.current_sum + localeAmount / 100,
+            current_sum: Number(
+              fundraising.data.current_sum + localeAmount / 100,
+            ).toFixed(0),
           },
         },
       });
