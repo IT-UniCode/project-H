@@ -1,5 +1,7 @@
 ---
+import { confMarkdownAsParagraph } from "@helpers/index";
 import type { IForum } from "@interfaces/forum";
+import { marked } from "marked";
 import { routes } from "src/routes";
 
 interface Props {
@@ -7,17 +9,22 @@ interface Props {
 }
 
 const { forum } = Astro.props;
+
+const paragraphs = forum.content.split("\n");
+const textOnly = paragraphs[0].replace(/<[^>]+>/g, "");
 ---
 
 <section class="px-3 py-2 border rounded hover:shadow-xl duration-1000">
-  <p class="text-xl">
+  <p class="text-xl text-blue-500 hover:text-blue-800 first-letter:uppercase">
     <a href={routes.Forum + `/${forum.documentId}/${forum.slug}`}
       >{forum.title}</a
     >
   </p>
-  <section>
-    <span class="text-base"
-      >{new Date(forum.createdAt).toLocaleDateString()}</span
-    >
-  </section>
+  <article
+    class="text-gray-800"
+    set:html={marked.parse(textOnly, {
+      renderer: confMarkdownAsParagraph({ classText: "line-clamp-2 my-1" }),
+    })}
+  />
+  <p class="text-sm">{new Date(forum.createdAt).toLocaleDateString()}</p>
 </section>

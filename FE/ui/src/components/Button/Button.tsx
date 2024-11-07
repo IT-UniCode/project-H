@@ -1,23 +1,24 @@
 import clsx from "clsx";
-import type { ReactNode } from "preact/compat";
+import type { ButtonHTMLAttributes, ReactNode } from "preact/compat";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void;
   children?: ReactNode;
   class?: string;
 }
 
-function Button({ children, class: className, onClick }: ButtonProps) {
+function Button(props: ButtonProps) {
   return (
     <button
-      onClick={onClick}
+      {...props}
       class={clsx(
         "bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline h-auto w-auto",
         "duration-700",
-        className,
+        props.className,
+        props.class,
       )}
     >
-      {children}
+      {props.children}
     </button>
   );
 }

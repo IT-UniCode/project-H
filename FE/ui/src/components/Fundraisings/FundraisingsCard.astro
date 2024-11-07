@@ -1,0 +1,34 @@
+---
+import type { Fundraising } from "@interfaces/index";
+
+interface Props {
+  data: Fundraising;
+}
+
+const { data } = Astro.props;
+
+const { pathname } = Astro.url;
+---
+
+<section class="grid grid-cols-2">
+  <div>
+    <p class="px-2 py-1 bg-gray-200 w-fit">{data.fundraising_category.name}</p>
+    <article class="p-4">
+      <h2 class="text-3xl mb-2 hover:text-blue-900">
+        <a
+          class="line-clamp-1"
+          href={pathname + `/${data.documentId}/${data.slug}`}>{data.title}</a
+        >
+      </h2>
+      <p class="line-clamp-6">{data.previewText}</p>
+    </article>
+  </div>
+  <div class="max-h-64">
+    <img
+      class="object-cover w-full h-full object-center"
+      src={data.previewImage}
+      alt=""
+    />
+  </div>
+  <div class="col-span-2 h-[1px] bg-black"></div>
+</section>

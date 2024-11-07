@@ -36,7 +36,7 @@ const dateCreated = new Date(news.createdAt);
     class="max-w-4xl w-full mx-auto"
   />
 
-  <section class="max-w-4xl w-full mx-auto">
+  <section class="max-w-4xl w-full mx-auto mt-10">
     <CommentsList
       documentId={news.documentId}
       documentType="news"
@@ -48,17 +48,7 @@ const dateCreated = new Date(news.createdAt);
 <style is:global>
   #content p {
     max-width: 676px;
-    margin: 16px auto;
+    margin: 0px auto;
     font-size: 1.125rem;
-  }
-
-  #content > h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: 2rem;
-    margin-bottom: 12px;
   }
 </style>

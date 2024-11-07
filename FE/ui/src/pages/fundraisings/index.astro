@@ -1,0 +1,71 @@
+---
+import FundraisingsCard from "@components/Fundraisings/FundraisingsCard.astro";
+import { PaginationServer } from "@components/Pagination";
+import Layout from "@layouts/Layout.astro";
+import fundraisingsService from "@service/fundraisings.service";
+
+export const prerender = false;
+
+enum Search {
+  category = "category",
+  page = "page",
+  pageSize = "pageSize",
+}
+
+const { searchParams, pathname, href } = Astro.url;
+
+const url = Astro.url;
+
+const pagination = {
+  page: parseInt(searchParams.get(Search.page) || "1"),
+  pageSize: parseInt(searchParams.get(Search.pageSize) || "10"),
+  category: searchParams.get(Search.category),
+};
+
+const category = await fundraisingsService.category({ pageSize: -1 });
+const fundraisings = await fundraisingsService.getAll({
+  pageSize: pagination.pageSize,
+  page: pagination.page,
+  value: category.data.find((v) => v.slug === searchParams.get(Search.category))
+    ?.documentId,
+});
+
+const allCategory = new URL(href);
+allCategory.searchParams.delete(Search.category);
+---
+
+<Layout title="Fundraisings">
+  <section class="flex-grow">
+    <section class="flex gap-x-3 justify-center mb-4">
+      <a
+        class="link py-1 px-3 hover:bg-gray-200 rounded-2xl duration-500"
+        href={allCategory}>All</a
+      >
+      {
+        category.data.map((v) => {
+          url.searchParams.set(Search.category, v.slug);
+          return (
+            <a
+              class="link py-1 px-3 hover:bg-gray-200 rounded-2xl duration-500"
+              href={url}
+            >
+              {v.name}
+            </a>
+          );
+        })
+      }
+    </section>
+
+    <section class="flex flex-col max-w-6xl w-full mx-auto">
+      {fundraisings.data.map((v) => <FundraisingsCard data={v} />)}
+    </section>
+  </section>
+
+  <div class="mx-auto mt-10">
+    <PaginationServer
+      page={pagination.page}
+      pageSize={pagination.pageSize}
+      total={fundraisings.meta.pagination.total}
+    />
+  </div>
+</Layout>

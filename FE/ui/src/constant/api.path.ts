@@ -9,4 +9,7 @@ export enum ApiPath {
   surveys = "/surveys",
   surveysAnswers = "/surveys/answers",
   forums = "/forums",
+  fundraisings = "/fundraisings",
+  fundraisingsCategories = "/fundraising-categories",
+  paymentCheckout = "/payment/checkout",
 }

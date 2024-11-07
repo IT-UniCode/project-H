@@ -30,6 +30,6 @@ const forum = await forumService.getById(id!);
       })}
     />
 
-    <CommentsList client:load documentId={id} documentType="forum" />
+    <CommentsList client:load documentId={id} documentType="forums" />
   </section>
 </Layout>

@@ -3,17 +3,24 @@ import type { ISurvey } from "@interfaces/survey";
 import surveyService from "@service/survey.service";
 import { useEffect, useState } from "preact/hooks";
 import Survey from "./Survey";
+import { useAuth } from "@hooks/useAuth";
 
 export interface SurveyListProps {}
 
 function SurveyList() {
   const [surveys, setSurveys] = useState<ISurvey[]>([]);
+  const { isAuth } = useAuth();
 
   async function getSurvey() {
     const res = await surveyService.getAll({
       pageSize: -1,
       includeVariants: true,
     });
+
+    if (!isAuth) {
+      setSurveys(res.data);
+      return;
+    }
 
     const ids = res.data.map((v) => v.documentId);
 
@@ -32,7 +39,7 @@ function SurveyList() {
 
   useEffect(() => {
     getSurvey();
-  }, []);
+  }, [isAuth]);
 
   return (
     <section>

@@ -10,12 +10,7 @@ export interface ResponseBodyList<
   meta: M;
 }
 
-export interface ResponseBody<
-  B,
-  M = {
-    pagination: Pagination;
-  },
-> {
+export interface ResponseBody<B, M = {}> {
   data: B;
   meta: M;
 }

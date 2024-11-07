@@ -7,4 +7,5 @@ export const routes = {
   Forum: "/forum",
   Votings: "/votings",
   NewsById: "/news/info/",
+  Fundraisings: "/fundraisings",
 };
