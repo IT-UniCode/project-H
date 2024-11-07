@@ -44,7 +44,7 @@ const interest = 100 - (current_sum / goal_sum) * 100;
         class="flex flex-col gap-y-2 text-lg max-w-xl w-full mx-auto mt-2"
       >
         <article class="flex justify-between">
-          <p class="text-start">Goal sum: {data.goal_sum}</p>
+          <p class="text-start">Goal sum: {data.goal_sum}$</p>
           <p>{clamp(100 - interest, 0, 100).toFixed(1)}%</p>
         </article>
         <section class={clsx("h-2 w-full rounded overflow-hidden relative")}>
@@ -64,7 +64,7 @@ const interest = 100 - (current_sum / goal_sum) * 100;
         </section>
 
         <p class="text-end">
-          Current sum: {data.current_sum || 0}
+          Current sum: {data.current_sum || 0}$
         </p>
       </section>
     </div>
@@ -82,7 +82,7 @@ const interest = 100 - (current_sum / goal_sum) * 100;
     <ol class="flex flex-col gap-y-2 mt-2">
       {
         data.topDonations.map((v) => (
-          <li class="list-decimal list-inside">{v?.total || 10 / 100}</li>
+          <li class="list-decimal list-inside">{(v?.total || 10) / 100}$</li>
         ))
       }
     </ol>
