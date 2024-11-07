@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CheckoutBodyDto } from 'src/payment/dto/checkout.body.dto';
 import { RequestService } from 'src/request/request.service';
+import { StripeMetadata } from 'src/types/types/stripeMetadata';
 import Stripe from 'stripe';
 
 @Injectable()
@@ -68,24 +69,23 @@ export class StripeService {
     return event.type;
   }
 
-  async getLocaleAmount(paymentIntentId: string) {
-    const { latest_charge } =
-      await this.stripe.paymentIntents.retrieve(paymentIntentId);
-
-    const { balance_transaction } = await this.stripe.charges.retrieve(
-      latest_charge as string,
-    );
-
-    if (!balance_transaction) {
-      throw new BadRequestException(
-        'Balance transaction object does not contains',
-      );
-    }
-
-    const { amount } = await this.stripe.balanceTransactions.retrieve(
-      balance_transaction as string,
-    );
+  async getLocaleAmount(balanceTransaction: string) {
+    const { amount } =
+      await this.stripe.balanceTransactions.retrieve(balanceTransaction);
 
     return amount;
+  }
+
+  async getMetadata(paymentIntent: string) {
+    const { metadata } =
+      await this.stripe.paymentIntents.retrieve(paymentIntent);
+
+    return metadata;
+  }
+
+  async updatePayment(paymentIntentId: string, metadata: StripeMetadata) {
+    await this.stripe.paymentIntents.update(paymentIntentId, {
+      metadata: metadata,
+    });
   }
 }

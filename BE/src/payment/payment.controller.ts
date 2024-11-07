@@ -65,25 +65,29 @@ export class PaymentController {
     rawBody: Buffer,
     @Req() req: RawBodyRequest<Request>,
   ) {
-    if (
-      this.paymentService.getType(req, rawBody) === 'checkout.session.completed'
-    ) {
+    const eventType = this.paymentService.getType(req, rawBody);
+    if (eventType === 'checkout.session.completed') {
       const data = body.data.object;
       const metadata = body.data.object.metadata;
 
+      this.paymentService.updatePayment(data.payment_intent, metadata);
+    } else if (eventType === 'charge.updated') {
+      const { balance_transaction, payment_intent } = body.data.object;
+
+      const amount =
+        await this.paymentService.getLocaleAmount(balance_transaction);
+
+      const metadata = await this.paymentService.getMetadata(payment_intent);
+
       const fundraising = await this.requestService.get(
         `/fundraisings/${metadata.fundraisingId}?fields=current_sum`,
-      );
-
-      const localeAmount = await this.paymentService.getLocaleAmount(
-        data.payment_intent,
       );
 
       await this.requestService.put(`/fundraisings/${metadata.fundraisingId}`, {
         body: {
           data: {
             current_sum: Number(
-              fundraising.data.current_sum + localeAmount / 100,
+              fundraising.data.current_sum + amount / 100,
             ).toFixed(0),
           },
         },
@@ -92,7 +96,7 @@ export class PaymentController {
       await this.requestService.post('/fundraising-payments', {
         body: {
           data: {
-            total: localeAmount,
+            total: amount,
             currency: 'usd',
             ...metadata,
           },

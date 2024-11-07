@@ -1,6 +1,7 @@
 export class WebhookBodyDto {
   data: {
     object: {
+      balance_transaction: string;
       metadata: {
         fundraisingId: string;
         userId: number;
