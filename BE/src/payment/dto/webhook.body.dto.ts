@@ -8,6 +8,7 @@ export class WebhookBodyDto {
       };
       currency: string;
       amount_total: number;
+      payment_intent: string;
     };
   };
 }
