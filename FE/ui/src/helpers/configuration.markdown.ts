@@ -26,11 +26,16 @@ export function confMarkdownNews() {
   return renderer;
 }
 
-export function confMarkdownAsParagraph() {
+export interface ConfMarkdownAsParagraph {
+  classText?: string;
+}
+export function confMarkdownAsParagraph({
+  classText,
+}: ConfMarkdownAsParagraph = {}) {
   const renderer = new marked.Renderer();
 
   renderer.text = ({ text }) => {
-    return `<p class='text-base'>${text}</p>`;
+    return `<p class='text-base ${classText}'>${text}</p>`;
   };
 
   return renderer;
