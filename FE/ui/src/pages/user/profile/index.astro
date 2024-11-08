@@ -1,12 +1,12 @@
 ---
+import { ChatList } from "@components/Chat";
 import ShowProfile from "@components/ShowProfile";
 import Layout from "@layouts/Layout.astro";
 ---
 
 <Layout title="Profile">
+  <ChatList class="flex-grow" />
   <section>
-    <h6>Profile</h6>
-
-    <ShowProfile client:only="preact" />
+    <!-- <ShowProfile client:only="preact" /> -->
   </section>
 </Layout>
