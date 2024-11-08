@@ -21,6 +21,8 @@ import { ForumsModule } from './forums/forums.module';
 import { PaymentModule } from './payment/payment.module';
 import { FundraisingsModule } from './fundraisings/fundraisings.module';
 import { FundraisingCategoriesModule } from './fundraising-categories/fundraising-categories.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { FundraisingCategoriesModule } from './fundraising-categories/fundraisin
     PaymentModule,
     FundraisingsModule,
     FundraisingCategoriesModule,
+    ChatModule,
   ],
   controllers: [
     AppController,
@@ -50,6 +53,7 @@ import { FundraisingCategoriesModule } from './fundraising-categories/fundraisin
     CacheService,
     CommentService,
     VotingsPostService,
+    ChatGateway,
   ],
 })
 export class AppModule {}

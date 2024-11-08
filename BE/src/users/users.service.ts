@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
@@ -14,6 +14,41 @@ export class UsersService {
         email,
       },
     });
+  }
+
+  async search(param: string): Promise<Omit<User, 'password'> | undefined> {
+    const byEmail = await this.prisma.user.findFirst({
+      where: {
+        email: {
+          contains: param,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!byEmail) {
+      const byName = await this.prisma.user.findFirst({
+        where: {
+          name: {
+            contains: param,
+            mode: 'insensitive',
+          },
+        },
+      });
+
+      if (byName) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...data } = byName;
+
+        return data;
+      }
+
+      throw new NotFoundException(`User don't found`);
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...data } = byEmail;
+
+    return data;
   }
 
   async create(dto: CreateUserDto): Promise<User | undefined> {
