@@ -1,9 +1,8 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { Chat } from './chat.entity';
+import { Chat } from './entity/chat.entity';
 import { plainToInstance } from 'class-transformer';
-import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class ChatService {
     return this.prisma.chat.findUnique({ where: { id } });
   }
 
-  async removeOne(id: number) {
+  async delete(id: number) {
     try {
       await this.prisma.chat.delete({ where: { id } });
       return HttpStatus.NO_CONTENT;
@@ -32,8 +31,8 @@ export class ChatService {
     }
   }
 
-  async create(dto: CreateChatDto, user: JwtPayload) {
-    if (dto.secondUserId === user.id) {
+  async create(dto: CreateChatDto, id: number) {
+    if (dto.secondUserId === id) {
       throw new BadRequestException(`Can't create a chat with yourself`);
     }
     const isUserExist = await this.usersService.findOneById(dto.secondUserId);
@@ -43,7 +42,7 @@ export class ChatService {
 
     const isFirst = await this.prisma.chat.findFirst({
       where: {
-        firstUserId: user.id,
+        firstUserId: id,
         secondUserId: dto.secondUserId,
       },
     });
@@ -53,7 +52,7 @@ export class ChatService {
 
     const isSecond = await this.prisma.chat.findFirst({
       where: {
-        secondUserId: user.id,
+        secondUserId: id,
         firstUserId: dto.secondUserId,
       },
     });
@@ -62,7 +61,7 @@ export class ChatService {
     }
 
     const newChat = await this.prisma.chat.create({
-      data: { ...dto, firstUserId: user.id },
+      data: { ...dto, firstUserId: id },
     });
     return plainToInstance(Chat, newChat);
   }

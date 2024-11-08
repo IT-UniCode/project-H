@@ -12,10 +12,11 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { ChatService } from './chat.service';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
-import { ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
+@ApiTags('chat')
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
@@ -25,7 +26,7 @@ export class ChatController {
     @Body() body: CreateChatDto,
     @Req() req: { user: JwtPayload },
   ) {
-    return this.chatService.create(body, req.user);
+    return this.chatService.create(body, req.user.id);
   }
 
   @Get()
@@ -48,6 +49,6 @@ export class ChatController {
   })
   @Delete('/:id')
   async deleteChat(@Param() params: { id: string }) {
-    return this.chatService.removeOne(parseInt(params.id));
+    return this.chatService.delete(parseInt(params.id));
   }
 }
