@@ -16,6 +16,14 @@ export class UsersService {
     });
   }
 
+  async findOneById(id: number): Promise<User | undefined> {
+    return this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async search(param: string): Promise<Omit<User, 'password'> | undefined> {
     const byEmail = await this.prisma.user.findFirst({
       where: {
