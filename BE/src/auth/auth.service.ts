@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { JwtPayload } from './dto/jwt-payload';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -54,14 +55,9 @@ export class AuthService {
       );
     }
 
-    const pass = await this.jwtService.signAsync(
-      { sub: dto.password },
-      {
-        expiresIn: '365d',
-      },
-    );
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    dto.password = pass;
+    dto.password = hashedPassword;
 
     return this.userService.create(dto);
   }
