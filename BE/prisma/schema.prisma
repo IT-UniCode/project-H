@@ -14,6 +14,11 @@ model User {
   name     String?
   password String
   comments Comment[]
+
+  Message Message[]
+
+  ChatFirst  Chat[] @relation("UserFirstChat")
+  ChatSecond Chat[] @relation("UserSecondChat")
 }
 
 model Comment {
@@ -24,4 +29,24 @@ model Comment {
   createdAt    DateTime @default(now())
   documentId   String
   documentType String
+}
+
+model Chat {
+  id           Int       @id @default(autoincrement())
+  firstUser    User      @relation("UserFirstChat", fields: [firstUserId], references: [id])
+  firstUserId  Int
+  secondUser   User      @relation("UserSecondChat", fields: [secondUserId], references: [id])
+  secondUserId Int
+  messages     Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chatId    Int
+  Chat      Chat     @relation(fields: [chatId], references: [id])
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
