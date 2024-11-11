@@ -2,8 +2,9 @@ import { TextArea } from "@components/TextFields";
 import { useForm } from "@hooks/index";
 import type { ChatMessage } from "@interfaces/index";
 import chatService from "@service/chat.service";
+import soketService from "@service/soket.service";
 import clsx from "clsx";
-import { useEffect, useState } from "preact/compat";
+import { useEffect, useRef, useState } from "preact/compat";
 
 export interface ChatProps {
   chatId: number;
@@ -17,6 +18,7 @@ interface Form {
 
 function Chat({ chatId, class: className, userId }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { keys, onSubmit } = useForm<Form>({
     values: {
@@ -38,17 +40,29 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
   useEffect(() => {
     if (chatId <= 0) return;
     getMessages();
+    soketService.on("message", (message: ChatMessage) => {
+      console.log("Chat listner: ");
+    });
   }, [chatId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
-      <section class={clsx("flex-grow px-1 py-1 overflow-y-auto", className)}>
+      <section
+        class={clsx(
+          "flex-grow px-1 py-1 overflow-y-auto scroll-smooth",
+          className,
+        )}
+      >
         <div class="flex flex-col gap-y-2">
           {messages.map((v) => (
             <article
               class={clsx("py-1 px-2 rounded overflow-hidden max-w-[90%]", {
                 "ml-auto bg-blue-200": v.userId === userId,
-                "bg-gray-200": v.userId !== userId,
+                "bg-gray-200 mr-auto": v.userId !== userId,
               })}
             >
               <p>{v.message}</p>
@@ -62,10 +76,11 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
               </span>
             </article>
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </section>
       <form
-        class="flex min-h-12 max-h-16 md:min-h-16 md:max-h-20 flex-grow bg-white rounded-t-md overflow-hidden"
+        class="flex min-h-16 max-h-16 md:min-h-20 md:h-20 flex-grow bg-white rounded-t-md overflow-hidden"
         onSubmit={onSubmit}
       >
         <TextArea

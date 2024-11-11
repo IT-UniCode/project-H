@@ -6,7 +6,6 @@ import userService from "@service/user.service";
 import type { IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import { useAuth } from "@hooks/useAuth";
-import { useForm } from "@hooks/useForm";
 
 export interface ChatListProps {
   class?: string;
@@ -37,8 +36,11 @@ function ChatList({ class: className }: ChatListProps) {
     if (!users.search?.id) {
       return;
     }
-    const res = await chatService.createChat(users.search?.id);
-    setChat((prev) => ({ ...prev, chats: [...prev.chats, res] }));
+    try {
+      const res = await chatService.createChat(users.search?.id);
+      setChat((prev) => ({ ...prev, chats: [...prev.chats, res] }));
+      setUsers((prev) => ({ ...prev, search: null, open: false }));
+    } catch (e) {}
   }
 
   useMemo(async () => {
@@ -76,7 +78,7 @@ function ChatList({ class: className }: ChatListProps) {
       class={clsx("flex max-w-5xl w-full mx-auto  max-h-[85vh]", className)}
     >
       <section class="min-w-[100px] md:min-w-[250px] flex-[1_1_25%] bg-blue-200">
-        <div class="relative" ref={dropdownRef}>
+        <div class="relative mb-2" ref={dropdownRef}>
           <TextField
             class="bg-white rounded-none"
             onChange={(e: any) => {
@@ -87,7 +89,7 @@ function ChatList({ class: className }: ChatListProps) {
             }}
           />
           {/* {(users.search && users.open) + "d"} */}
-          {users.open && (
+          {users.open && users.search && (
             <div
               class="absolute top-[100%] min-h-10 mt-2 left-0 right-0 bg-white shadow-md px-2 py-1"
               onClick={createChat}
@@ -98,23 +100,27 @@ function ChatList({ class: className }: ChatListProps) {
           )}
         </div>
 
-        <section class="flex flex-col divide-y">
-          {chat.chats.map((item) => (
-            <div
-              key={item.id}
-              class="flex bg-white px-2 py-1 gap-x-2"
-              onClick={() => {
-                setChat((prev) => ({ ...prev, selected: item.id }));
-              }}
-            >
-              <div class="rounded-full bg-gray-400 flex-[1_1_20%]"></div>
-              <article class="flex-[2_1_80%]">
-                <h3>{item.firstUserId}</h3>
-                <p>{item.secondUserId}</p>
-              </article>
-            </div>
-          ))}
-        </section>
+        <div class="overflow-y-auto scroll-smooth">
+          <section class="flex flex-col divide-y">
+            {chat.chats.map((item) => (
+              <div
+                key={item.id}
+                class="flex bg-white px-2 py-1 gap-x-2 min-h-16"
+                onClick={() => {
+                  setChat((prev) => ({ ...prev, selected: item.id }));
+                }}
+              >
+                <div class="rounded-full bg-gray-400 flex-[1_1_20%] aspect-square h-full my-auto hidden md:block"></div>
+                <article class="flex-[2_1_80%]">
+                  <h3>{item.firstUserId}</h3>
+                  <p>
+                    {item.secondUserId} ChatId: {item.id}
+                  </p>
+                </article>
+              </div>
+            ))}
+          </section>
+        </div>
       </section>
       <section class="flex flex-col flex-[1_1_75%] bg-violet-300">
         <Chat chatId={chat.selected} userId={payload?.sub} />
