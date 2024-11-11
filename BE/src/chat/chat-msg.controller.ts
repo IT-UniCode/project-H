@@ -77,10 +77,14 @@ export class ChatMsgController {
     type: Number,
   })
   @Delete('/:id/msg/:msgId')
-  async deleteMsg(@Param() params: { id: string; msgId: string }) {
+  async deleteMsg(
+    @Param() params: { id: string; msgId: string },
+    @Req() req: { user: JwtPayload },
+  ) {
     return this.messageService.delete(
       parseInt(params.id),
       parseInt(params.msgId),
+      req.user.id,
     );
   }
 }

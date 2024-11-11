@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -9,7 +14,8 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-
+import { AuthGuard } from 'src/guard/user.guard';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 @WebSocketGateway({
   cors: {
@@ -17,26 +23,52 @@ import { Socket, Server } from 'socket.io';
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private jwtService: JwtService) {}
+
+  private extractTokenFromHeader(headers: any): string | undefined {
+    const [type, token] = headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
+  }
+
   @WebSocketServer()
   server: Server;
 
-  async handleConnection() {
-    // console.log('connected');
+  async send(event: string, data: object, destination?: string | string[]) {
+    try {
+      if (destination) {
+        this.server.to(destination).emit(event, data);
+      } else {
+        this.server.emit(event, data);
+      }
+
+      return HttpStatus.OK;
+    } catch (error) {
+      throw new BadRequestException(`Message not sended, ${error}`);
+    }
   }
 
-  async handleDisconnect() {
-    // console.log('disconnected');
+  @UseGuards(AuthGuard)
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    const token = this.extractTokenFromHeader(client.handshake.headers);
+
+    const { id } = await this.jwtService.verifyAsync(token, {
+      secret: process.env.SECRET,
+    });
+
+    client.join(String(id));
+  }
+
+  async handleDisconnect(@ConnectedSocket() client: Socket) {
+    client.disconnect();
   }
 
   @SubscribeMessage('message')
-  // @UseGuards(AuthGuard)
-  handleMessage(
+  async handleMessage(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: { roomId: string; message: string },
-    // @Req() req: any,
+    @MessageBody() payload: { chatId: string; message: string },
   ) {
-    // console.log(req);
-
-    client.emit('message', payload);
+    this.server
+      .to(payload.chatId)
+      .emit('message', { userId: client.id, message: payload.message });
   }
 }
