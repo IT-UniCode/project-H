@@ -26,7 +26,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private jwtService: JwtService) {}
 
   private extractTokenFromHeader(headers: any): string | undefined {
-    const [type, token] = headers.authorization?.split(' ') ?? [];
+    const [type, token] = headers?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 
@@ -49,7 +49,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UseGuards(AuthGuard)
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const token = this.extractTokenFromHeader(client.handshake.headers);
+    const token = this.extractTokenFromHeader(
+      client.handshake.auth.authorization,
+    );
 
     if (!token) {
       client.send(
