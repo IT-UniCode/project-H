@@ -43,26 +43,3 @@ export class FundraisingPreview {
   })
   slug: string;
 }
-//     "previewText": "1234",
-//     "slug": "1234",
-//     "createdAt": "2024-11-04T12:33:23.476Z",
-//     "fundraising_category": {
-//       "id": 2,
-//       "documentId": "s3lme3bmk1dcyy79sjr95so9",
-//       "name": "1234",
-//       "slug": "1234"
-// }
-//
-// "id": 9,
-//       "documentId": "dnlsao136v64grgwxfsf82d1",
-//       "title": "1234",
-//       "previewText": "1234",
-//       "slug": "1234",
-//       "createdAt": "2024-11-04T12:33:23.476Z",
-//       "fundraising_category": {
-//         "id": 2,
-//         "documentId": "s3lme3bmk1dcyy79sjr95so9",
-//         "name": "1234",
-//         "slug": "1234"
-//       },
-//       "previewImage": "http://localhost:1337/uploads/small_google_efb2a5829a.jpg"
