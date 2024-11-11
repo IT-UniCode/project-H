@@ -18,7 +18,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CheckoutBodyDto } from 'src/payment/dto/checkout.body.dto';
-// import { MonobankService } from 'src/monobank/monobank.service';
 import { StripeService } from 'src/stripe/stripe.service';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { WebhookBodyDto } from './dto/webhook.body.dto';
