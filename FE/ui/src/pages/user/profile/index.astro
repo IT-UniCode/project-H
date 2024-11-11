@@ -5,7 +5,7 @@ import Layout from "@layouts/Layout.astro";
 ---
 
 <Layout title="Profile">
-  <ChatList class="flex-grow" client:load />
+  <ChatList class="flex-grow" client:only="preact" />
   <section>
     <!-- <ShowProfile client:only="preact" /> -->
   </section>
