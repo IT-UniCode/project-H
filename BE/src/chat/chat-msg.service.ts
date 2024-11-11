@@ -29,9 +29,11 @@ export class ChatMsgService {
 
   async create(dto: CreateMessageDto, chatId: number, id: number) {
     try {
-      return this.prisma.message.create({
+      const data = await this.prisma.message.create({
         data: { ...dto, chatId, userId: id },
       });
+
+      return data;
     } catch (error) {
       throw new BadRequestException(
         `This chat with id ${chatId} does not exists. ${error && 'Cannot send message'}`,
@@ -46,10 +48,11 @@ export class ChatMsgService {
     dto: UpdateMessageDto,
   ) {
     try {
-      return this.prisma.message.update({
+      await this.prisma.message.update({
         where: { id, userId, chatId },
         data: { message: dto.message, updatedAt: new Date() },
       });
+      return HttpStatus.OK;
     } catch (error) {
       throw new BadRequestException(
         `This chat with id ${chatId} of message with id ${id} does not exists. ${error && 'Cannot send message'}`,
