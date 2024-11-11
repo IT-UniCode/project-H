@@ -6,6 +6,12 @@ class UserService {
   async getProfile() {
     return await apiService.get<User>(ApiPath.userProfile);
   }
+
+  async search(query: string) {
+    return await apiService.get<User>(ApiPath.userSearch, {
+      query: { q: query },
+    });
+  }
 }
 
 export default new UserService();
