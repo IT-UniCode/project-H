@@ -1,10 +1,10 @@
-import typescriptEslintEslintPlugin from '@typescript-eslint/eslint-plugin';
-import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import typescriptEslintEslintPlugin from "@typescript-eslint/eslint-plugin";
+import globals from "globals";
+import tsParser from "@typescript-eslint/parser";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,15 +16,15 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['**/.eslintrc.js'],
+    ignores: ["**/.eslintrc.js"],
   },
   ...compat.extends(
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
   ),
   {
     plugins: {
-      '@typescript-eslint': typescriptEslintEslintPlugin,
+      "@typescript-eslint": typescriptEslintEslintPlugin,
     },
 
     languageOptions: {
@@ -35,23 +35,32 @@ export default [
 
       parser: tsParser,
       ecmaVersion: 5,
-      sourceType: 'module',
+      sourceType: "module",
 
       parserOptions: {
-        project: './tsconfig.json',
+        project: "tsconfig.json",
+        tsconfigRootDir: "/home/kon/WebstormProjects/project-H/BE",
       },
     },
 
     rules: {
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
+      "@typescript-eslint/interface-name-prefix": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
 
-      'no-console': [
-        'error',
+      "no-console": [
+        "error",
         {
-          allow: ['warn', 'error'],
+          allow: ["warn", "error"],
+        },
+      ],
+
+      "prettier/prettier": [
+        "error",
+        {
+          singleQuote: false,
+          semi: true,
         },
       ],
     },
