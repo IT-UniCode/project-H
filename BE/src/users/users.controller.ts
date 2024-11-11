@@ -23,8 +23,6 @@ export class UsersController {
 
   @Get('/search')
   async getUser(@Query('q') q: string) {
-    // console.log('q:', q);
-
     return this.userService.search(q);
   }
 }

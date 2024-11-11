@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -11,10 +12,11 @@ import {
 } from '@nestjs/common';
 import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
-import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ChatMsgService } from './chat-msg.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { MessageDto } from './dto/message.dto';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
@@ -26,6 +28,9 @@ export class ChatMsgController {
   @ApiParam({
     name: 'id',
     type: Number,
+  })
+  @ApiResponse({
+    type: MessageDto,
   })
   @Post('/:id/msg')
   async postMsg(
@@ -40,6 +45,9 @@ export class ChatMsgController {
     name: 'id',
     type: Number,
   })
+  @ApiResponse({
+    type: MessageDto,
+  })
   @Get('/:id/msg')
   async getAllMsg(@Param() params: { id: string }) {
     return this.messageService.findAll(parseInt(params.id));
@@ -52,6 +60,9 @@ export class ChatMsgController {
   @ApiParam({
     name: 'msgId',
     type: Number,
+  })
+  @ApiResponse({
+    type: MessageDto,
   })
   @Put('/:id/msg/:msgId')
   async editMsg(
@@ -76,11 +87,18 @@ export class ChatMsgController {
     name: 'msgId',
     type: Number,
   })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
   @Delete('/:id/msg/:msgId')
-  async deleteMsg(@Param() params: { id: string; msgId: string }) {
+  async deleteMsg(
+    @Param() params: { id: string; msgId: string },
+    @Req() req: { user: JwtPayload },
+  ) {
     return this.messageService.delete(
       parseInt(params.id),
       parseInt(params.msgId),
+      req.user.id,
     );
   }
 }
