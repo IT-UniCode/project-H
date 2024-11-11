@@ -67,11 +67,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: process.env.SECRET,
-    });
+    const user = await this.jwtService
+      .verifyAsync(token, {
+        secret: process.env.SECRET,
+      })
+      .catch(() => {
+        client.disconnect();
+        return;
+      });
 
-    client.join(String(id));
+    client.join(String(user?.id));
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {
