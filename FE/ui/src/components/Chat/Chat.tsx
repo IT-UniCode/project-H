@@ -28,13 +28,13 @@ function Chat({ chatId, class: className, ownerChatId }: ChatProps) {
       {messages.map((v) => (
         <article
           class={clsx(
-            "flex flex-col bg-gray-200 w-fit px-2 rounded overflow-hidden max-w-[90%]",
+            "flex flex-col bg-gray-200 w-fit py-1 px-2 rounded overflow-hidden max-w-[90%]",
             { "ml-auto": v.ownerId === ownerChatId },
           )}
         >
           <p>{v.message}</p>
           <span
-            class={clsx("text-xs text-gray-500", {
+            class={clsx("text-xs text-gray-500 select-none", {
               "text-end": v.ownerId === ownerChatId,
             })}
           >
