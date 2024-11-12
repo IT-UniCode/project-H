@@ -49,8 +49,11 @@ export class ChatMsgController {
     type: MessageDto,
   })
   @Get('/:id/msg')
-  async getAllMsg(@Param() params: { id: string }) {
-    return this.messageService.findAll(parseInt(params.id));
+  async getAllMsg(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.messageService.findAll(parseInt(params.id), req.user.id);
   }
 
   @ApiParam({

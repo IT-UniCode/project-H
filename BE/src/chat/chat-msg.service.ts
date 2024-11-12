@@ -12,10 +12,15 @@ export class ChatMsgService {
     private readonly server: ChatGateway,
   ) {}
 
-  async findAll(id: number): Promise<Message[] | undefined> {
-    const isChatExist = await this.prisma.chat.findUnique({ where: { id } });
+  async findAll(id: number, userId: number): Promise<Message[] | undefined> {
+    const chat = await this.prisma.chat.findUnique({
+      where: {
+        id,
+        OR: [{ firstUserId: userId }, { secondUserId: userId }],
+      },
+    });
 
-    if (!isChatExist) {
+    if (!chat) {
       throw new BadRequestException(`This chat with id ${id} does not exists`);
     }
 
@@ -27,11 +32,16 @@ export class ChatMsgService {
     return data;
   }
 
-  async create(dto: CreateMessageDto, chatId: number, userId: number) {
+  async create(
+    dto: CreateMessageDto,
+    chatId: number,
+    userId: number,
+  ): Promise<Message | undefined> {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
@@ -50,7 +60,7 @@ export class ChatMsgService {
       return data;
     } catch (error) {
       throw new BadRequestException(
-        `This chat with id ${chatId} does not exists. ${error && 'Cannot send message'}`,
+        `This chat with Id ${chatId} does not exist or the user does not have access to this chat. ${error && 'Cannot send message'}`,
       );
     }
   }
@@ -60,11 +70,12 @@ export class ChatMsgService {
     id: number,
     userId: number,
     dto: UpdateMessageDto,
-  ) {
+  ): Promise<Message | undefined> {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
@@ -89,15 +100,18 @@ export class ChatMsgService {
     }
   }
 
-  async delete(chatId: number, id: number, userId: number) {
+  async delete(chatId: number, msgId: number, userId: number) {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
-      const data = await this.prisma.message.delete({ where: { id, chatId } });
+      const data = await this.prisma.message.delete({
+        where: { id: msgId, chatId },
+      });
 
       this.server.send(
         'message',
@@ -110,7 +124,7 @@ export class ChatMsgService {
       return HttpStatus.NO_CONTENT;
     } catch (error) {
       throw new BadRequestException(
-        `This message with id ${id} does not exists. ${error && 'Cannot delete'}`,
+        `This message with id ${msgId} does not exists. ${error && 'Cannot delete'}`,
       );
     }
   }
