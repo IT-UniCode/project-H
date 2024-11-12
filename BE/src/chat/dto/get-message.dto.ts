@@ -10,9 +10,12 @@ export class GetMessageDto {
   @ApiProperty({
     example: {
       totalUnread: 0,
-      page: 0,
-      pageSize: 25,
-      total: 1,
+      pagination: {
+        page: 1,
+        pageCount: 1,
+        pageSize: 25,
+        total: 10,
+      },
     },
   })
   meta: object;
