@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageDto } from './dto/message.dto';
 import { GetMessageDto } from './dto/get-message.dto';
+import { PaginationQuery } from 'src/types';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
@@ -65,8 +67,14 @@ export class ChatMsgController {
   async getAllMsg(
     @Param() params: { id: string },
     @Req() req: { user: JwtPayload },
+    @Query() query: PaginationQuery,
   ) {
-    return this.messageService.findAll(parseInt(params.id), req.user.id);
+    const page = Math.abs(parseInt(query.page || '1'));
+    const pageSize = Math.max(parseInt(query.pageSize) || 25, -1);
+    return this.messageService.findAll(parseInt(params.id), req.user.id, {
+      page: page - 1 < 1 ? 0 : page - 1,
+      pageSize: pageSize,
+    });
   }
 
   @ApiParam({
