@@ -5,4 +5,5 @@ export interface ChatMessage {
   createdAt: string;
   updatedAt: string;
   userId: number;
+  unread: boolean;
 }

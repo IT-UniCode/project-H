@@ -3,3 +3,5 @@ export interface User {
   name: string;
   email: string;
 }
+
+export interface UserInfo extends Pick<User, "name" | "email"> {}
