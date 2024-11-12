@@ -46,8 +46,12 @@ export class ChatMsgService {
 
     const meta = {
       totalUnread: messageList.length,
-      ...pagination,
-      total,
+      pagination: {
+        page: pagination.page + 1,
+        pageCount: Math.ceil(total / take) || 1,
+        pageSize: take,
+        total,
+      },
     };
 
     return { data, meta };
