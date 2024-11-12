@@ -138,7 +138,6 @@ function ChatList({ class: className }: ChatListProps) {
               setUsers((prev) => ({ ...prev, open: true }));
             }}
           />
-          {/* {(users.search && users.open) + "d"} */}
           {users.open && users.search && (
             <div
               class="absolute top-[100%] left-0 right-0 z-50 min-h-10 mt-2 bg-white shadow-md px-2 py-1"
@@ -190,9 +189,8 @@ function ChatList({ class: className }: ChatListProps) {
                       </span>
                     )}
                   </div>
-                  <p>
-                    {item.secondUserId} ChatId: {item.id}
-                  </p>
+                  <p>{item.messages[0] && item.messages[0].message}</p>
+                  {/* <p>ChatId: {item.id}</p> */}
                 </article>
               </div>
             ))}
@@ -203,9 +201,9 @@ function ChatList({ class: className }: ChatListProps) {
         <Chat
           chatId={chat.selected}
           userId={payload?.sub}
-          setReadMessage={() => {
+          setReadMessage={async () => {
             console.log(chat.selected);
-
+            const res = await chatService.setReadMessage(chat.selected);
             setChat((prev) => ({
               ...prev,
               chats: prev.chats.map((c) =>
