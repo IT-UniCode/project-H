@@ -11,6 +11,9 @@ class UserRel {
     example: 'some@mail.com',
   })
   email: string;
+
+  @ApiProperty({ type: Number })
+  unread: number;
 }
 export class Chat {
   @ApiProperty({ example: 1, description: 'Chat Id' })
