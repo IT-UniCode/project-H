@@ -39,8 +39,9 @@ export class ChatController {
     type: [Chat],
   })
   @Get()
-  async getAllChats() {
-    return this.chatService.findAll();
+  async getAllChats(@Req() req: { user: JwtPayload }) {
+    const userId = req.user.id;
+    return this.chatService.findAll(userId);
   }
 
   @ApiParam({

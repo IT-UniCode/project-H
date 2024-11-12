@@ -12,8 +12,10 @@ export class ChatService {
     private readonly usersService: UsersService,
   ) {}
 
-  async findAll(args: unknown = {}) {
-    return this.prisma.chat.findMany(args);
+  async findAll(userId: number) {
+    return this.prisma.chat.findMany({
+      where: { OR: [{ firstUserId: userId }, { secondUserId: userId }] },
+    });
   }
 
   async findOneById(id: number) {
