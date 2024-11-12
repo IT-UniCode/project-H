@@ -17,6 +17,7 @@ import { ChatMsgService } from './chat-msg.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageDto } from './dto/message.dto';
+import { GetMessageDto } from './dto/get-message.dto';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
@@ -46,7 +47,7 @@ export class ChatMsgController {
     type: Number,
   })
   @ApiResponse({
-    type: MessageDto,
+    type: GetMessageDto,
   })
   @Get('/:id/msg')
   async getAllMsg(
