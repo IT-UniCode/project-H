@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
+import { MessageDto } from '../dto/message.dto';
 
 class UserRel {
   @ApiProperty({
@@ -42,4 +43,9 @@ export class Chat {
     type: UserRel,
   })
   secondUser: object;
+
+  @ApiProperty({
+    type: [MessageDto],
+  })
+  messages: [];
 }
