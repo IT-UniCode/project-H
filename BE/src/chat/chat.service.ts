@@ -27,14 +27,14 @@ export class ChatService {
           where: { chatId: chat.id, unread: true },
         });
 
-        const userMsg = messageList.filter((msg) => userId !== msg.userId);
+        const userMsg = messageList.filter((msg) => userId === msg.userId);
 
         if (chat.firstUserId === userId) {
+          chat.secondUser.unread = userMsg.length;
+          chat.firstUser.unread = messageList.length - userMsg.length;
+        } else {
           chat.secondUser.unread = messageList.length - userMsg.length;
           chat.firstUser.unread = userMsg.length;
-        } else {
-          chat.secondUser.unread = messageList.length;
-          chat.firstUser.unread = messageList.length - userMsg.length;
         }
       }),
     );
