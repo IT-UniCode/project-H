@@ -13,13 +13,33 @@ export class ChatService {
   ) {}
 
   async findAll(userId: number) {
-    return this.prisma.chat.findMany({
+    const chats = await this.prisma.chat.findMany({
       where: { OR: [{ firstUserId: userId }, { secondUserId: userId }] },
       include: {
         firstUser: { select: { name: true, email: true } },
         secondUser: { select: { name: true, email: true } },
       },
     });
+
+    await Promise.all(
+      chats.map(async (chat: any) => {
+        const messageList = await this.prisma.message.findMany({
+          where: { chatId: chat.id, unread: true },
+        });
+
+        const userMsg = messageList.filter((msg) => userId !== msg.userId);
+
+        if (chat.firstUserId === userId) {
+          chat.secondUser.unread = messageList.length - userMsg.length;
+          chat.firstUser.unread = userMsg.length;
+        } else {
+          chat.secondUser.unread = messageList.length;
+          chat.firstUser.unread = messageList.length - userMsg.length;
+        }
+      }),
+    );
+
+    return chats;
   }
 
   async findOneById(id: number) {
