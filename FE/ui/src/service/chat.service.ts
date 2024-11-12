@@ -13,6 +13,10 @@ class ChatService {
     return apiService.get<IChat[]>(ApiPath.chat);
   }
 
+  async setReadMessage(chatId: number) {
+    return apiService.post(`${ApiPath.chat}/${chatId}/read`, { body: {} });
+  }
+
   async sendMessage(chatId: number, message: string) {
     return apiService.post<ChatMessage>(`${ApiPath.chat}/${chatId}/msg`, {
       body: { message },
