@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import Chat from "./Chat";
-import { TextArea, TextField } from "@components/TextFields";
+import { TextField } from "@components/TextFields";
 import userService from "@service/user.service";
 import type { ChatMessage, IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
@@ -54,11 +54,14 @@ function ChatList({ class: className }: ChatListProps) {
       data: ChatMessage;
     };
   }) => {
-    console.log(type, data);
-
+    console.log({ data, type });
     switch (type) {
       case "create":
+        console.log(chat.selected, data.chatId);
+
         if (chat.selected !== data.chatId) {
+          console.log(payload?.id);
+
           setChat((prev) => ({
             ...prev,
             chats: prev.chats.map((c) =>
@@ -68,14 +71,14 @@ function ChatList({ class: className }: ChatListProps) {
                     firstUser: {
                       ...c.firstUser,
                       unread:
-                        c.firstUserId !== payload?.id
+                        c.firstUserId === payload?.id
                           ? c.firstUser.unread + 1
                           : c.firstUser.unread,
                     },
                     secondUser: {
                       ...c.secondUser,
                       unread:
-                        c.secondUserId !== payload?.id
+                        c.secondUserId === payload?.id
                           ? c.secondUser.unread + 1
                           : c.secondUser.unread,
                     },
@@ -115,7 +118,7 @@ function ChatList({ class: className }: ChatListProps) {
       document.removeEventListener("mousedown", handleClickOutside);
       soketService.removeListener("message", handleMessage);
     };
-  }, []);
+  }, [payload]);
 
   if (!payload) {
     return <div>Loading...</div>;
@@ -173,7 +176,7 @@ function ChatList({ class: className }: ChatListProps) {
                         : item.secondUser.name}
                     </span>
 
-                    {(item.firstUserId !== payload.id
+                    {(item.firstUserId === payload.id
                       ? item.firstUser.unread || ""
                       : item.secondUser.unread || "") && (
                       <span
@@ -181,7 +184,7 @@ function ChatList({ class: className }: ChatListProps) {
                           "rounded-full aspect-square w-6 text-center bg-blue-100 ",
                         )}
                       >
-                        {item.firstUserId !== payload.id
+                        {item.firstUserId === payload.id
                           ? item.firstUser.unread || ""
                           : item.secondUser.unread || ""}
                       </span>
@@ -197,7 +200,32 @@ function ChatList({ class: className }: ChatListProps) {
         </div>
       </section>
       <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
-        <Chat chatId={chat.selected} userId={payload?.sub} />
+        <Chat
+          chatId={chat.selected}
+          userId={payload?.sub}
+          setReadMessage={() => {
+            console.log(chat.selected);
+
+            setChat((prev) => ({
+              ...prev,
+              chats: prev.chats.map((c) =>
+                c.id === chat.selected
+                  ? {
+                      ...c,
+                      firstUser: {
+                        ...c.firstUser,
+                        unread: 0,
+                      },
+                      secondUser: {
+                        ...c.secondUser,
+                        unread: 0,
+                      },
+                    }
+                  : c,
+              ),
+            }));
+          }}
+        />
       </section>
     </section>
   );

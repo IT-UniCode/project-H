@@ -10,13 +10,14 @@ export interface ChatProps {
   chatId: number;
   userId: number;
   class?: string;
+  setReadMessage: () => void;
 }
 
 interface Form {
   message: string;
 }
 
-function Chat({ chatId, class: className, userId }: ChatProps) {
+function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
   const [messages, setMessages] = useState<ResponseBodyList<ChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
@@ -89,6 +90,8 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
     if (true) {
       container.scrollTop = container.scrollHeight;
     }
+
+    setReadMessage();
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
