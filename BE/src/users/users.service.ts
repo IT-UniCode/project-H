@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
@@ -47,8 +47,8 @@ export class UsersService {
       });
 
       if (byName) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const data = byName.map((user: User) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { password, ...rest } = user;
           return plainToInstance(User, rest);
         });
@@ -58,8 +58,9 @@ export class UsersService {
 
       return HttpStatus.NO_CONTENT;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const data = byEmail.map((user: User) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...rest } = user;
       return plainToInstance(User, rest);
     });
