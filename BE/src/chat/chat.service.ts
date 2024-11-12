@@ -15,6 +15,10 @@ export class ChatService {
   async findAll(userId: number) {
     return this.prisma.chat.findMany({
       where: { OR: [{ firstUserId: userId }, { secondUserId: userId }] },
+      include: {
+        firstUser: { select: { name: true, email: true } },
+        secondUser: { select: { name: true, email: true } },
+      },
     });
   }
 
@@ -56,19 +60,10 @@ export class ChatService {
       throw new BadRequestException(`This chat already exists`);
     }
 
-    const firstUser = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-    const secondUser = await this.prisma.user.findUnique({
-      where: { id: dto.secondUserId },
-    });
-
     const newChat = await this.prisma.chat.create({
       data: {
         ...dto,
         firstUserId: userId,
-        firstUserName: firstUser.name,
-        secondUserName: secondUser.name,
       },
     });
     return plainToInstance(Chat, newChat);

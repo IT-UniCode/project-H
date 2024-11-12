@@ -28,14 +28,18 @@ export class ChatMsgService {
       await this.prisma.message.findMany({
         where: { chatId: id, unread: true },
       })
-    ).filter((msg) => userId === msg.userId);
+    ).filter((msg) => userId !== msg.userId);
 
     const data = await this.prisma.message.findMany({
       where: { chatId: id },
       orderBy: { createdAt: 'asc' },
     });
 
-    return { data, totalUnread: messageList.length };
+    const meta = {
+      totalUnread: messageList.length,
+    };
+
+    return { data, meta };
   }
 
   async create(
