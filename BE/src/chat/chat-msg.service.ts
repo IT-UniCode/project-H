@@ -138,4 +138,37 @@ export class ChatMsgService {
       );
     }
   }
+
+  async readMsg(chatId: number, userId: number) {
+    const chat = await this.prisma.chat.findUnique({
+      where: {
+        id: chatId,
+        OR: [{ firstUserId: userId }, { secondUserId: userId }],
+      },
+    });
+
+    if (!chat) {
+      throw new BadRequestException(
+        `This chat with id ${chatId} does not exist or the user does not have access to this chat`,
+      );
+    }
+
+    const allMsg = await this.prisma.message.findMany({ where: { chatId } });
+
+    await Promise.all(
+      allMsg
+        .filter((msg) => userId !== msg.userId)
+        .map(
+          async (msg) =>
+            await this.prisma.message.update({
+              where: { id: msg.id },
+              data: {
+                unread: false,
+              },
+            }),
+        ),
+    );
+
+    return HttpStatus.NO_CONTENT;
+  }
 }

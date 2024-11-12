@@ -31,6 +31,18 @@ export class ChatMsgController {
     type: Number,
   })
   @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
+  @Post('/:id/read')
+  async readMsg(@Param('id') id: string, @Req() req: { user: JwtPayload }) {
+    return this.messageService.readMsg(parseInt(id), req.user.id);
+  }
+
+  @ApiParam({
+    name: 'id',
+    type: Number,
+  })
+  @ApiResponse({
     type: MessageDto,
   })
   @Post('/:id/msg')
