@@ -58,6 +58,32 @@ function ChatList({ class: className }: ChatListProps) {
 
     switch (type) {
       case "create":
+        if (chat.selected !== data.chatId) {
+          setChat((prev) => ({
+            ...prev,
+            chats: prev.chats.map((c) =>
+              c.id === data.chatId
+                ? {
+                    ...c,
+                    firstUser: {
+                      ...c.firstUser,
+                      unread:
+                        c.firstUserId !== payload?.id
+                          ? c.firstUser.unread + 1
+                          : c.firstUser.unread,
+                    },
+                    secondUser: {
+                      ...c.secondUser,
+                      unread:
+                        c.secondUserId !== payload?.id
+                          ? c.secondUser.unread + 1
+                          : c.secondUser.unread,
+                    },
+                  }
+                : c,
+            ),
+          }));
+        }
         break;
       default:
         break;
@@ -112,7 +138,7 @@ function ChatList({ class: className }: ChatListProps) {
           {/* {(users.search && users.open) + "d"} */}
           {users.open && users.search && (
             <div
-              class="absolute top-[100%] min-h-10 mt-2 left-0 right-0 bg-white shadow-md px-2 py-1"
+              class="absolute top-[100%] left-0 right-0 z-50 min-h-10 mt-2 bg-white shadow-md px-2 py-1"
               onClick={createChat}
             >
               <h4 class="">Name: {users.search?.name}</h4>
@@ -140,11 +166,27 @@ function ChatList({ class: className }: ChatListProps) {
               >
                 <div class="rounded-full bg-gray-400 flex-[1_1_20%] aspect-square h-full my-auto hidden md:block"></div>
                 <article class="flex-[2_1_80%]">
-                  <h3>
-                    {item.firstUserId !== payload.id
-                      ? item.firstUser.name
-                      : item.secondUser.name}
-                  </h3>
+                  <div class="flex justify-between">
+                    <span>
+                      {item.firstUserId !== payload.id
+                        ? item.firstUser.name
+                        : item.secondUser.name}
+                    </span>
+
+                    {(item.firstUserId !== payload.id
+                      ? item.firstUser.unread || ""
+                      : item.secondUser.unread || "") && (
+                      <span
+                        class={clsx(
+                          "rounded-full aspect-square w-6 text-center bg-blue-100 ",
+                        )}
+                      >
+                        {item.firstUserId !== payload.id
+                          ? item.firstUser.unread || ""
+                          : item.secondUser.unread || ""}
+                      </span>
+                    )}
+                  </div>
                   <p>
                     {item.secondUserId} ChatId: {item.id}
                   </p>
