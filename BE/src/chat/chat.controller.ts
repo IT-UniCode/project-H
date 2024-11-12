@@ -64,7 +64,10 @@ export class ChatController {
     status: HttpStatus.NO_CONTENT,
   })
   @Delete('/:id')
-  async deleteChat(@Param() params: { id: string }) {
-    return this.chatService.delete(parseInt(params.id));
+  async deleteChat(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.chatService.delete(parseInt(params.id), req.user.id);
   }
 }
