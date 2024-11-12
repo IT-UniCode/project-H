@@ -88,7 +88,8 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
                 })}
               >
                 {new Date(v.createdAt).getHours().toString().padStart(2, "0")}:
-                {new Date(v.createdAt).getMinutes().toString().padStart(2, "0")}
+                {new Date(v.createdAt).getMinutes().toString().padStart(2, "0")}{" "}
+                {new Date(v.createdAt).toLocaleDateString()}
               </span>
             </article>
           ))}
