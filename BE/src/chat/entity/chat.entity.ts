@@ -13,21 +13,9 @@ export class Chat {
   firstUserId: number;
 
   @ApiProperty({
-    description: 'First user name',
-    example: 1,
-  })
-  firstUserName: string;
-
-  @ApiProperty({
     description: 'Second user id',
     example: 1,
   })
   @IsNumber()
   secondUserId: number;
-
-  @ApiProperty({
-    description: 'Second user name',
-    example: 1,
-  })
-  secondUserName: string;
 }
