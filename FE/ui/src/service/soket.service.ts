@@ -1,35 +1,48 @@
 import { storageName } from "@constant/storageName";
+import { useLocalStorage } from "@helpers/localStorageHelper";
+import type { ChatMessage } from "@interfaces/index";
 import { io, Socket } from "socket.io-client";
 
-class SocketService {
+export interface SocketMessageDetail {
+  data: ChatMessage;
+  type: string;
+}
+
+class SocketService extends EventTarget {
   private socket: Socket;
 
   constructor() {
+    super();
+
+    const { get } = useLocalStorage(storageName.AccessToken);
+
     this.socket = io(import.meta.env.PUBLIC_API_URL, {
-      extraHeaders: {
-        authorization: `Bearer ${localStorage.getItem(storageName.AccessToken)}`,
+      auth: {
+        authorization: `Bearer ${get()}`,
       },
     });
 
-    this.socket.on("connect", () => {
-      console.log("Connected to the socket server");
-    });
+    this.socket.on("connect", () => {});
 
-    this.socket.on("disconnect", () => {
-      console.log("Disconnected from the socket server");
-    });
+    this.socket.on("disconnect", () => {});
 
-    this.socket.on("message", (type: string) => {
-      console.log("Disconnected from the socket server", type);
+    this.socket.on("message", (response) => {
+      this.dispatchEvent(new CustomEvent("message", { detail: response }));
     });
   }
 
-  on(event: string, callback: (...args: any[]) => void) {
-    this.socket.on(event, callback);
+  addListener(
+    eventType: string,
+    listener: (event: CustomEvent<SocketMessageDetail>) => void,
+  ) {
+    this.addEventListener(eventType, listener as EventListener);
   }
 
-  off(event: string, callback: (...args: any[]) => void) {
-    this.socket.off(event, callback);
+  removeListener(
+    eventType: string,
+    listener: (event: CustomEvent<SocketMessageDetail>) => void,
+  ) {
+    this.removeEventListener(eventType, listener as EventListener);
   }
 }
 
