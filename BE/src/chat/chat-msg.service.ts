@@ -12,7 +12,7 @@ export class ChatMsgService {
     private readonly server: ChatGateway,
   ) {}
 
-  async findAll(id: number, userId: number): Promise<Message[] | undefined> {
+  async findAll(id: number, userId: number) {
     const chat = await this.prisma.chat.findUnique({
       where: {
         id,
@@ -24,12 +24,18 @@ export class ChatMsgService {
       throw new BadRequestException(`This chat with id ${id} does not exists`);
     }
 
+    const messageList = (
+      await this.prisma.message.findMany({
+        where: { chatId: id, unread: true },
+      })
+    ).filter((msg) => userId === msg.userId);
+
     const data = await this.prisma.message.findMany({
       where: { chatId: id },
       orderBy: { createdAt: 'asc' },
     });
 
-    return data;
+    return { data, totalUnread: messageList.length };
   }
 
   async create(

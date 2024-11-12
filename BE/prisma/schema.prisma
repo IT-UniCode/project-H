@@ -32,12 +32,14 @@ model Comment {
 }
 
 model Chat {
-  id           Int       @id @default(autoincrement())
-  firstUser    User      @relation("UserFirstChat", fields: [firstUserId], references: [id])
-  firstUserId  Int
-  secondUser   User      @relation("UserSecondChat", fields: [secondUserId], references: [id])
-  secondUserId Int
-  messages     Message[]
+  id             Int       @id @default(autoincrement())
+  firstUser      User      @relation("UserFirstChat", fields: [firstUserId], references: [id])
+  firstUserId    Int
+  firstUserName  String
+  secondUser     User      @relation("UserSecondChat", fields: [secondUserId], references: [id])
+  secondUserId   Int
+  secondUserName String
+  messages       Message[]
 }
 
 model Message {
@@ -49,4 +51,5 @@ model Message {
   updatedAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
+  unread    Boolean  @default(true)
 }

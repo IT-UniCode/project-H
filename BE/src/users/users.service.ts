@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { plainToInstance } from 'class-transformer';
@@ -24,8 +24,10 @@ export class UsersService {
     });
   }
 
-  async search(param: string): Promise<Omit<User, 'password'> | undefined> {
-    const byEmail = await this.prisma.user.findFirst({
+  async search(
+    param: string,
+  ): Promise<Omit<User[], 'password'> | HttpStatus.NO_CONTENT> {
+    const byEmail = await this.prisma.user.findMany({
       where: {
         email: {
           contains: param,
@@ -35,7 +37,7 @@ export class UsersService {
     });
 
     if (!byEmail) {
-      const byName = await this.prisma.user.findFirst({
+      const byName = await this.prisma.user.findMany({
         where: {
           name: {
             contains: param,
@@ -45,16 +47,23 @@ export class UsersService {
       });
 
       if (byName) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { password, ...data } = byName;
+        const data = byName.map((user: User) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { password, ...rest } = user;
+          return plainToInstance(User, rest);
+        });
 
         return data;
       }
 
-      throw new NotFoundException(`User don't found`);
+      return HttpStatus.NO_CONTENT;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...data } = byEmail;
+
+    const data = byEmail.map((user: User) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+      return plainToInstance(User, rest);
+    });
 
     return data;
   }
