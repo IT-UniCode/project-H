@@ -1,9 +1,9 @@
-import type { UserInfo } from "./user";
+import type { UserMsgInfo } from "./user";
 
 export interface IChat {
   id: number;
   firstUserId: number;
-  firstUser: UserInfo;
+  firstUser: UserMsgInfo;
   secondUserId: number;
-  secondUser: UserInfo;
+  secondUser: UserMsgInfo;
 }

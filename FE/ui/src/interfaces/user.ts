@@ -4,4 +4,6 @@ export interface User {
   email: string;
 }
 
-export interface UserInfo extends Pick<User, "name" | "email"> {}
+export interface UserMsgInfo extends Pick<User, "name" | "email"> {
+  unread: number;
+}

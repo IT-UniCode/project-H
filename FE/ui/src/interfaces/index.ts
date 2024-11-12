@@ -1,5 +1,5 @@
 export type { HeaderLink } from "./header.link";
-export type { User, UserInfo } from "./user";
+export type { User, UserMsgInfo } from "./user";
 export type { Login } from "./login";
 export type { ResponseBodyList, ResponseBody } from "./response.body.list";
 export type { News } from "./news";
