@@ -1,6 +1,6 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { IChat, ChatMessage } from "@interfaces/index";
+import type { IChat, ChatMessage, ResponseBodyList } from "@interfaces/index";
 
 class ChatService {
   async createChat(userId: number) {
@@ -14,13 +14,15 @@ class ChatService {
   }
 
   async sendMessage(chatId: number, message: string) {
-    return apiService.post<ChatMessage>(`${ApiPath.chatMsg}/${chatId}/msg`, {
+    return apiService.post<ChatMessage>(`${ApiPath.chat}/${chatId}/msg`, {
       body: { message },
     });
   }
 
   async getMesages(chatId: number) {
-    return apiService.get<ChatMessage[]>(`${ApiPath.chatMsg}/${chatId}/msg`);
+    return apiService.get<ResponseBodyList<ChatMessage>>(
+      `${ApiPath.chat}/${chatId}/msg`,
+    );
   }
 }
 
