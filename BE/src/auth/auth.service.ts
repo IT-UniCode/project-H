@@ -4,12 +4,12 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { JwtPayload } from './dto/jwt-payload';
-import * as bcrypt from 'bcrypt';
+} from "@nestjs/common";
+import { UsersService } from "src/users/users.service";
+import { JwtService } from "@nestjs/jwt";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { JwtPayload } from "./dto/jwt-payload";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
@@ -22,12 +22,12 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('User not exist');
+      throw new NotFoundException("User not exist");
     }
 
-    const systemPass = await this.jwtService.decode(user.password);
+    const hashedPass = await bcrypt.compare(pass, user.password);
 
-    if (pass !== systemPass.sub) {
+    if (!hashedPass) {
       throw new UnauthorizedException();
     }
 
@@ -49,7 +49,7 @@ export class AuthService {
       throw new HttpException(
         {
           status: HttpStatus.FORBIDDEN,
-          error: 'User already exist!',
+          error: "User already exist!",
         },
         HttpStatus.FORBIDDEN,
       );
