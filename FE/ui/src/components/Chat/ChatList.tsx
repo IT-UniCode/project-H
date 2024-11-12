@@ -50,10 +50,6 @@ function ChatList({ class: className }: ChatListProps) {
   }, [search]);
 
   useEffect(() => {
-    console.log(users);
-  }, [users]);
-
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -77,7 +73,7 @@ function ChatList({ class: className }: ChatListProps) {
     <section
       class={clsx("flex max-w-5xl w-full mx-auto  max-h-[85vh]", className)}
     >
-      <section class="min-w-[100px] md:min-w-[250px] flex-[1_1_25%] bg-blue-200">
+      <section class="min-w-[100px] md:min-w-[250px] flex-[1_1_25%] bg-gray-100 border">
         <div class="relative mb-2" ref={dropdownRef}>
           <TextField
             class="bg-white rounded-none"
@@ -105,7 +101,10 @@ function ChatList({ class: className }: ChatListProps) {
             {chat.chats.map((item) => (
               <div
                 key={item.id}
-                class="flex bg-white px-2 py-1 gap-x-2 min-h-16"
+                class={clsx("flex  px-2 py-1 gap-x-2 min-h-16 duration-100", {
+                  "shadow-inner border bg-gray-200": item.id === chat.selected,
+                  "bg-white": item.id !== chat.selected,
+                })}
                 onClick={() => {
                   setChat((prev) => ({ ...prev, selected: item.id }));
                 }}
@@ -122,7 +121,7 @@ function ChatList({ class: className }: ChatListProps) {
           </section>
         </div>
       </section>
-      <section class="flex flex-col flex-[1_1_75%] bg-violet-300">
+      <section class="flex flex-col flex-[1_1_75%] bg-gray-50">
         <Chat chatId={chat.selected} userId={payload?.sub} />
       </section>
     </section>

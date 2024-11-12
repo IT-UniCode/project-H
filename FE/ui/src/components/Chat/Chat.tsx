@@ -37,12 +37,33 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
     setMessages(res);
   }
 
+  const handleMessage = ({
+    detail: { data, type },
+  }: {
+    detail: {
+      type: string;
+      data: ChatMessage;
+    };
+  }) => {
+    switch (type) {
+      case "create":
+        if (data.chatId === chatId) {
+          setMessages((prev) => [...prev, data]);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     if (chatId <= 0) return;
     getMessages();
-    soketService.on("message", (message: ChatMessage) => {
-      console.log("Chat listner: ");
-    });
+    soketService.addListener("message", handleMessage);
+
+    return () => {
+      soketService.removeListener("message", handleMessage);
+    };
   }, [chatId]);
 
   useEffect(() => {
@@ -80,11 +101,11 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
         </div>
       </section>
       <form
-        class="flex min-h-16 max-h-16 md:min-h-20 md:h-20 flex-grow bg-white rounded-t-md overflow-hidden"
+        class="flex min-h-16 max-h-16 md:min-h-20 md:h-20 flex-grow bg-white overflow-hidden"
         onSubmit={onSubmit}
       >
         <TextArea
-          class={clsx("rounded-none h-full resize-none")}
+          class={clsx("rounded-none h-full resize-none bg-slate-100")}
           name={keys.message}
         />
         <div class="bg-gray-300 flex items-center">
