@@ -18,6 +18,10 @@ export class ChatService {
       include: {
         firstUser: { select: { name: true, email: true } },
         secondUser: { select: { name: true, email: true } },
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
       },
     });
 
