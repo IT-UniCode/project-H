@@ -18,7 +18,7 @@ interface Form {
 
 function Chat({ chatId, class: className, userId }: ChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const { keys, onSubmit } = useForm<Form>({
     values: {
@@ -56,6 +56,16 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
     }
   };
 
+  function handleScroll() {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (container.scrollTop < container.scrollHeight * 0.15) {
+      // loadMoreMessages();
+      console.log(container.scrollHeight * 0.1, container.scrollTop);
+    }
+  }
+
   useEffect(() => {
     if (chatId <= 0) return;
     getMessages();
@@ -67,12 +77,32 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
   }, [chatId]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = containerRef.current;
+    if (!container) return;
+    container.addEventListener("scroll", handleScroll);
+
+    if (true) {
+      container.scrollTop = container.scrollHeight;
+    }
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
   }, [messages]);
+
+  if (chatId <= 0)
+    return (
+      <section class="flex-grow flex justify-center items-center">
+        <p class="text-lg">Select a chat to start a conversation</p>
+      </section>
+    );
 
   return (
     <>
-      <section class={clsx("flex-grow px-1 py-1 overflow-y-auto ", className)}>
+      <section
+        ref={containerRef}
+        class={clsx("flex-grow px-1 py-1 overflow-y-auto ", className)}
+      >
         <div class="flex flex-col gap-y-2">
           {messages.map((v) => (
             <article
@@ -93,7 +123,7 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
               </span>
             </article>
           ))}
-          <div ref={messagesEndRef} />
+          {/* <div ref={messagesEndRef} /> */}
         </div>
       </section>
       <form

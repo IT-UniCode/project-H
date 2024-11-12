@@ -3,9 +3,10 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import Chat from "./Chat";
 import { TextArea, TextField } from "@components/TextFields";
 import userService from "@service/user.service";
-import type { IChat, User } from "@interfaces/index";
+import type { ChatMessage, IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import { useAuth } from "@hooks/useAuth";
+import soketService from "@service/soket.service";
 
 export interface ChatListProps {
   class?: string;
@@ -43,6 +44,24 @@ function ChatList({ class: className }: ChatListProps) {
     } catch (e) {}
   }
 
+  const handleMessage = ({
+    detail: { data, type },
+  }: {
+    detail: {
+      type: string;
+      data: ChatMessage;
+    };
+  }) => {
+    console.log(type, data);
+
+    switch (type) {
+      case "create":
+        break;
+      default:
+        break;
+    }
+  };
+
   useMemo(async () => {
     if (!search) return;
     const response = await userService.search(search);
@@ -60,10 +79,14 @@ function ChatList({ class: className }: ChatListProps) {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+    soketService.addListener("message", handleMessage);
 
     getChats();
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      soketService.removeListener("message", handleMessage);
+    };
   }, []);
 
   if (!payload) {
@@ -97,14 +120,18 @@ function ChatList({ class: className }: ChatListProps) {
         </div>
 
         <div class="overflow-y-auto scroll-smooth">
-          <section class="flex flex-col divide-y">
+          <section class="flex flex-col">
             {chat.chats.map((item) => (
               <div
                 key={item.id}
-                class={clsx("flex  px-2 py-1 gap-x-2 min-h-16 duration-100", {
-                  "shadow-inner border bg-gray-200": item.id === chat.selected,
-                  "bg-white": item.id !== chat.selected,
-                })}
+                class={clsx(
+                  "flex  px-2 py-1 gap-x-2 min-h-16 duration-100 border-black",
+                  {
+                    "shadow-inner  bg-gray-200": item.id === chat.selected,
+                    "bg-white": item.id !== chat.selected,
+                  },
+                  "border-b ",
+                )}
                 onClick={() => {
                   setChat((prev) => ({ ...prev, selected: item.id }));
                 }}
