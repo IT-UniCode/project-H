@@ -4,6 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from '@prisma/client';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ChatGateway } from './chat.gateway';
+import { Pagination } from 'src/types';
 
 @Injectable()
 export class ChatMsgService {
@@ -12,7 +13,7 @@ export class ChatMsgService {
     private readonly server: ChatGateway,
   ) {}
 
-  async findAll(id: number, userId: number) {
+  async findAll(id: number, userId: number, pagination: Pagination) {
     const chat = await this.prisma.chat.findUnique({
       where: {
         id,
@@ -23,20 +24,30 @@ export class ChatMsgService {
     if (!chat) {
       throw new BadRequestException(`This chat with id ${id} does not exists`);
     }
-
     const messageList = (
       await this.prisma.message.findMany({
         where: { chatId: id, unread: true },
       })
     ).filter((msg) => userId !== msg.userId);
 
+    const total = await this.prisma.message.count({
+      where: { chatId: id },
+    });
+
+    const take = pagination.pageSize === -1 ? total : pagination.pageSize;
+    const skip = pagination.page * Math.abs(pagination.pageSize);
+
     const data = await this.prisma.message.findMany({
       where: { chatId: id },
       orderBy: { createdAt: 'asc' },
+      skip,
+      take,
     });
 
     const meta = {
       totalUnread: messageList.length,
+      ...pagination,
+      total,
     };
 
     return { data, meta };
