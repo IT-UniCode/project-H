@@ -20,8 +20,8 @@ import { MessageDto } from './dto/message.dto';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
-@ApiTags('chat-msg')
-@Controller('chat-msg')
+@ApiTags('chat')
+@Controller('chat')
 export class ChatMsgController {
   constructor(private readonly messageService: ChatMsgService) {}
 
