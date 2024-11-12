@@ -30,6 +30,8 @@ function ChatList({ class: className }: ChatListProps) {
 
   async function getChats() {
     const res = await chatService.getChats();
+    console.log(res);
+
     setChat((prev) => ({ ...prev, chats: res }));
   }
 
@@ -138,7 +140,11 @@ function ChatList({ class: className }: ChatListProps) {
               >
                 <div class="rounded-full bg-gray-400 flex-[1_1_20%] aspect-square h-full my-auto hidden md:block"></div>
                 <article class="flex-[2_1_80%]">
-                  <h3>{item.firstUserId}</h3>
+                  <h3>
+                    {item.firstUserId !== payload.id
+                      ? item.firstUser.name
+                      : item.secondUser.name}
+                  </h3>
                   <p>
                     {item.secondUserId} ChatId: {item.id}
                   </p>

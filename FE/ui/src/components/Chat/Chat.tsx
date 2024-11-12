@@ -1,6 +1,6 @@
 import { TextArea } from "@components/TextFields";
 import { useForm } from "@hooks/index";
-import type { ChatMessage } from "@interfaces/index";
+import type { ChatMessage, ResponseBodyList } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import soketService from "@service/soket.service";
 import clsx from "clsx";
@@ -17,7 +17,10 @@ interface Form {
 }
 
 function Chat({ chatId, class: className, userId }: ChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ResponseBodyList<ChatMessage>>({
+    data: [],
+    meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
+  });
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { keys, onSubmit } = useForm<Form>({
@@ -27,13 +30,15 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
     async onSubmit(values, context) {
       if (!values.message) return;
       const res = await chatService.sendMessage(chatId, values.message);
-      setMessages((prev) => [...prev, res]);
+      setMessages((prev) => ({ ...prev, data: [...prev.data, res] }));
       context.reset();
     },
   });
 
   async function getMessages() {
     const res = await chatService.getMesages(chatId);
+    console.log(res);
+
     setMessages(res);
   }
 
@@ -48,7 +53,7 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
     switch (type) {
       case "create":
         if (data.chatId === chatId) {
-          setMessages((prev) => [...prev, data]);
+          setMessages((prev) => ({ ...prev, date: [...prev.data, data] }));
         }
         break;
       default:
@@ -104,16 +109,16 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
         class={clsx("flex-grow px-1 py-1 overflow-y-auto ", className)}
       >
         <div class="flex flex-col gap-y-2">
-          {messages.map((v) => (
+          {messages.data.map((v) => (
             <article
               class={clsx("py-1 px-2 rounded overflow-hidden max-w-[90%]", {
                 "ml-auto bg-blue-200": v.userId === userId,
                 "bg-gray-200 mr-auto": v.userId !== userId,
               })}
             >
-              <p>{v.message}</p>
+              <p class="whitespace-pre-line">{v.message}</p>
               <span
-                class={clsx("text-xs text-gray-500 select-none", {
+                class={clsx("text-xs text-gray-500 select-none ", {
                   "text-end": v.userId === userId,
                 })}
               >
