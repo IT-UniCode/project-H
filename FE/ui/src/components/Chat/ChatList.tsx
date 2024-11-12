@@ -121,7 +121,7 @@ function ChatList({ class: className }: ChatListProps) {
           </section>
         </div>
       </section>
-      <section class="flex flex-col flex-[1_1_75%] bg-gray-50">
+      <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
         <Chat chatId={chat.selected} userId={payload?.sub} />
       </section>
     </section>

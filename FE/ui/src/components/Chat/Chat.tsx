@@ -72,12 +72,7 @@ function Chat({ chatId, class: className, userId }: ChatProps) {
 
   return (
     <>
-      <section
-        class={clsx(
-          "flex-grow px-1 py-1 overflow-y-auto scroll-smooth",
-          className,
-        )}
-      >
+      <section class={clsx("flex-grow px-1 py-1 overflow-y-auto ", className)}>
         <div class="flex flex-col gap-y-2">
           {messages.map((v) => (
             <article
