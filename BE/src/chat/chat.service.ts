@@ -77,7 +77,10 @@ export class ChatService {
 
     const chat = await this.prisma.chat.findFirst({
       where: {
-        OR: [{ firstUserId: userId }, { secondUserId: userId }],
+        OR: [
+          { firstUserId: userId, secondUserId: dto.secondUserId },
+          { secondUserId: userId, firstUserId: dto.secondUserId },
+        ],
       },
     });
     if (chat) {
