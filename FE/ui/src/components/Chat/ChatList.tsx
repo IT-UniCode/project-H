@@ -22,8 +22,8 @@ function ChatList({ class: className }: ChatListProps) {
   const [search, setSearch] = useState("");
   const { payload } = useAuth();
 
-  const [users, setUsers] = useState<{ search: User | null; open: boolean }>({
-    search: null,
+  const [users, setUsers] = useState<{ search: User[]; open: boolean }>({
+    search: [],
     open: false,
   });
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,15 +33,16 @@ function ChatList({ class: className }: ChatListProps) {
     setChat((prev) => ({ ...prev, chats: res }));
   }
 
-  async function createChat() {
-    if (!users.search?.id) {
-      return;
-    }
+  async function createChat(userId: number) {
     try {
-      const res = await chatService.createChat(users.search?.id);
+      const res = await chatService.createChat(userId);
+      console.log("chat:", res);
+
       setChat((prev) => ({ ...prev, chats: [...prev.chats, res] }));
-      setUsers((prev) => ({ ...prev, search: null, open: false }));
-    } catch (e) {}
+      setUsers((prev) => ({ ...prev, search: [], open: false }));
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const handleMessage = ({
@@ -87,7 +88,10 @@ function ChatList({ class: className }: ChatListProps) {
   };
 
   useMemo(async () => {
-    if (!search) return;
+    if (!search) {
+      setUsers((prev) => ({ open: false, search: [] }));
+      return;
+    }
     const response = await userService.search(search);
     setUsers((prev) => ({ ...prev, search: response }));
   }, [search]);
@@ -125,6 +129,7 @@ function ChatList({ class: className }: ChatListProps) {
           <TextField
             class="bg-white rounded-none"
             onChange={(e: any) => {
+              setUsers((prev) => ({ ...prev, open: true }));
               setSearch(e.target.value);
             }}
             onFocus={() => {
@@ -132,12 +137,26 @@ function ChatList({ class: className }: ChatListProps) {
             }}
           />
           {users.open && users.search && (
-            <div
-              class="absolute top-[100%] left-0 right-0 z-50 min-h-10 mt-2 bg-white shadow-md px-2 py-1"
-              onClick={createChat}
-            >
-              <h4 class="">Name: {users.search?.name}</h4>
-              <p class="text-xs text-gray-500">Email: {users.search?.email}</p>
+            <div class={"absolute top-[100%] left-0 right-0 z-50 "}>
+              {users.search.map(
+                (
+                  user, // TODO from one to array (limit 10)
+                ) => (
+                  <div
+                    class="min-h-10 mt-2 bg-white shadow-md px-2 py-1 hover:cursor-pointer"
+                    onClick={() => {
+                      console.log(users);
+
+                      createChat(user.id);
+                    }}
+                  >
+                    <h4 class="pointer-events-none">Name: {user.name}</h4>
+                    <p class="text-xs text-gray-500 pointer-events-none">
+                      Email: {user.email}
+                    </p>
+                  </div>
+                ),
+              )}
             </div>
           )}
         </div>

@@ -8,7 +8,7 @@ class UserService {
   }
 
   async search(query: string) {
-    return await apiService.get<User>(ApiPath.userSearch, {
+    return await apiService.get<User[]>(ApiPath.userSearch, {
       query: { q: query },
     });
   }

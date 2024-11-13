@@ -64,7 +64,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
       pages >= pagination.page + 1 ? pagination.page + 1 : pagination.page;
 
     if (pages <= pagination.page + 1 && options?.default !== true) {
-      console.log(pages, pagination.page + 1);
+      // console.log(pages, pagination.page + 1);
 
       return;
     }
@@ -144,7 +144,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     if (container.scrollTop < container.scrollHeight * 0.01 && !hasLoadedMore) {
       setHasLoadedMore(true);
       getMessages({ load: true });
-      console.log("Load more");
+      // console.log("Load more");
     }
   }
 
