@@ -26,7 +26,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(private jwtService: JwtService) {}
 
   private extractTokenFromHeader(headers: any): string | undefined {
-    const [type, token] = headers.authorization?.split(' ') ?? [];
+    const [type, token] = headers?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }
 
@@ -49,13 +49,34 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @UseGuards(AuthGuard)
   async handleConnection(@ConnectedSocket() client: Socket) {
-    const token = this.extractTokenFromHeader(client.handshake.headers);
+    const token = this.extractTokenFromHeader(
+      client.handshake.auth.authorization,
+    );
 
-    const { id } = await this.jwtService.verifyAsync(token, {
-      secret: process.env.SECRET,
-    });
+    if (!token) {
+      client.send(
+        JSON.stringify({
+          event: 'error',
+          data: {
+            message: 'Unauthorized',
+            status: HttpStatus.UNAUTHORIZED,
+          },
+        }),
+      );
+      client.disconnect();
+      return;
+    }
 
-    client.join(String(id));
+    const user = await this.jwtService
+      .verifyAsync(token, {
+        secret: process.env.SECRET,
+      })
+      .catch(() => {
+        client.disconnect();
+        return;
+      });
+
+    client.join(String(user?.id));
   }
 
   async handleDisconnect(@ConnectedSocket() client: Socket) {

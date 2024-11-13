@@ -4,6 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Message } from '@prisma/client';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { ChatGateway } from './chat.gateway';
+import { Pagination } from 'src/types';
 
 @Injectable()
 export class ChatMsgService {
@@ -12,26 +13,60 @@ export class ChatMsgService {
     private readonly server: ChatGateway,
   ) {}
 
-  async findAll(id: number): Promise<Message[] | undefined> {
-    const isChatExist = await this.prisma.chat.findUnique({ where: { id } });
+  async findAll(id: number, userId: number, pagination: Pagination) {
+    const chat = await this.prisma.chat.findUnique({
+      where: {
+        id,
+        OR: [{ firstUserId: userId }, { secondUserId: userId }],
+      },
+    });
 
-    if (!isChatExist) {
+    if (!chat) {
       throw new BadRequestException(`This chat with id ${id} does not exists`);
     }
+    const messageList = (
+      await this.prisma.message.findMany({
+        where: { chatId: id, unread: true },
+      })
+    ).filter((msg) => userId !== msg.userId);
+
+    const total = await this.prisma.message.count({
+      where: { chatId: id },
+    });
+
+    const take = pagination.pageSize === -1 ? total : pagination.pageSize;
+    const skip = pagination.page * Math.abs(pagination.pageSize);
 
     const data = await this.prisma.message.findMany({
       where: { chatId: id },
       orderBy: { createdAt: 'asc' },
+      skip,
+      take,
     });
 
-    return data;
+    const meta = {
+      totalUnread: messageList.length,
+      pagination: {
+        page: pagination.page + 1,
+        pageCount: Math.ceil(total / take) || 1,
+        pageSize: take,
+        total,
+      },
+    };
+
+    return { data, meta };
   }
 
-  async create(dto: CreateMessageDto, chatId: number, userId: number) {
+  async create(
+    dto: CreateMessageDto,
+    chatId: number,
+    userId: number,
+  ): Promise<Message | undefined> {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
@@ -50,7 +85,7 @@ export class ChatMsgService {
       return data;
     } catch (error) {
       throw new BadRequestException(
-        `This chat with id ${chatId} does not exists. ${error && 'Cannot send message'}`,
+        `This chat with Id ${chatId} does not exist or the user does not have access to this chat. ${error && 'Cannot send message'}`,
       );
     }
   }
@@ -60,11 +95,12 @@ export class ChatMsgService {
     id: number,
     userId: number,
     dto: UpdateMessageDto,
-  ) {
+  ): Promise<Message | undefined> {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
@@ -89,15 +125,18 @@ export class ChatMsgService {
     }
   }
 
-  async delete(chatId: number, id: number, userId: number) {
+  async delete(chatId: number, msgId: number, userId: number) {
     try {
       const chat = await this.prisma.chat.findUnique({
         where: {
           id: chatId,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
 
-      const data = await this.prisma.message.delete({ where: { id, chatId } });
+      const data = await this.prisma.message.delete({
+        where: { id: msgId, chatId },
+      });
 
       this.server.send(
         'message',
@@ -110,8 +149,41 @@ export class ChatMsgService {
       return HttpStatus.NO_CONTENT;
     } catch (error) {
       throw new BadRequestException(
-        `This message with id ${id} does not exists. ${error && 'Cannot delete'}`,
+        `This message with id ${msgId} does not exists. ${error && 'Cannot delete'}`,
       );
     }
+  }
+
+  async readMsg(chatId: number, userId: number) {
+    const chat = await this.prisma.chat.findUnique({
+      where: {
+        id: chatId,
+        OR: [{ firstUserId: userId }, { secondUserId: userId }],
+      },
+    });
+
+    if (!chat) {
+      throw new BadRequestException(
+        `This chat with id ${chatId} does not exist or the user does not have access to this chat`,
+      );
+    }
+
+    const allMsg = await this.prisma.message.findMany({ where: { chatId } });
+
+    await Promise.all(
+      allMsg
+        .filter((msg) => userId !== msg.userId)
+        .map(
+          async (msg) =>
+            await this.prisma.message.update({
+              where: { id: msg.id },
+              data: {
+                unread: false,
+              },
+            }),
+        ),
+    );
+
+    return HttpStatus.NO_CONTENT;
   }
 }

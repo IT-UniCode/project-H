@@ -8,7 +8,9 @@ import { CacheService } from './cache.service';
       provide: 'KEYV_INSTANCE',
       useFactory: () =>
         new Keyv({
-          store: new KeyvRedis(process.env.REDIS_URL || '12'),
+          store: new KeyvRedis(
+            process.env.REDIS_URL || 'redis://localhost:6379',
+          ),
         }),
     },
     CacheService,

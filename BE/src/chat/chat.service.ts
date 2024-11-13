@@ -12,27 +12,62 @@ export class ChatService {
     private readonly usersService: UsersService,
   ) {}
 
-  async findAll(args: unknown = {}) {
-    return this.prisma.chat.findMany(args);
+  async findAll(userId: number) {
+    const chats = await this.prisma.chat.findMany({
+      where: { OR: [{ firstUserId: userId }, { secondUserId: userId }] },
+      include: {
+        firstUser: { select: { name: true, email: true } },
+        secondUser: { select: { name: true, email: true } },
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    await Promise.all(
+      chats.map(async (chat: any) => {
+        const messageList = await this.prisma.message.findMany({
+          where: { chatId: chat.id, unread: true },
+        });
+
+        const userMsg = messageList.filter((msg) => userId === msg.userId);
+
+        if (chat.firstUserId === userId) {
+          chat.secondUser.unread = userMsg.length;
+          chat.firstUser.unread = messageList.length - userMsg.length;
+        } else {
+          chat.secondUser.unread = messageList.length - userMsg.length;
+          chat.firstUser.unread = userMsg.length;
+        }
+      }),
+    );
+
+    return chats;
   }
 
   async findOneById(id: number) {
     return this.prisma.chat.findUnique({ where: { id } });
   }
 
-  async delete(id: number) {
+  async delete(id: number, userId: number) {
     try {
-      await this.prisma.chat.delete({ where: { id } });
+      await this.prisma.chat.delete({
+        where: {
+          id,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
+        },
+      });
       return HttpStatus.NO_CONTENT;
     } catch (error) {
       throw new BadRequestException(
-        `This chat does not exists. ${error && 'Cannot delete'}`,
+        `This chat with id ${id} does not exist or the user does not have access to this chat. ${error && 'Cannot delete'}`,
       );
     }
   }
 
-  async create(dto: CreateChatDto, id: number) {
-    if (dto.secondUserId === id) {
+  async create(dto: CreateChatDto, userId: number) {
+    if (dto.secondUserId === userId) {
       throw new BadRequestException(`Can't create a chat with yourself`);
     }
     const isUserExist = await this.usersService.findOneById(dto.secondUserId);
@@ -40,28 +75,20 @@ export class ChatService {
       throw new BadRequestException(`This user does not exists`);
     }
 
-    const isFirst = await this.prisma.chat.findFirst({
+    const chat = await this.prisma.chat.findFirst({
       where: {
-        firstUserId: id,
-        secondUserId: dto.secondUserId,
+        OR: [{ firstUserId: userId }, { secondUserId: userId }],
       },
     });
-    if (isFirst) {
-      throw new BadRequestException(`This chat already exists`);
-    }
-
-    const isSecond = await this.prisma.chat.findFirst({
-      where: {
-        secondUserId: id,
-        firstUserId: dto.secondUserId,
-      },
-    });
-    if (isSecond) {
+    if (chat) {
       throw new BadRequestException(`This chat already exists`);
     }
 
     const newChat = await this.prisma.chat.create({
-      data: { ...dto, firstUserId: id },
+      data: {
+        ...dto,
+        firstUserId: userId,
+      },
     });
     return plainToInstance(Chat, newChat);
   }

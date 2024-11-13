@@ -12,14 +12,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
 
-  // app.setGlobalPrefix('api');
   app.enableCors();
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     transform: true,
-  //   }),
-  // );
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,13 +18,27 @@ import { ChatMsgService } from './chat-msg.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageDto } from './dto/message.dto';
+import { GetMessageDto } from './dto/get-message.dto';
+import { PaginationQuery } from 'src/types';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
-@ApiTags('chat-msg')
-@Controller('chat-msg')
+@ApiTags('chat')
+@Controller('chat')
 export class ChatMsgController {
   constructor(private readonly messageService: ChatMsgService) {}
+
+  @ApiParam({
+    name: 'id',
+    type: Number,
+  })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+  })
+  @Post('/:id/read')
+  async readMsg(@Param('id') id: string, @Req() req: { user: JwtPayload }) {
+    return this.messageService.readMsg(parseInt(id), req.user.id);
+  }
 
   @ApiParam({
     name: 'id',
@@ -46,11 +61,20 @@ export class ChatMsgController {
     type: Number,
   })
   @ApiResponse({
-    type: MessageDto,
+    type: GetMessageDto,
   })
   @Get('/:id/msg')
-  async getAllMsg(@Param() params: { id: string }) {
-    return this.messageService.findAll(parseInt(params.id));
+  async getAllMsg(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+    @Query() query: PaginationQuery,
+  ) {
+    const page = Math.abs(parseInt(query.page || '1'));
+    const pageSize = Math.max(parseInt(query.pageSize) || 25, -1);
+    return this.messageService.findAll(parseInt(params.id), req.user.id, {
+      page: page - 1 < 1 ? 0 : page - 1,
+      pageSize: pageSize,
+    });
   }
 
   @ApiParam({

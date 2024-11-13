@@ -39,8 +39,9 @@ export class ChatController {
     type: [Chat],
   })
   @Get()
-  async getAllChats() {
-    return this.chatService.findAll();
+  async getAllChats(@Req() req: { user: JwtPayload }) {
+    const userId = req.user.id;
+    return this.chatService.findAll(userId);
   }
 
   @ApiParam({
@@ -63,7 +64,10 @@ export class ChatController {
     status: HttpStatus.NO_CONTENT,
   })
   @Delete('/:id')
-  async deleteChat(@Param() params: { id: string }) {
-    return this.chatService.delete(parseInt(params.id));
+  async deleteChat(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.chatService.delete(parseInt(params.id), req.user.id);
   }
 }

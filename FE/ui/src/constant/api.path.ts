@@ -1,5 +1,6 @@
 export enum ApiPath {
   user = "/user",
+  userSearch = "/user/search",
   news = "/news",
   categories = "/categories",
   userProfile = "/user/profile",
@@ -12,4 +13,6 @@ export enum ApiPath {
   fundraisings = "/fundraisings",
   fundraisingsCategories = "/fundraising-categories",
   paymentCheckout = "/payment/checkout",
+  chat = "/chat",
+  chatMsg = "/chat-msg",
 }

@@ -1,19 +1,25 @@
 import { storageName } from "@constant/storageName";
 import { useLocalStorage } from "@helpers/index";
+import type { JwtPayload } from "@interfaces/index";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "preact/hooks";
 
+interface Store {
+  isAuth: boolean;
+  payload: JwtPayload | null;
+}
+
 export function useAuth() {
-  const [isAuth, setIsAuth] = useState(false);
+  const [store, setStore] = useState<Store>({ isAuth: false, payload: null });
   const { get, set } = useLocalStorage(storageName.AccessToken);
 
   const logOut = () => {
     localStorage.removeItem(storageName.AccessToken);
-    setIsAuth(false);
+    setStore({ isAuth: false, payload: null });
   };
 
   const setAuth = (token: string): boolean => {
-    const decode = jwtDecode(token);
+    const decode = jwtDecode(token) as JwtPayload;
 
     if (!decode.exp || decode.exp * 1000 < Date.now()) {
       logOut();
@@ -21,21 +27,22 @@ export function useAuth() {
     }
 
     set(token);
-    setIsAuth(true);
+
+    setStore({ isAuth: true, payload: decode });
     return true;
   };
 
   const checkLiveToken = () => {
     const token = get<string>();
     if (!token) return;
-    const decode = jwtDecode(token);
+    const decode = jwtDecode(token) as JwtPayload;
 
     if (!decode.exp || decode.exp * 1000 < Date.now()) {
       logOut();
       return;
     }
 
-    setIsAuth(true);
+    setStore({ isAuth: true, payload: decode });
   };
 
   useEffect(() => {
@@ -49,7 +56,8 @@ export function useAuth() {
   }, []);
 
   return {
-    isAuth,
+    isAuth: store.isAuth,
+    payload: store.payload,
     logOut,
     setAuth,
   };
