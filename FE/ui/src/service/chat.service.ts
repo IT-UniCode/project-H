@@ -1,6 +1,11 @@
 import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
-import type { IChat, ChatMessage, ResponseBodyList } from "@interfaces/index";
+import type {
+  IChat,
+  ChatMessage,
+  ResponseBodyList,
+  Pagination,
+} from "@interfaces/index";
 
 class ChatService {
   async createChat(userId: number) {
@@ -23,10 +28,16 @@ class ChatService {
     });
   }
 
-  async getMesages(chatId: number) {
-    return apiService.get<ResponseBodyList<ChatMessage>>(
-      `${ApiPath.chat}/${chatId}/msg`,
-    );
+  async getMesages(
+    chatId: number,
+    query?: { page?: number; pageSize?: number },
+  ) {
+    return apiService.get<
+      ResponseBodyList<
+        ChatMessage,
+        { pagination: Pagination; totalUnread: number }
+      >
+    >(`${ApiPath.chat}/${chatId}/msg`, { query });
   }
 }
 
