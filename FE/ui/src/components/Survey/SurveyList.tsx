@@ -24,6 +24,8 @@ function SurveyList() {
 
     const ids = res.data.map((v) => v.documentId);
 
+    if (ids.length === 0) return;
+
     const surveyAnswers = await surveyService.getAnswer(ids);
     const serveys: ISurvey[] = [];
 
