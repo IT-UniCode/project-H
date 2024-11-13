@@ -34,6 +34,7 @@ export class UsersService {
           mode: 'insensitive',
         },
       },
+      take: 10,
     });
 
     if (!byEmail) {
