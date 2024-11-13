@@ -17,11 +17,23 @@ interface Form {
   message: string;
 }
 
+interface Pagination {
+  page: number;
+  pageSize: number;
+}
+
 function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
   const [messages, setMessages] = useState<ResponseBodyList<ChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
   });
+
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    pageSize: 15,
+  });
+
+  const [hasLoadedMore, setHasLoadedMore] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { keys, onSubmit } = useForm<Form>({
@@ -31,16 +43,76 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     async onSubmit(values, context) {
       if (!values.message) return;
       const res = await chatService.sendMessage(chatId, values.message);
-      setMessages((prev) => ({ ...prev, data: [...prev.data, res] }));
+      setMessages((prev) => ({
+        ...prev,
+        data: [...prev.data, res],
+      }));
       context.reset();
     },
   });
 
-  async function getMessages() {
-    const res = await chatService.getMesages(chatId);
-    console.log(res);
+  async function getMessages(
+    options: { load?: boolean; default?: boolean } = {},
+  ) {
+    const chatContainer = containerRef.current;
+    if (!chatContainer) return;
 
-    setMessages(res);
+    const pages = Math.ceil(
+      messages.meta.pagination.total / pagination.pageSize,
+    );
+    const nextPage =
+      pages >= pagination.page + 1 ? pagination.page + 1 : pagination.page;
+
+    if (pages <= pagination.page + 1 && options?.default !== true) {
+      console.log(pages, pagination.page + 1);
+
+      return;
+    }
+
+    const res = await chatService.getMesages(
+      chatId,
+      options?.default === true
+        ? { page: 1, pageSize: pagination.pageSize * pagination.page }
+        : {
+            page: options?.load ? nextPage : pagination.page,
+            pageSize: pagination.pageSize,
+          },
+    );
+
+    console.log(
+      options?.default === true
+        ? { page: 1, pageSize: pagination.pageSize * pagination.page }
+        : {
+            page: options?.load ? nextPage : pagination.page,
+            pageSize: pagination.pageSize,
+          },
+    );
+
+    const currentScrollHeight = chatContainer.scrollHeight;
+    const currentScrollTop = chatContainer.scrollTop;
+    setMessages((prev) => ({
+      ...prev,
+      data: [...res.data, ...prev.data],
+      meta: res.meta,
+    }));
+
+    setPagination((prev) => ({
+      ...prev,
+      page: res.meta.pagination.page,
+      pageSize: prev.pageSize,
+    }));
+
+    setTimeout(() => {
+      if (!options?.default) {
+        const newScrollHeight = chatContainer.scrollHeight;
+        chatContainer.scrollTop =
+          newScrollHeight - currentScrollHeight + currentScrollTop;
+      } else {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      setHasLoadedMore(false);
+    }, 0);
   }
 
   const handleMessage = ({
@@ -54,7 +126,10 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     switch (type) {
       case "create":
         if (data.chatId === chatId) {
-          setMessages((prev) => ({ ...prev, date: [...prev.data, data] }));
+          setMessages((prev) => ({
+            ...prev,
+            data: [...prev.data, data],
+          }));
         }
         break;
       default:
@@ -66,15 +141,26 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     const container = containerRef.current;
     if (!container) return;
 
-    if (container.scrollTop < container.scrollHeight * 0.15) {
-      // loadMoreMessages();
-      console.log(container.scrollHeight * 0.1, container.scrollTop);
+    if (container.scrollTop < container.scrollHeight * 0.01 && !hasLoadedMore) {
+      setHasLoadedMore(true);
+      getMessages({ load: true });
+      console.log("Load more");
     }
   }
 
   useEffect(() => {
     if (chatId <= 0) return;
-    getMessages();
+    setMessages({
+      data: [],
+      meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
+    });
+    setPagination({ page: 1, pageSize: 15 });
+    setHasLoadedMore(false);
+
+    setTimeout(() => {
+      getMessages({ default: true });
+    }, 0);
+
     soketService.addListener("message", handleMessage);
 
     return () => {
@@ -85,18 +171,22 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
     container.addEventListener("scroll", handleScroll);
-
-    if (true) {
-      container.scrollTop = container.scrollHeight;
-    }
-
-    setReadMessage();
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
     };
-  }, [messages]);
+  }, [hasLoadedMore, containerRef.current, chatId, messages]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    container.scrollTop = container.scrollHeight;
+
+    setReadMessage();
+  }, [containerRef.current, chatId]);
 
   if (chatId <= 0)
     return (
@@ -131,7 +221,6 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
               </span>
             </article>
           ))}
-          {/* <div ref={messagesEndRef} /> */}
         </div>
       </section>
       <form

@@ -30,8 +30,6 @@ function ChatList({ class: className }: ChatListProps) {
 
   async function getChats() {
     const res = await chatService.getChats();
-    console.log(res);
-
     setChat((prev) => ({ ...prev, chats: res }));
   }
 
@@ -54,14 +52,9 @@ function ChatList({ class: className }: ChatListProps) {
       data: ChatMessage;
     };
   }) => {
-    console.log({ data, type });
     switch (type) {
       case "create":
-        console.log(chat.selected, data.chatId);
-
         if (chat.selected !== data.chatId) {
-          console.log(payload?.id);
-
           setChat((prev) => ({
             ...prev,
             chats: prev.chats.map((c) =>
@@ -155,7 +148,7 @@ function ChatList({ class: className }: ChatListProps) {
               <div
                 key={item.id}
                 class={clsx(
-                  "flex  px-2 py-1 gap-x-2 min-h-16 duration-100 border-black",
+                  "flex  px-2 py-1 gap-x-2 min-h-16 duration-100 border-black select-none",
                   {
                     "shadow-inner  bg-gray-200": item.id === chat.selected,
                     "bg-white": item.id !== chat.selected,
@@ -190,7 +183,6 @@ function ChatList({ class: className }: ChatListProps) {
                     )}
                   </div>
                   <p>{item.messages[0] && item.messages[0].message}</p>
-                  {/* <p>ChatId: {item.id}</p> */}
                 </article>
               </div>
             ))}
@@ -202,7 +194,6 @@ function ChatList({ class: className }: ChatListProps) {
           chatId={chat.selected}
           userId={payload?.sub}
           setReadMessage={async () => {
-            console.log(chat.selected);
             const res = await chatService.setReadMessage(chat.selected);
             setChat((prev) => ({
               ...prev,
