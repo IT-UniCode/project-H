@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MessageDto } from './message.dto';
+import { MetaPagination } from 'src/types';
 
 export class GetMessageDto {
   @ApiProperty({
@@ -8,15 +9,7 @@ export class GetMessageDto {
   data: [];
 
   @ApiProperty({
-    example: {
-      totalUnread: 0,
-      pagination: {
-        page: 1,
-        pageCount: 1,
-        pageSize: 25,
-        total: 10,
-      },
-    },
+    type: MetaPagination,
   })
   meta: object;
 }

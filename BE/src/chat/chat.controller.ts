@@ -15,6 +15,7 @@ import { JwtPayload } from 'src/auth/dto/jwt-payload';
 import { AuthGuard } from 'src/guard/user.guard';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Chat } from './entity/chat.entity';
+import { PostChatDto } from './dto/post-chat.dto';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
@@ -24,7 +25,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @ApiResponse({
-    type: Chat,
+    type: PostChatDto,
     status: HttpStatus.CREATED,
   })
   @Post()
