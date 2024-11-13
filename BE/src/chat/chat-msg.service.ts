@@ -39,7 +39,7 @@ export class ChatMsgService {
 
     const data = await this.prisma.message.findMany({
       where: { chatId: id },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       skip,
       take,
     });
