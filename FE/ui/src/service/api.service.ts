@@ -8,7 +8,7 @@ import type { QueryApi } from "src/interfaces";
 class ApiService {
   apiUrl = import.meta.env.PUBLIC_API_URL;
 
-  async requst(
+  async request(
     path: string,
     method: "POST" | "GET" | "PUT" | "DELETE",
     init: {
@@ -47,7 +47,7 @@ class ApiService {
       headers?: any;
     },
   ): Promise<T> {
-    const res = await this.requst(path, "POST", {
+    const res = await this.request(path, "POST", {
       ...init,
       body: JSON.stringify(init.body),
     });
@@ -63,7 +63,20 @@ class ApiService {
     } = {},
   ): Promise<T> {
     const query = convertToQueryString(init.query);
-    const res = await this.requst(path + query, "GET", init);
+    const res = await this.request(path + query, "GET", init);
+
+    return await res.json();
+  }
+
+  async delete<T>(
+    path: string | ApiPath,
+    init: {
+      headers?: any;
+      query?: any;
+    } = {},
+  ): Promise<T> {
+    const query = convertToQueryString(init.query);
+    const res = await this.request(path + query, "DELETE", init);
 
     return await res.json();
   }

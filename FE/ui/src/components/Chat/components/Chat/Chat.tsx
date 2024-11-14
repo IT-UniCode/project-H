@@ -12,6 +12,7 @@ export interface ChatProps {
   userId: number;
   class?: string;
   setReadMessage: (chatId: number) => void;
+  onDelete: () => Promise<void>;
 }
 
 interface Form {
@@ -23,7 +24,13 @@ interface Pagination {
   pageSize: number;
 }
 
-function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
+function Chat({
+  chatId,
+  class: className,
+  userId,
+  setReadMessage,
+  onDelete,
+}: ChatProps) {
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
@@ -202,7 +209,13 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
       >
         <div class="flex flex-col gap-y-2">
           {messages.data.map((msg) => (
-            <ChatMessage message={{ ...msg }} userId={userId} />
+            <ChatMessage
+              message={{ ...msg }}
+              userId={userId}
+              onDelete={() => {
+                onDelete();
+              }}
+            />
           ))}
         </div>
       </section>
