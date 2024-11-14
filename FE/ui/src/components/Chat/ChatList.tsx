@@ -1,5 +1,12 @@
 import clsx from "clsx";
-import { useEffect, useState } from "preact/hooks";
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type StateUpdater,
+} from "preact/hooks";
 import Chat from "./components/Chat/Chat";
 import type { IChatMessage, IChat } from "@interfaces/index";
 import chatService from "@service/chat.service";
@@ -7,6 +14,7 @@ import { useAuth } from "@hooks/useAuth";
 import socketService from "@service/socket.service";
 import Search from "./components/ChatList/Search";
 import List from "./components/ChatList/List";
+import { createContext } from "preact";
 
 export interface ChatListProps {
   class?: string;
@@ -16,15 +24,44 @@ export interface ChatState {
   selected: number;
   chats: IChat[];
 }
-
+export const Context = createContext<{
+  chats: IChat[];
+  chatId: number;
+  set: Dispatch<StateUpdater<{ chats: IChat[]; chatId: number }>>;
+}>({
+  chats: [],
+  chatId: 0,
+  set: () => {},
+});
 function ChatList({ class: className }: ChatListProps) {
-  const [chat, setChat] = useState<ChatState>({ selected: 0, chats: [] });
   const { payload } = useAuth();
+
+  const [storeValue, setStoreValue] = useState<{
+    chats: IChat[];
+    chatId: number;
+  }>({
+    chats: [],
+    chatId: 0,
+  });
+
+  const store = { ...storeValue, set: setStoreValue };
 
   async function getChats() {
     const res = await chatService.getChats();
+    setStoreValue((prev) => ({ ...prev, chats: res }));
+  }
 
-    setChat((prev) => ({ ...prev, chats: res }));
+  async function getChatById(chatId: number) {
+    const res = await chatService.getChatById(chatId);
+    setStoreValue((prev) => ({
+      ...prev,
+      chats: prev.chats.map((chat) => {
+        if (chat.id === chatId) {
+          return res;
+        }
+        return chat;
+      }),
+    }));
   }
 
   const handleMessage = ({
@@ -37,7 +74,14 @@ function ChatList({ class: className }: ChatListProps) {
   }) => {
     switch (type) {
       case "create":
-        getChats();
+        (async () => {
+          getChatById(data.chatId);
+        })();
+        break;
+      case "delete":
+        (async () => {
+          getChatById(data.chatId);
+        })();
         break;
       default:
         break;
@@ -58,36 +102,32 @@ function ChatList({ class: className }: ChatListProps) {
     return <div>Loading...</div>;
   }
   return (
-    <section
-      class={clsx("flex max-w-5xl w-full mx-auto  max-h-[85vh]", className)}
-    >
-      <section class="min-w-[100px] md:min-w-[250px] flex-[1_1_25%] bg-gray-100 border">
-        <Search setChat={setChat} />
-        <List
-          setChat={setChat}
-          chatId={chat.selected}
-          chats={chat.chats}
-          userId={payload.id}
-        />
+    <Context.Provider value={store}>
+      <section
+        class={clsx("flex max-w-5xl w-full mx-auto  max-h-[85vh]", className)}
+      >
+        <section class="min-w-[100px] md:min-w-[250px] flex-[1_1_25%] bg-gray-100 border">
+          <Search />
+          <List userId={payload.id} />
+        </section>
+        <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
+          {storeValue.chatId !== 0 ? (
+            <Chat
+              userId={payload?.sub}
+              setReadMessage={async (chatId: number) => {
+                await chatService.setReadMessage(chatId);
+                getChats();
+              }}
+              getChats={getChats}
+            />
+          ) : (
+            <section class="flex-grow flex justify-center items-center">
+              <p class="text-lg">Select a chat to start a conversation</p>
+            </section>
+          )}
+        </section>
       </section>
-      <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
-        {!!chat.selected ? (
-          <Chat
-            chatId={chat.selected}
-            userId={payload?.sub}
-            setReadMessage={async (chatId: number) => {
-              await chatService.setReadMessage(chatId);
-              getChats();
-            }}
-            getChats={getChats}
-          />
-        ) : (
-          <section class="flex-grow flex justify-center items-center">
-            <p class="text-lg">Select a chat to start a conversation</p>
-          </section>
-        )}
-      </section>
-    </section>
+    </Context.Provider>
   );
 }
 

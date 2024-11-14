@@ -4,11 +4,11 @@ import type { IChatMessage, ResponseBodyList } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import socketService from "@service/socket.service";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "preact/compat";
+import { useContext, useEffect, useRef, useState } from "preact/compat";
 import ChatMessage from "./ChatMessage";
+import { Context } from "@components/Chat/ChatList";
 
 export interface ChatProps {
-  chatId: number;
   userId: number;
   class?: string;
   setReadMessage: (chatId: number) => void;
@@ -25,12 +25,13 @@ interface Pagination {
 }
 
 function Chat({
-  chatId,
   class: className,
   userId,
   setReadMessage,
   getChats,
 }: ChatProps) {
+  const { chatId } = useContext(Context);
+
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
@@ -205,7 +206,7 @@ function Chat({
 
     container.scrollTop = container.scrollHeight;
 
-    setReadMessage(chatId);
+    chatId !== 0 && setReadMessage(chatId);
   }, [containerRef.current, chatId]);
 
   return (
