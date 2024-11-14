@@ -10,7 +10,7 @@ export interface ChatProps {
   chatId: number;
   userId: number;
   class?: string;
-  setReadMessage: () => void;
+  setReadMessage: (chatId: number) => void;
 }
 
 interface Form {
@@ -30,7 +30,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
 
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    pageSize: 15,
+    pageSize: 30,
   });
 
   const [hasLoadedMore, setHasLoadedMore] = useState(false);
@@ -47,6 +47,13 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
         ...prev,
         data: [...prev.data, res],
       }));
+      setReadMessage(chatId);
+      setTimeout(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        container.scrollTop = container.scrollHeight;
+      }, 0);
       context.reset();
     },
   });
@@ -63,23 +70,12 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     const nextPage =
       pages >= pagination.page + 1 ? pagination.page + 1 : pagination.page;
 
-    if (pages <= pagination.page + 1 && options?.default !== true) {
-      // console.log(pages, pagination.page + 1);
-
+    if (pages < pagination.page + 1 && options?.default !== true) {
       return;
     }
 
-    const res = await chatService.getMesages(
+    const res = await chatService.getMessages(
       chatId,
-      options?.default === true
-        ? { page: 1, pageSize: pagination.pageSize * pagination.page }
-        : {
-            page: options?.load ? nextPage : pagination.page,
-            pageSize: pagination.pageSize,
-          },
-    );
-
-    console.log(
       options?.default === true
         ? { page: 1, pageSize: pagination.pageSize * pagination.page }
         : {
@@ -92,7 +88,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     const currentScrollTop = chatContainer.scrollTop;
     setMessages((prev) => ({
       ...prev,
-      data: [...res.data, ...prev.data],
+      data: [...res.data.reverse(), ...prev.data],
       meta: res.meta,
     }));
 
@@ -115,7 +111,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     }, 0);
   }
 
-  const handleMessage = ({
+  const handleMessage = async ({
     detail: { data, type },
   }: {
     detail: {
@@ -125,10 +121,20 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
   }) => {
     switch (type) {
       case "create":
+        setTimeout(() => {
+          const container = containerRef.current;
+          if (!container) return;
+
+          container.scrollTop = container.scrollHeight;
+        }, 0);
+
         if (data.chatId === chatId) {
+          (async () => {
+            setReadMessage(chatId);
+          })();
           setMessages((prev) => ({
             ...prev,
-            data: [...prev.data, data],
+            data: [...prev.data, { ...data, unread: false }],
           }));
         }
         break;
@@ -144,7 +150,6 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     if (container.scrollTop < container.scrollHeight * 0.01 && !hasLoadedMore) {
       setHasLoadedMore(true);
       getMessages({ load: true });
-      // console.log("Load more");
     }
   }
 
@@ -154,7 +159,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
       data: [],
       meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
     });
-    setPagination({ page: 1, pageSize: 15 });
+    setPagination({ page: 1, pageSize: 30 });
     setHasLoadedMore(false);
 
     setTimeout(() => {
@@ -185,7 +190,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
 
     container.scrollTop = container.scrollHeight;
 
-    setReadMessage();
+    setReadMessage(chatId);
   }, [containerRef.current, chatId]);
 
   if (chatId <= 0)

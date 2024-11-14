@@ -7,7 +7,7 @@ import type { ChatMessage, IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import { useAuth } from "@hooks/useAuth";
 import socketService from "@service/socket.service";
-
+import { addToast } from "@components/Toast";
 
 export interface ChatListProps {
   class?: string;
@@ -19,7 +19,7 @@ interface ChatState {
 }
 
 function ChatList({ class: className }: ChatListProps) {
-  const [chat, setChat] = useState<ChatState>({ selected: -1, chats: [] });
+  const [chat, setChat] = useState<ChatState>({ selected: 0, chats: [] });
   const [search, setSearch] = useState("");
   const { payload } = useAuth();
 
@@ -31,18 +31,22 @@ function ChatList({ class: className }: ChatListProps) {
 
   async function getChats() {
     const res = await chatService.getChats();
+
     setChat((prev) => ({ ...prev, chats: res }));
   }
 
   async function createChat(userId: number) {
     try {
       const res = await chatService.createChat(userId);
-      console.log("chat:", res);
 
-      setChat((prev) => ({ ...prev, chats: [...prev.chats, res] }));
+      setChat((prev) => ({
+        ...prev,
+        chats: [...prev.chats, res],
+        selected: res.id,
+      }));
       setUsers((prev) => ({ ...prev, search: [], open: false }));
     } catch (e) {
-      console.log(e);
+      addToast({ id: "Chat", type: "error", message: "can't create" });
     }
   }
 
@@ -56,6 +60,7 @@ function ChatList({ class: className }: ChatListProps) {
   }) => {
     switch (type) {
       case "create":
+        getChats();
         if (chat.selected !== data.chatId) {
           setChat((prev) => ({
             ...prev,
@@ -77,6 +82,7 @@ function ChatList({ class: className }: ChatListProps) {
                           ? c.secondUser.unread + 1
                           : c.secondUser.unread,
                     },
+                    messages: [{ ...c.messages[0] }],
                   }
                 : c,
             ),
@@ -90,7 +96,7 @@ function ChatList({ class: className }: ChatListProps) {
 
   useMemo(async () => {
     if (!search) {
-      setUsers((prev) => ({ open: false, search: [] }));
+      setUsers({ open: false, search: [] });
       return;
     }
     const response = await userService.search(search);
@@ -108,13 +114,13 @@ function ChatList({ class: className }: ChatListProps) {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    soketService.addListener("message", handleMessage);
+    socketService.addListener("message", handleMessage);
 
     getChats();
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      soketService.removeListener("message", handleMessage);
+      socketService.removeListener("message", handleMessage);
     };
   }, [payload]);
 
@@ -139,25 +145,19 @@ function ChatList({ class: className }: ChatListProps) {
           />
           {users.open && users.search && (
             <div class={"absolute top-[100%] left-0 right-0 z-50 "}>
-              {users.search.map(
-                (
-                  user, // TODO from one to array (limit 10)
-                ) => (
-                  <div
-                    class="min-h-10 mt-2 bg-white shadow-md px-2 py-1 hover:cursor-pointer"
-                    onClick={() => {
-                      console.log(users);
-
-                      createChat(user.id);
-                    }}
-                  >
-                    <h4 class="pointer-events-none">Name: {user.name}</h4>
-                    <p class="text-xs text-gray-500 pointer-events-none">
-                      Email: {user.email}
-                    </p>
-                  </div>
-                ),
-              )}
+              {users.search.map((user) => (
+                <div
+                  class="min-h-10 mt-2 bg-white shadow-md px-2 py-1 hover:cursor-pointer"
+                  onClick={() => {
+                    createChat(user.id);
+                  }}
+                >
+                  <h4 class="pointer-events-none">Name: {user.name}</h4>
+                  <p class="text-xs text-gray-500 pointer-events-none">
+                    Email: {user.email}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -184,25 +184,29 @@ function ChatList({ class: className }: ChatListProps) {
                   <div class="flex justify-between">
                     <span>
                       {item.firstUserId !== payload.id
-                        ? item.firstUser.name
-                        : item.secondUser.name}
+                        ? item.firstUser?.name
+                        : item.secondUser?.name}
                     </span>
 
                     {(item.firstUserId === payload.id
-                      ? item.firstUser.unread || ""
-                      : item.secondUser.unread || "") && (
+                      ? item.firstUser?.unread || ""
+                      : item.secondUser?.unread || "") && (
                       <span
                         class={clsx(
                           "rounded-full aspect-square w-6 text-center bg-blue-100 ",
                         )}
                       >
                         {item.firstUserId === payload.id
-                          ? item.firstUser.unread || ""
-                          : item.secondUser.unread || ""}
+                          ? item.firstUser?.unread || ""
+                          : item.secondUser?.unread || ""}
                       </span>
                     )}
                   </div>
-                  <p>{item.messages[0] && item.messages[0].message}</p>
+                  <p>
+                    {item.messages &&
+                      item.messages[0] &&
+                      item.messages[0].message}
+                  </p>
                 </article>
               </div>
             ))}
@@ -210,31 +214,16 @@ function ChatList({ class: className }: ChatListProps) {
         </div>
       </section>
       <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
-        <Chat
-          chatId={chat.selected}
-          userId={payload?.sub}
-          setReadMessage={async () => {
-            const res = await chatService.setReadMessage(chat.selected);
-            setChat((prev) => ({
-              ...prev,
-              chats: prev.chats.map((c) =>
-                c.id === chat.selected
-                  ? {
-                      ...c,
-                      firstUser: {
-                        ...c.firstUser,
-                        unread: 0,
-                      },
-                      secondUser: {
-                        ...c.secondUser,
-                        unread: 0,
-                      },
-                    }
-                  : c,
-              ),
-            }));
-          }}
-        />
+        {!!chat.selected && (
+          <Chat
+            chatId={chat.selected}
+            userId={payload?.sub}
+            setReadMessage={async (chatId: number) => {
+              await chatService.setReadMessage(chatId);
+              getChats();
+            }}
+          />
+        )}
       </section>
     </section>
   );
