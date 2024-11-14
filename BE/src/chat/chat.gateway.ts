@@ -16,6 +16,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { AuthGuard } from 'src/guard/user.guard';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
 @Injectable()
 @WebSocketGateway({
   cors: {
@@ -33,22 +34,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  async send(event: string, data: object, destination?: string | string[]) {
-    try {
-      if (destination) {
-        this.server.to(destination).emit(event, data);
-      } else {
-        this.server.emit(event, data);
-      }
-
-      return HttpStatus.OK;
-    } catch (error) {
-      throw new BadRequestException(`Message not sended, ${error}`);
-    }
-  }
-
-  @UseGuards(AuthGuard)
-  async handleConnection(@ConnectedSocket() client: Socket) {
+  private async getUser(client: Socket): Promise<JwtPayload> {
     const token = this.extractTokenFromHeader(
       client.handshake.auth.authorization,
     );
@@ -67,7 +53,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return;
     }
 
-    const user = await this.jwtService
+    return this.jwtService
       .verifyAsync(token, {
         secret: process.env.SECRET,
       })
@@ -75,7 +61,25 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.disconnect();
         return;
       });
+  }
 
+  async send(event: string, data: object, destination?: string | string[]) {
+    try {
+      if (destination) {
+        this.server.to(destination).emit(event, data);
+      } else {
+        this.server.emit(event, data);
+      }
+
+      return HttpStatus.OK;
+    } catch (error) {
+      throw new BadRequestException(`Message not sended, ${error}`);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  async handleConnection(@ConnectedSocket() client: Socket) {
+    const user = await this.getUser(client);
     client.join(String(user?.id));
   }
 
