@@ -26,7 +26,7 @@ export class ChatService {
     });
 
     await Promise.all(
-      chats.map(async (chat: any) => {
+      chats.map(async (chat) => {
         const messageList = await this.prisma.message.findMany({
           where: { chatId: chat.id, unread: true },
         });
@@ -34,10 +34,14 @@ export class ChatService {
         const userMsg = messageList.filter((msg) => userId === msg.userId);
 
         if (chat.firstUserId === userId) {
+          //@ts-expect-error add field for front end
           chat.secondUser.unread = userMsg.length;
+          //@ts-expect-error add field for front end
           chat.firstUser.unread = messageList.length - userMsg.length;
         } else {
+          //@ts-expect-error add field for front end
           chat.secondUser.unread = messageList.length - userMsg.length;
+          //@ts-expect-error add field for front end
           chat.firstUser.unread = userMsg.length;
         }
       }),

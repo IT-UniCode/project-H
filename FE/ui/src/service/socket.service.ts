@@ -1,10 +1,10 @@
 import { storageName } from "@constant/storageName";
 import { useLocalStorage } from "@helpers/localStorageHelper";
-import type { ChatMessage } from "@interfaces/index";
+import type { IChatMessage } from "@interfaces/index";
 import { io, Socket } from "socket.io-client";
 
 export interface SocketMessageDetail {
-  data: ChatMessage;
+  data: IChatMessage;
   type: string;
 }
 

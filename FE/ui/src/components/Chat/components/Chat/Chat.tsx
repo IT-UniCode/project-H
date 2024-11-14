@@ -1,10 +1,11 @@
 import { TextArea } from "@components/TextFields";
 import { useForm } from "@hooks/index";
-import type { ChatMessage, ResponseBodyList } from "@interfaces/index";
+import type { IChatMessage, ResponseBodyList } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import socketService from "@service/socket.service";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "preact/compat";
+import ChatMessage from "./ChatMessage";
 
 export interface ChatProps {
   chatId: number;
@@ -23,7 +24,7 @@ interface Pagination {
 }
 
 function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
-  const [messages, setMessages] = useState<ResponseBodyList<ChatMessage>>({
+  const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
   });
@@ -116,7 +117,7 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
   }: {
     detail: {
       type: string;
-      data: ChatMessage;
+      data: IChatMessage;
     };
   }) => {
     switch (type) {
@@ -193,13 +194,6 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
     setReadMessage(chatId);
   }, [containerRef.current, chatId]);
 
-  if (chatId <= 0)
-    return (
-      <section class="flex-grow flex justify-center items-center">
-        <p class="text-lg">Select a chat to start a conversation</p>
-      </section>
-    );
-
   return (
     <>
       <section
@@ -207,24 +201,8 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
         class={clsx("flex-grow px-1 py-1 overflow-y-auto ", className)}
       >
         <div class="flex flex-col gap-y-2">
-          {messages.data.map((v) => (
-            <article
-              class={clsx("py-1 px-2 rounded overflow-hidden max-w-[90%]", {
-                "ml-auto bg-blue-200": v.userId === userId,
-                "bg-gray-200 mr-auto": v.userId !== userId,
-              })}
-            >
-              <p class="whitespace-pre-line">{v.message}</p>
-              <span
-                class={clsx("text-xs text-gray-500 select-none ", {
-                  "text-end": v.userId === userId,
-                })}
-              >
-                {new Date(v.createdAt).getHours().toString().padStart(2, "0")}:
-                {new Date(v.createdAt).getMinutes().toString().padStart(2, "0")}{" "}
-                {new Date(v.createdAt).toLocaleDateString()}
-              </span>
-            </article>
+          {messages.data.map((msg) => (
+            <ChatMessage message={{ ...msg }} userId={userId} />
           ))}
         </div>
       </section>
