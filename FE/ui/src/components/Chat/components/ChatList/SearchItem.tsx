@@ -7,10 +7,11 @@ interface Props {
   name: string;
   email: string;
   id: number;
+  onClick: () => void;
 }
 
-const SearchItem: FC<Props> = ({ name, id, email }) => {
-  const { chats, chatId, set } = useContext(Context);
+const SearchItem: FC<Props> = ({ name, id, email, onClick }) => {
+  const { chats, set } = useContext(Context);
 
   async function createChat(userId: number) {
     try {
@@ -34,6 +35,7 @@ const SearchItem: FC<Props> = ({ name, id, email }) => {
       class="min-h-10 mt-2 bg-white shadow-md px-2 py-1 hover:cursor-pointer"
       onClick={() => {
         createChat(id);
+        onClick();
       }}
     >
       <h4 class="pointer-events-none">Name: {name}</h4>

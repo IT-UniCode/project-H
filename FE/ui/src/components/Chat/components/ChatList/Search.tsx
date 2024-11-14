@@ -50,7 +50,13 @@ const Search = () => {
       {users.open && users.search && (
         <div class={"absolute top-[100%] left-0 right-0 z-50 "}>
           {users.search.map((user) => (
-            <SearchItem {...user} />
+            <SearchItem
+              {...user}
+              onClick={() => {
+                setUsers({ open: false, search: [] });
+                setSearch("");
+              }}
+            />
           ))}
         </div>
       )}
