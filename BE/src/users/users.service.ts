@@ -37,7 +37,7 @@ export class UsersService {
       take: 10,
     });
 
-    if (!byEmail) {
+    if (byEmail.length === 0) {
       const byName = await this.prisma.user.findMany({
         where: {
           name: {
