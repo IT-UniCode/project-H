@@ -71,7 +71,7 @@ export class ChatMsgService {
       });
 
       const data = await this.prisma.message.create({
-        data: { ...dto, chatId, userId },
+        data: { ...dto, chatId, userId, message: dto.message.trim() },
       });
 
       this.server.send(

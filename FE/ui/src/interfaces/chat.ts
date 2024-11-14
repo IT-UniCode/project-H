@@ -1,4 +1,4 @@
-import type { ChatMessage } from "./chat.message";
+import type { IChatMessage } from "./chat.message";
 import type { UserMsgInfo } from "./user";
 
 export interface IChat {
@@ -7,5 +7,5 @@ export interface IChat {
   firstUser: UserMsgInfo;
   secondUserId: number;
   secondUser: UserMsgInfo;
-  messages: ChatMessage[];
+  messages: IChatMessage[];
 }

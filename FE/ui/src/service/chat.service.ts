@@ -2,7 +2,7 @@ import { ApiPath } from "@constant/api.path";
 import apiService from "./api.service";
 import type {
   IChat,
-  ChatMessage,
+  IChatMessage,
   ResponseBodyList,
   Pagination,
 } from "@interfaces/index";
@@ -23,7 +23,7 @@ class ChatService {
   }
 
   async sendMessage(chatId: number, message: string) {
-    return apiService.post<ChatMessage>(`${ApiPath.chat}/${chatId}/msg`, {
+    return apiService.post<IChatMessage>(`${ApiPath.chat}/${chatId}/msg`, {
       body: { message },
     });
   }
@@ -34,7 +34,7 @@ class ChatService {
   ) {
     return apiService.get<
       ResponseBodyList<
-        ChatMessage,
+        IChatMessage,
         { pagination: Pagination; totalUnread: number }
       >
     >(`${ApiPath.chat}/${chatId}/msg`, { query });
