@@ -27,10 +27,14 @@ export interface ChatState {
 export const Context = createContext<{
   chats: IChat[];
   chatId: number;
-  set: Dispatch<StateUpdater<{ chats: IChat[]; chatId: number }>>;
+  userId: number;
+  set: Dispatch<
+    StateUpdater<{ chats: IChat[]; chatId: number; userId: number }>
+  >;
 }>({
   chats: [],
   chatId: 0,
+  userId: 0,
   set: () => {},
 });
 function ChatList({ class: className }: ChatListProps) {
@@ -39,9 +43,11 @@ function ChatList({ class: className }: ChatListProps) {
   const [storeValue, setStoreValue] = useState<{
     chats: IChat[];
     chatId: number;
+    userId: number;
   }>({
     chats: [],
     chatId: 0,
+    userId: 0,
   });
 
   const store = { ...storeValue, set: setStoreValue };
@@ -93,6 +99,13 @@ function ChatList({ class: className }: ChatListProps) {
 
     getChats();
 
+    if (payload) {
+      setStoreValue((prev) => ({
+        ...prev,
+        userId: payload.id,
+      }));
+    }
+
     return () => {
       socketService.removeListener("message", handleMessage);
     };
@@ -113,12 +126,13 @@ function ChatList({ class: className }: ChatListProps) {
         <section class="flex flex-col flex-[1_1_75%] bg-gray-50 border">
           {storeValue.chatId !== 0 ? (
             <Chat
-              userId={payload?.sub}
               setReadMessage={async (chatId: number) => {
                 await chatService.setReadMessage(chatId);
                 getChats();
               }}
-              getChats={getChats}
+              getChats={async () => {
+                getChatById(storeValue.chatId);
+              }}
             />
           ) : (
             <section class="flex-grow flex justify-center items-center">

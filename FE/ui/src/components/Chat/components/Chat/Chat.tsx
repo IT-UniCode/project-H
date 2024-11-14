@@ -9,7 +9,6 @@ import ChatMessage from "./ChatMessage";
 import { Context } from "@components/Chat/ChatList";
 
 export interface ChatProps {
-  userId: number;
   class?: string;
   setReadMessage: (chatId: number) => void;
   getChats: () => Promise<void>;
@@ -24,12 +23,7 @@ interface Pagination {
   pageSize: number;
 }
 
-function Chat({
-  class: className,
-  userId,
-  setReadMessage,
-  getChats,
-}: ChatProps) {
+function Chat({ class: className, setReadMessage, getChats }: ChatProps) {
   const { chatId } = useContext(Context);
 
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
@@ -219,7 +213,6 @@ function Chat({
           {messages.data.map((msg) => (
             <ChatMessage
               message={{ ...msg }}
-              userId={userId}
               onDelete={() => {
                 setMessages((prev) => ({
                   ...prev,
