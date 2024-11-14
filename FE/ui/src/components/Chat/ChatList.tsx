@@ -28,7 +28,7 @@ function ChatList({ class: className }: ChatListProps) {
   }
 
   const handleMessage = ({
-    detail: { type },
+    detail: { data, type },
   }: {
     detail: {
       type: string;
@@ -79,6 +79,7 @@ function ChatList({ class: className }: ChatListProps) {
               await chatService.setReadMessage(chatId);
               getChats();
             }}
+            getChats={getChats}
           />
         ) : (
           <section class="flex-grow flex justify-center items-center">

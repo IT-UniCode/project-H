@@ -39,6 +39,10 @@ class ChatService {
       >
     >(`${ApiPath.chat}/${chatId}/msg`, { query });
   }
+
+  async deleteMessage(chatId: number, msgId: number) {
+    return apiService.delete<204>(`${ApiPath.chat}/${chatId}/msg/${msgId}`);
+  }
 }
 
 export default new ChatService();
