@@ -7,7 +7,7 @@ import type { ChatMessage, IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import { useAuth } from "@hooks/useAuth";
 import socketService from "@service/socket.service";
-import { addToast } from "@components/Toast";
+import { addToast, removeToast } from "@components/Toast";
 
 export interface ChatListProps {
   class?: string;
@@ -47,11 +47,14 @@ function ChatList({ class: className }: ChatListProps) {
       setUsers((prev) => ({ ...prev, search: [], open: false }));
     } catch (e) {
       addToast({ id: "Chat", type: "error", message: "can't create" });
+      setTimeout(() => {
+        removeToast("Chat");
+      }, 3000);
     }
   }
 
   const handleMessage = ({
-    detail: { data, type },
+    detail: { type },
   }: {
     detail: {
       type: string;
@@ -61,33 +64,6 @@ function ChatList({ class: className }: ChatListProps) {
     switch (type) {
       case "create":
         getChats();
-        if (chat.selected !== data.chatId) {
-          setChat((prev) => ({
-            ...prev,
-            chats: prev.chats.map((c) =>
-              c.id === data.chatId
-                ? {
-                    ...c,
-                    firstUser: {
-                      ...c.firstUser,
-                      unread:
-                        c.firstUserId === payload?.id
-                          ? c.firstUser.unread + 1
-                          : c.firstUser.unread,
-                    },
-                    secondUser: {
-                      ...c.secondUser,
-                      unread:
-                        c.secondUserId === payload?.id
-                          ? c.secondUser.unread + 1
-                          : c.secondUser.unread,
-                    },
-                    messages: [{ ...c.messages[0] }],
-                  }
-                : c,
-            ),
-          }));
-        }
         break;
       default:
         break;
