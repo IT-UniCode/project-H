@@ -1,8 +1,16 @@
-import { Controller, Get, UseGuards, Request, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Request,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/guard/user.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './user.entity';
+import { JwtPayload } from 'src/auth/dto/jwt-payload';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
@@ -22,7 +30,7 @@ export class UsersController {
   }
 
   @Get('/search')
-  async getUser(@Query('q') q: string) {
-    return this.userService.search(q);
+  async getUser(@Query('q') q: string, @Req() req: { user: JwtPayload }) {
+    return this.userService.search(q, req.user.id);
   }
 }

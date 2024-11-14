@@ -26,6 +26,7 @@ export class UsersService {
 
   async search(
     param: string,
+    userId: number,
   ): Promise<Omit<User[], 'password'> | HttpStatus.NO_CONTENT> {
     const byEmail = await this.prisma.user.findMany({
       where: {
@@ -48,10 +49,12 @@ export class UsersService {
       });
 
       if (byName) {
-        const data = byName.map((user: User) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { password, ...rest } = user;
-          return plainToInstance(User, rest);
+        const data = byName.filter((user: User) => {
+          if (user.id !== userId) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { password, ...rest } = user;
+            return plainToInstance(User, rest);
+          }
         });
 
         return data;
@@ -60,10 +63,12 @@ export class UsersService {
       return HttpStatus.NO_CONTENT;
     }
 
-    const data = byEmail.map((user: User) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...rest } = user;
-      return plainToInstance(User, rest);
+    const data = byEmail.filter((user: User) => {
+      if (user.id !== userId) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...rest } = user;
+        return plainToInstance(User, rest);
+      }
     });
 
     return data;
