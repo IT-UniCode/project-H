@@ -12,7 +12,7 @@ export interface ChatProps {
   userId: number;
   class?: string;
   setReadMessage: (chatId: number) => void;
-  onDelete: () => Promise<void>;
+  getChats: () => Promise<void>;
 }
 
 interface Form {
@@ -29,7 +29,7 @@ function Chat({
   class: className,
   userId,
   setReadMessage,
-  onDelete,
+  getChats,
 }: ChatProps) {
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
     data: [],
@@ -213,7 +213,11 @@ function Chat({
               message={{ ...msg }}
               userId={userId}
               onDelete={() => {
-                onDelete();
+                setMessages((prev) => ({
+                  ...prev,
+                  data: prev.data.filter((item) => item.id !== msg.id),
+                }));
+                getChats();
               }}
             />
           ))}

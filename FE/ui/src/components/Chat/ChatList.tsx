@@ -79,7 +79,7 @@ function ChatList({ class: className }: ChatListProps) {
               await chatService.setReadMessage(chatId);
               getChats();
             }}
-            onDelete={getChats}
+            getChats={getChats}
           />
         ) : (
           <section class="flex-grow flex justify-center items-center">
