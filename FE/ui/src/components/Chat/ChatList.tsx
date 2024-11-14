@@ -28,7 +28,7 @@ function ChatList({ class: className }: ChatListProps) {
   }
 
   const handleMessage = ({
-    detail: { type },
+    detail: { data, type },
   }: {
     detail: {
       type: string;

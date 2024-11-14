@@ -146,6 +146,13 @@ function Chat({
           }));
         }
         break;
+      case "delete":
+        setMessages((prev) => ({
+          ...prev,
+          data: prev.data.filter((item) => item.id !== data.id),
+        }));
+
+        break;
       default:
         break;
     }
