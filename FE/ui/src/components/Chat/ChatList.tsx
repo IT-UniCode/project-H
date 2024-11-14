@@ -6,7 +6,8 @@ import userService from "@service/user.service";
 import type { ChatMessage, IChat, User } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import { useAuth } from "@hooks/useAuth";
-import soketService from "@service/soket.service";
+import socketService from "@service/socket.service";
+
 
 export interface ChatListProps {
   class?: string;

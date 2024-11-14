@@ -28,7 +28,7 @@ class ChatService {
     });
   }
 
-  async getMesages(
+  async getMessages(
     chatId: number,
     query?: { page?: number; pageSize?: number },
   ) {

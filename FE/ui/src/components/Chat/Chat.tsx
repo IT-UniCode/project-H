@@ -2,7 +2,7 @@ import { TextArea } from "@components/TextFields";
 import { useForm } from "@hooks/index";
 import type { ChatMessage, ResponseBodyList } from "@interfaces/index";
 import chatService from "@service/chat.service";
-import soketService from "@service/soket.service";
+import socketService from "@service/socket.service";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "preact/compat";
 
@@ -161,10 +161,10 @@ function Chat({ chatId, class: className, userId, setReadMessage }: ChatProps) {
       getMessages({ default: true });
     }, 0);
 
-    soketService.addListener("message", handleMessage);
+    socketService.addListener("message", handleMessage);
 
     return () => {
-      soketService.removeListener("message", handleMessage);
+      socketService.removeListener("message", handleMessage);
     };
   }, [chatId]);
 
