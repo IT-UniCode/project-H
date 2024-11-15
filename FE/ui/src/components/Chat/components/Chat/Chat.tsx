@@ -228,7 +228,7 @@ function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
         class="flex min-h-16 max-h-16 md:min-h-20 md:h-20 flex-grow bg-white overflow-hidden"
         onSubmit={onSubmit}
         onKeyDown={(event) => {
-          event.key === "Enter" && onSubmit(event);
+          event.key === "Enter" && !event.shiftKey && onSubmit(event);
         }}
       >
         <TextArea
