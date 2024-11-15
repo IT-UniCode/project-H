@@ -130,9 +130,7 @@ function ChatList({ class: className }: ChatListProps) {
                 await chatService.setReadMessage(chatId);
                 getChats();
               }}
-              getChats={async () => {
-                getChatById(storeValue.chatId);
-              }}
+              getChatById={getChatById}
             />
           ) : (
             <section class="flex-grow flex justify-center items-center">

@@ -11,7 +11,7 @@ import { Context } from "@components/Chat/ChatList";
 export interface ChatProps {
   class?: string;
   setReadMessage: (chatId: number) => void;
-  getChats: () => Promise<void>;
+  getChatById: (id: number) => Promise<void>;
 }
 
 interface Form {
@@ -23,7 +23,7 @@ interface Pagination {
   pageSize: number;
 }
 
-function Chat({ class: className, setReadMessage, getChats }: ChatProps) {
+function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
   const { chatId } = useContext(Context);
 
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
@@ -218,7 +218,7 @@ function Chat({ class: className, setReadMessage, getChats }: ChatProps) {
                   ...prev,
                   data: prev.data.filter((item) => item.id !== msg.id),
                 }));
-                getChats();
+                getChatById(chatId);
               }}
             />
           ))}
