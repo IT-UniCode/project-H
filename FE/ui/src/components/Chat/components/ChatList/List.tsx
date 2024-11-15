@@ -1,14 +1,18 @@
 import clsx from "clsx";
-import { useContext, type FC } from "preact/compat";
+import { useContext, useState, type FC } from "preact/compat";
 import type { IChat } from "@interfaces/chat";
 import { Context } from "@components/Chat/ChatList";
+import { Modal } from "@components/Modal";
+import DeleteModal from "./DeleteModal";
+import chatService from "@service/chat.service";
 
 interface ListProps {
   userId: number;
 }
 
 const List: FC<ListProps> = ({ userId }) => {
-  const { chatId, chats, set } = useContext(Context);
+  const { chatId, chats, name, set } = useContext(Context);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const getShortMessage = (item: IChat) => {
     return `${item.messages[0].userId === userId ? "You: " : ""}${item.messages[0].message.length > 23 ? item.messages[0].message.slice(0, 20) + "..." : item.messages[0].message}`;
   };
@@ -28,7 +32,14 @@ const List: FC<ListProps> = ({ userId }) => {
               "border-b ",
             )}
             onClick={() => {
-              set((prev) => ({ ...prev, chatId: item.id }));
+              set((prev) => ({
+                ...prev,
+                chatId: item.id,
+                name:
+                  item.firstUserId === userId
+                    ? item.secondUser.name
+                    : item.firstUser.name,
+              }));
             }}
           >
             <div class="rounded-full bg-gray-400 flex-[1_1_20%] aspect-square h-full my-auto hidden md:block"></div>
@@ -58,8 +69,37 @@ const List: FC<ListProps> = ({ userId }) => {
                 {item.messages && item.messages[0] && getShortMessage(item)}
               </p>
             </article>
+            <button
+              class={
+                "flex items-center w-6 h-6 my-auto justify-center text-rose-600"
+              }
+              onClick={() => {
+                set((prev) => ({ ...prev, chatId: item.id }));
+                setIsModalOpen(true);
+              }}
+            >
+              &times;
+            </button>
           </div>
         ))}
+        <Modal open={isModalOpen} class="max-w-[40%]">
+          <DeleteModal
+            name={name}
+            onCancel={() => {
+              setIsModalOpen(false);
+            }}
+            onConfirm={() => {
+              chatService.deleteChat(chatId);
+              set((prev) => ({
+                ...prev,
+                chats: prev.chats.filter((chat) => chat.id !== chatId),
+                chatId: 0,
+                name: "",
+              }));
+              setIsModalOpen(false);
+            }}
+          />
+        </Modal>
       </section>
     </div>
   );
