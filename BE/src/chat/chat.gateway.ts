@@ -96,4 +96,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .to(payload.chatId)
       .emit('message', { userId: client.id, message: payload.message });
   }
+
+  @SubscribeMessage('chat')
+  async handleDeleteChat(@MessageBody() payload: { chatId: string }) {
+    this.server.to(payload.chatId).emit('chat', { chatId: payload.chatId });
+  }
 }

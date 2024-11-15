@@ -106,8 +106,23 @@ function ChatList({ class: className }: ChatListProps) {
     }
   };
 
+  const handleChat = ({
+    detail: { data },
+  }: {
+    detail: { data: { chatId: number } };
+  }) => {
+    // console.log(data);
+
+    setStoreValue((prev) => ({
+      ...prev,
+      chatId: prev.chatId === data.chatId ? 0 : prev.chatId,
+      chats: prev.chats.filter((chat) => chat.id !== data.chatId),
+    }));
+  };
+
   useEffect(() => {
     socketService.addListener("message", handleMessage);
+    socketService.addListener("chat", handleChat);
 
     getChats();
 
@@ -120,6 +135,7 @@ function ChatList({ class: className }: ChatListProps) {
 
     return () => {
       socketService.removeListener("message", handleMessage);
+      socketService.removeListener("chat", handleChat);
     };
   }, [payload]);
 

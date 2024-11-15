@@ -2,12 +2,14 @@ import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UsersService } from 'src/users/users.service';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly usersService: UsersService,
+    private readonly server: ChatGateway,
   ) {}
 
   async findAll(userId: number) {
@@ -99,6 +101,9 @@ export class ChatService {
           OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
+
+      this.server.send('chat', { chatId: id });
+
       return HttpStatus.NO_CONTENT;
     } catch (error) {
       throw new BadRequestException(
