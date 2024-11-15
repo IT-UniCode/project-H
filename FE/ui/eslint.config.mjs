@@ -8,37 +8,41 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-export default [...compat.extends("plugin:astro/recommended"), {
+export default [
+  ...compat.extends("plugin:astro/recommended"),
+  {
     languageOptions: {
-        parser: tsParser,
-        ecmaVersion: "latest",
-        sourceType: "module",
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
 
-        parserOptions: {
-            tsconfigRootDir: "/Users/unicode/work/project-H/FE/ui",
-        },
+      parserOptions: {
+        project: "./tsconfig.json",
+      },
     },
-}, {
+  },
+  {
     files: ["**/*.astro"],
 
     languageOptions: {
-        parser: parser,
-        ecmaVersion: 5,
-        sourceType: "script",
+      parser: parser,
+      ecmaVersion: 5,
+      sourceType: "script",
 
-        parserOptions: {
-            parser: "@typescript-eslint/parser",
-            extraFileExtensions: [".astro"],
-        },
+      parserOptions: {
+        parser: "@typescript-eslint/parser",
+        extraFileExtensions: [".astro"],
+      },
     },
 
     rules: {
-        "astro/no-conflict-set-directives": "error",
-        "astro/no-unused-define-vars-in-style": "error",
+      "astro/no-conflict-set-directives": "error",
+      "astro/no-unused-define-vars-in-style": "error",
     },
-}];
+  },
+];
