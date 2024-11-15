@@ -21,6 +21,8 @@ const SearchItem: FC<Props> = ({ name, id, email, onClick }) => {
         ...prev,
         chats: [...chats, res],
         chatId: res.id,
+        name:
+          res.firstUserId === userId ? res.secondUser.name : res.firstUser.name,
       }));
     } catch (e) {
       addToast({ id: "Chat", type: "error", message: "can't create" });

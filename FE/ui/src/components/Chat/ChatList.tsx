@@ -24,30 +24,35 @@ export interface ChatState {
   selected: number;
   chats: IChat[];
 }
+
+interface StoreState {
+  chats: IChat[];
+  chatId: number;
+  userId: number;
+  name: string;
+}
+
 export const Context = createContext<{
   chats: IChat[];
   chatId: number;
   userId: number;
-  set: Dispatch<
-    StateUpdater<{ chats: IChat[]; chatId: number; userId: number }>
-  >;
+  name: string;
+  set: Dispatch<StateUpdater<StoreState>>;
 }>({
   chats: [],
   chatId: 0,
   userId: 0,
+  name: "",
   set: () => {},
 });
 function ChatList({ class: className }: ChatListProps) {
   const { payload } = useAuth();
 
-  const [storeValue, setStoreValue] = useState<{
-    chats: IChat[];
-    chatId: number;
-    userId: number;
-  }>({
+  const [storeValue, setStoreValue] = useState<StoreState>({
     chats: [],
     chatId: 0,
     userId: 0,
+    name: "",
   });
 
   const store = { ...storeValue, set: setStoreValue };
@@ -59,13 +64,20 @@ function ChatList({ class: className }: ChatListProps) {
 
   async function getChatById(chatId: number) {
     const res = await chatService.getChatById(chatId);
+    const chat = storeValue.chats.find((chat) => chat.id === chatId);
+
+    if (!chat) {
+      getChats();
+      return;
+    }
+
     setStoreValue((prev) => ({
       ...prev,
-      chats: prev.chats.map((chat) => {
-        if (chat.id === chatId) {
+      chats: prev.chats.map((oldData) => {
+        if (oldData.id === chatId) {
           return res;
         }
-        return chat;
+        return oldData;
       }),
     }));
   }
@@ -81,7 +93,7 @@ function ChatList({ class: className }: ChatListProps) {
     switch (type) {
       case "create":
         (async () => {
-          getChatById(data.chatId);
+          await getChatById(data.chatId);
         })();
         break;
       case "delete":
@@ -94,8 +106,23 @@ function ChatList({ class: className }: ChatListProps) {
     }
   };
 
+  const handleChat = ({
+    detail: { data },
+  }: {
+    detail: { data: { chatId: number } };
+  }) => {
+    // console.log(data);
+
+    setStoreValue((prev) => ({
+      ...prev,
+      chatId: prev.chatId === data.chatId ? 0 : prev.chatId,
+      chats: prev.chats.filter((chat) => chat.id !== data.chatId),
+    }));
+  };
+
   useEffect(() => {
     socketService.addListener("message", handleMessage);
+    socketService.addListener("chat", handleChat);
 
     getChats();
 
@@ -108,6 +135,7 @@ function ChatList({ class: className }: ChatListProps) {
 
     return () => {
       socketService.removeListener("message", handleMessage);
+      socketService.removeListener("chat", handleChat);
     };
   }, [payload]);
 

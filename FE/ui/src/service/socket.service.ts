@@ -29,6 +29,12 @@ class SocketService extends EventTarget {
     this.socket.on("message", (response) => {
       this.dispatchEvent(new CustomEvent("message", { detail: response }));
     });
+
+    this.socket.on("chat", (response) => {
+      this.dispatchEvent(
+        new CustomEvent("chat", { detail: { data: response } }),
+      );
+    });
   }
 
   addListener(

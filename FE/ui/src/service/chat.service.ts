@@ -22,6 +22,10 @@ class ChatService {
     return apiService.get<IChat>(`${ApiPath.chat}/${chatId}`);
   }
 
+  async deleteChat(chatId: number) {
+    return apiService.delete(`${ApiPath.chat}/${chatId}`);
+  }
+
   async setReadMessage(chatId: number) {
     return apiService.post(`${ApiPath.chat}/${chatId}/read`, { body: {} });
   }

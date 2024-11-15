@@ -1,15 +1,15 @@
 import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { Chat } from './entity/chat.entity';
-import { plainToInstance } from 'class-transformer';
 import { UsersService } from 'src/users/users.service';
+import { ChatGateway } from './chat.gateway';
 
 @Injectable()
 export class ChatService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly usersService: UsersService,
+    private readonly server: ChatGateway,
   ) {}
 
   async findAll(userId: number) {
@@ -85,12 +85,25 @@ export class ChatService {
 
   async delete(id: number, userId: number) {
     try {
+      const messages = await this.prisma.message.findMany({
+        where: { chatId: id },
+      });
+
+      await Promise.all(
+        messages.map(async (msg) => {
+          await this.prisma.message.delete({ where: { id: msg.id } });
+        }),
+      );
+
       await this.prisma.chat.delete({
         where: {
           id,
           OR: [{ firstUserId: userId }, { secondUserId: userId }],
         },
       });
+
+      this.server.send('chat', { chatId: id });
+
       return HttpStatus.NO_CONTENT;
     } catch (error) {
       throw new BadRequestException(
@@ -125,7 +138,11 @@ export class ChatService {
         ...dto,
         firstUserId: userId,
       },
+      include: {
+        firstUser: true,
+        secondUser: true,
+      },
     });
-    return plainToInstance(Chat, newChat);
+    return newChat;
   }
 }
