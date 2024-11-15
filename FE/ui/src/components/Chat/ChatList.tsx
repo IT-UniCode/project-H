@@ -64,6 +64,12 @@ function ChatList({ class: className }: ChatListProps) {
 
   async function getChatById(chatId: number) {
     const res = await chatService.getChatById(chatId);
+    const chat = storeValue.chats.find((chat) => chat.id === chatId);
+
+    if (!chat) {
+      getChats();
+      return;
+    }
 
     setStoreValue((prev) => ({
       ...prev,
@@ -87,8 +93,6 @@ function ChatList({ class: className }: ChatListProps) {
     switch (type) {
       case "create":
         (async () => {
-          // console.log(storeValue.chats.find((chat) => chat.id === data.chatId));
-
           await getChatById(data.chatId);
         })();
         break;
