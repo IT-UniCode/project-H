@@ -8,6 +8,11 @@ export interface SocketMessageDetail {
   type: string;
 }
 
+interface SocketChatDetail {
+  chatId: number;
+  type: string;
+}
+
 class SocketService extends EventTarget {
   private socket: Socket;
 
@@ -31,22 +36,20 @@ class SocketService extends EventTarget {
     });
 
     this.socket.on("chat", (response) => {
-      this.dispatchEvent(
-        new CustomEvent("chat", { detail: { data: response } }),
-      );
+      this.dispatchEvent(new CustomEvent("chat", { detail: response }));
     });
   }
 
-  addListener(
+  addListener<T = SocketMessageDetail | SocketChatDetail>(
     eventType: string,
-    listener: (event: CustomEvent<SocketMessageDetail>) => void,
+    listener: (event: CustomEvent<T>) => void,
   ) {
     this.addEventListener(eventType, listener as EventListener);
   }
 
-  removeListener(
+  removeListener<T = SocketMessageDetail | SocketChatDetail>(
     eventType: string,
-    listener: (event: CustomEvent<SocketMessageDetail>) => void,
+    listener: (event: CustomEvent<T>) => void,
   ) {
     this.removeEventListener(eventType, listener as EventListener);
   }
