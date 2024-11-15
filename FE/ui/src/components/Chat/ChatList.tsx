@@ -128,7 +128,7 @@ function ChatList({ class: className }: ChatListProps) {
             <Chat
               setReadMessage={async (chatId: number) => {
                 await chatService.setReadMessage(chatId);
-                getChats();
+                getChatById(chatId);
               }}
               getChatById={getChatById}
             />

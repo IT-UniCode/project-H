@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { useContext, useEffect, useRef, useState } from "preact/compat";
 import ChatMessage from "./ChatMessage";
 import { Context } from "@components/Chat/ChatList";
+import { addToast, removeToast } from "@components/Toast";
 
 export interface ChatProps {
   class?: string;
@@ -23,6 +24,8 @@ interface Pagination {
   pageSize: number;
 }
 
+const pageSize = 30;
+
 function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
   const { chatId } = useContext(Context);
 
@@ -33,7 +36,7 @@ function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
 
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    pageSize: 30,
+    pageSize,
   });
 
   const [hasLoadedMore, setHasLoadedMore] = useState(false);
@@ -45,19 +48,27 @@ function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
     },
     async onSubmit(values, context) {
       if (!values.message) return;
-      const res = await chatService.sendMessage(chatId, values.message);
-      setMessages((prev) => ({
-        ...prev,
-        data: [...prev.data, res],
-      }));
-      setReadMessage(chatId);
-      setTimeout(() => {
-        const container = containerRef.current;
-        if (!container) return;
+      try {
+        const res = await chatService.sendMessage(chatId, values.message);
+        setMessages((prev) => ({
+          ...prev,
+          data: [...prev.data, res],
+        }));
+        setReadMessage(chatId);
+        setTimeout(() => {
+          const container = containerRef.current;
+          if (!container) return;
 
-        container.scrollTop = container.scrollHeight;
-      }, 0);
-      context.reset();
+          container.scrollTop = container.scrollHeight;
+        }, 0);
+        context.reset();
+      } catch (error) {
+        addToast({ id: "Message", message: "Sending error", type: "error" });
+
+        setTimeout(() => {
+          removeToast("Message");
+        }, 3000);
+      }
     },
   });
 
@@ -169,7 +180,7 @@ function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
       data: [],
       meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
     });
-    setPagination({ page: 1, pageSize: 30 });
+    setPagination({ page: 1, pageSize });
     setHasLoadedMore(false);
 
     setTimeout(() => {
