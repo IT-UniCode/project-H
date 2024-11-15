@@ -53,8 +53,11 @@ export class ChatController {
     type: Chat,
   })
   @Get('/:id')
-  async getById(@Param() params: { id: string }) {
-    return this.chatService.findOneById(parseInt(params.id));
+  async getById(
+    @Param() params: { id: string },
+    @Req() req: { user: JwtPayload },
+  ) {
+    return this.chatService.findOneById(parseInt(params.id), req.user.id);
   }
 
   @ApiParam({

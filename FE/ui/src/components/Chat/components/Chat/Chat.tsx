@@ -4,15 +4,15 @@ import type { IChatMessage, ResponseBodyList } from "@interfaces/index";
 import chatService from "@service/chat.service";
 import socketService from "@service/socket.service";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "preact/compat";
+import { useContext, useEffect, useRef, useState } from "preact/compat";
 import ChatMessage from "./ChatMessage";
+import { Context } from "@components/Chat/ChatList";
+import { addToast, removeToast } from "@components/Toast";
 
 export interface ChatProps {
-  chatId: number;
-  userId: number;
   class?: string;
   setReadMessage: (chatId: number) => void;
-  getChats: () => Promise<void>;
+  getChatById: (id: number) => Promise<void>;
 }
 
 interface Form {
@@ -24,13 +24,11 @@ interface Pagination {
   pageSize: number;
 }
 
-function Chat({
-  chatId,
-  class: className,
-  userId,
-  setReadMessage,
-  getChats,
-}: ChatProps) {
+const pageSize = 30;
+
+function Chat({ class: className, setReadMessage, getChatById }: ChatProps) {
+  const { chatId } = useContext(Context);
+
   const [messages, setMessages] = useState<ResponseBodyList<IChatMessage>>({
     data: [],
     meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
@@ -38,7 +36,7 @@ function Chat({
 
   const [pagination, setPagination] = useState<Pagination>({
     page: 1,
-    pageSize: 30,
+    pageSize,
   });
 
   const [hasLoadedMore, setHasLoadedMore] = useState(false);
@@ -50,19 +48,27 @@ function Chat({
     },
     async onSubmit(values, context) {
       if (!values.message) return;
-      const res = await chatService.sendMessage(chatId, values.message);
-      setMessages((prev) => ({
-        ...prev,
-        data: [...prev.data, res],
-      }));
-      setReadMessage(chatId);
-      setTimeout(() => {
-        const container = containerRef.current;
-        if (!container) return;
+      try {
+        const res = await chatService.sendMessage(chatId, values.message);
+        setMessages((prev) => ({
+          ...prev,
+          data: [...prev.data, res],
+        }));
+        setReadMessage(chatId);
+        setTimeout(() => {
+          const container = containerRef.current;
+          if (!container) return;
 
-        container.scrollTop = container.scrollHeight;
-      }, 0);
-      context.reset();
+          container.scrollTop = container.scrollHeight;
+        }, 0);
+        context.reset();
+      } catch (error) {
+        addToast({ id: "Message", message: "Sending error", type: "error" });
+
+        setTimeout(() => {
+          removeToast("Message");
+        }, 3000);
+      }
     },
   });
 
@@ -174,7 +180,7 @@ function Chat({
       data: [],
       meta: { pagination: { page: 1, pageSize: 1, pageCount: 1, total: 1 } },
     });
-    setPagination({ page: 1, pageSize: 30 });
+    setPagination({ page: 1, pageSize });
     setHasLoadedMore(false);
 
     setTimeout(() => {
@@ -205,7 +211,7 @@ function Chat({
 
     container.scrollTop = container.scrollHeight;
 
-    setReadMessage(chatId);
+    chatId !== 0 && setReadMessage(chatId);
   }, [containerRef.current, chatId]);
 
   return (
@@ -218,13 +224,12 @@ function Chat({
           {messages.data.map((msg) => (
             <ChatMessage
               message={{ ...msg }}
-              userId={userId}
               onDelete={() => {
                 setMessages((prev) => ({
                   ...prev,
                   data: prev.data.filter((item) => item.id !== msg.id),
                 }));
-                getChats();
+                getChatById(chatId);
               }}
             />
           ))}
@@ -233,6 +238,9 @@ function Chat({
       <form
         class="flex min-h-16 max-h-16 md:min-h-20 md:h-20 flex-grow bg-white overflow-hidden"
         onSubmit={onSubmit}
+        onKeyDown={(event) => {
+          event.key === "Enter" && !event.shiftKey && onSubmit(event);
+        }}
       >
         <TextArea
           class={clsx("rounded-none h-full resize-none bg-slate-100")}

@@ -34,6 +34,11 @@ export class UsersService {
           contains: param,
           mode: 'insensitive',
         },
+        AND: {
+          NOT: {
+            id: userId,
+          },
+        },
       },
       take: 10,
     });

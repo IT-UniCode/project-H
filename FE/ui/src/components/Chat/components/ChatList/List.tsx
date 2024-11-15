@@ -1,17 +1,14 @@
 import clsx from "clsx";
-import type { Dispatch, StateUpdater } from "preact/hooks";
-import type { ChatState } from "../../ChatList";
-import type { FC } from "preact/compat";
+import { useContext, type FC } from "preact/compat";
 import type { IChat } from "@interfaces/chat";
+import { Context } from "@components/Chat/ChatList";
 
 interface ListProps {
-  chats: IChat[];
-  setChat: Dispatch<StateUpdater<ChatState>>;
-  chatId: number;
   userId: number;
 }
 
-const List: FC<ListProps> = ({ chats, setChat, chatId, userId }) => {
+const List: FC<ListProps> = ({ userId }) => {
+  const { chatId, chats, set } = useContext(Context);
   const getShortMessage = (item: IChat) => {
     return `${item.messages[0].userId === userId ? "You: " : ""}${item.messages[0].message.length > 23 ? item.messages[0].message.slice(0, 20) + "..." : item.messages[0].message}`;
   };
@@ -31,7 +28,7 @@ const List: FC<ListProps> = ({ chats, setChat, chatId, userId }) => {
               "border-b ",
             )}
             onClick={() => {
-              setChat((prev) => ({ ...prev, selected: item.id }));
+              set((prev) => ({ ...prev, chatId: item.id }));
             }}
           >
             <div class="rounded-full bg-gray-400 flex-[1_1_20%] aspect-square h-full my-auto hidden md:block"></div>

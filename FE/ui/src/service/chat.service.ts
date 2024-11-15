@@ -18,6 +18,10 @@ class ChatService {
     return apiService.get<IChat[]>(ApiPath.chat);
   }
 
+  async getChatById(chatId: number) {
+    return apiService.get<IChat>(`${ApiPath.chat}/${chatId}`);
+  }
+
   async setReadMessage(chatId: number) {
     return apiService.post(`${ApiPath.chat}/${chatId}/read`, { body: {} });
   }

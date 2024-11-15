@@ -50,8 +50,37 @@ export class ChatService {
     return chats;
   }
 
-  async findOneById(id: number) {
-    return this.prisma.chat.findUnique({ where: { id } });
+  async findOneById(id: number, userId: number) {
+    const chat = await this.prisma.chat.findUnique({
+      where: { id },
+      include: {
+        firstUser: { select: { name: true, email: true } },
+        secondUser: { select: { name: true, email: true } },
+        messages: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+    const messageList = await this.prisma.message.findMany({
+      where: { chatId: chat.id, unread: true },
+    });
+
+    const userMsg = messageList.filter((msg) => userId === msg.userId);
+
+    if (chat.firstUserId === userId) {
+      //@ts-expect-error add field for front end
+      chat.secondUser.unread = userMsg.length;
+      //@ts-expect-error add field for front end
+      chat.firstUser.unread = messageList.length - userMsg.length;
+    } else {
+      //@ts-expect-error add field for front end
+      chat.secondUser.unread = messageList.length - userMsg.length;
+      //@ts-expect-error add field for front end
+      chat.firstUser.unread = userMsg.length;
+    }
+
+    return chat;
   }
 
   async delete(id: number, userId: number) {
