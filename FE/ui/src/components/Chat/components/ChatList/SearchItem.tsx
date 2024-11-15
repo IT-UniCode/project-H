@@ -14,6 +14,18 @@ const SearchItem: FC<Props> = ({ name, id, email, onClick }) => {
   const { chats, set } = useContext(Context);
 
   async function createChat(userId: number) {
+    const chat = chats.find(
+      (chat) => chat.firstUserId === userId || chat.secondUserId === userId,
+    );
+
+    if (chat) {
+      set((prev) => ({
+        ...prev,
+        chatId: chat.id,
+      }));
+      return;
+    }
+
     try {
       const res = await chatService.createChat(userId);
 

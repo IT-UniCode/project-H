@@ -43,7 +43,8 @@ const Search = () => {
           setUsers((prev) => ({ ...prev, open: true }));
           setSearch(e.target.value);
         }}
-        onFocus={() => {
+        value={search}
+        onClick={() => {
           setUsers((prev) => ({ ...prev, open: true }));
         }}
       />
@@ -53,8 +54,8 @@ const Search = () => {
             <SearchItem
               {...user}
               onClick={() => {
-                setUsers({ open: false, search: [] });
                 setSearch("");
+                setUsers({ open: false, search: [] });
               }}
             />
           ))}
