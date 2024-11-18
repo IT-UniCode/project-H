@@ -1,8 +1,7 @@
 import clsx from "clsx";
 import type { IChatMessage } from "@interfaces/index";
 import chatService from "@service/chat.service";
-import { useContext } from "preact/hooks";
-import { Context } from "@components/Chat/ChatList";
+import { useMyContext } from "@components/Chat/useMyContext";
 
 interface ChatMessageProps {
   message: IChatMessage;
@@ -10,7 +9,7 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, onDelete }: ChatMessageProps) {
-  const { userId } = useContext(Context);
+  const { userId } = useMyContext();
   return (
     <article
       class={clsx("py-1 px-2 rounded overflow-hidden max-w-[85%] flex", {

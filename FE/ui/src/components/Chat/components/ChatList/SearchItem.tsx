@@ -1,7 +1,7 @@
-import { Context } from "@components/Chat/ChatList";
+import { useMyContext } from "@components/Chat/useMyContext";
 import { addToast, removeToast } from "@components/Toast";
 import chatService from "@service/chat.service";
-import { useContext, type FC } from "preact/compat";
+import { type FC } from "preact/compat";
 
 interface Props {
   name: string;
@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SearchItem: FC<Props> = ({ name, id, email, onClick }) => {
-  const { chats, set } = useContext(Context);
+  const { chats, set } = useMyContext();
 
   async function createChat(userId: number) {
     const chat = chats.find(

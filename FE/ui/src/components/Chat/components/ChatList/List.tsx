@@ -1,17 +1,17 @@
 import clsx from "clsx";
-import { useContext, useState, type FC } from "preact/compat";
+import { useState, type FC } from "preact/compat";
 import type { IChat } from "@interfaces/chat";
-import { Context } from "@components/Chat/ChatList";
 import { Modal } from "@components/Modal";
 import DeleteModal from "./DeleteModal";
 import chatService from "@service/chat.service";
+import { useMyContext } from "@components/Chat/useMyContext";
 
 interface ListProps {
   userId: number;
 }
 
 const List: FC<ListProps> = ({ userId }) => {
-  const { chatId, chats, name, set } = useContext(Context);
+  const { chatId, chats, name, set } = useMyContext();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const getShortMessage = (item: IChat) => {
     return `${item.messages[0].userId === userId ? "You: " : ""}${item.messages[0].message.length > 23 ? item.messages[0].message.slice(0, 20) + "..." : item.messages[0].message}`;
