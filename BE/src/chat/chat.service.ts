@@ -95,6 +95,15 @@ export class ChatService {
         }),
       );
 
+      const chat = await this.prisma.chat.findUnique({
+        where: {
+          id,
+          OR: [{ firstUserId: userId }, { secondUserId: userId }],
+        },
+      });
+      const secondUserId =
+        chat.firstUserId === userId ? chat.secondUserId : chat.firstUserId;
+
       await this.prisma.chat.delete({
         where: {
           id,
@@ -102,7 +111,11 @@ export class ChatService {
         },
       });
 
-      this.server.send('chat', { chatId: id });
+      this.server.send(
+        'chat',
+        { chatId: id, type: 'delete' },
+        String(secondUserId),
+      );
 
       return HttpStatus.NO_CONTENT;
     } catch (error) {
@@ -143,6 +156,17 @@ export class ChatService {
         secondUser: true,
       },
     });
+
+    this.server.send(
+      'chat',
+      { chatId: newChat.id, type: 'create' },
+      String(
+        newChat.firstUserId === userId
+          ? newChat.secondUserId
+          : newChat.firstUserId,
+      ),
+    );
+
     return newChat;
   }
 }

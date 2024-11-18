@@ -107,17 +107,33 @@ function ChatList({ class: className }: ChatListProps) {
   };
 
   const handleChat = ({
-    detail: { data },
+    detail: { chatId, type },
   }: {
-    detail: { data: { chatId: number } };
+    detail: { chatId: number; type: string };
   }) => {
-    // console.log(data);
+    switch (type) {
+      case "create":
+        (async () => {
+          const res = await chatService.getChatById(chatId);
+          console.log(res);
 
-    setStoreValue((prev) => ({
-      ...prev,
-      chatId: prev.chatId === data.chatId ? 0 : prev.chatId,
-      chats: prev.chats.filter((chat) => chat.id !== data.chatId),
-    }));
+          setStoreValue((prev) => ({
+            ...prev,
+            chatId,
+            chats: [...prev.chats, res],
+          }));
+        })();
+        break;
+      case "delete":
+        setStoreValue((prev) => ({
+          ...prev,
+          chatId: prev.chatId === chatId ? 0 : prev.chatId,
+          chats: prev.chats.filter((chat) => chat.id !== chatId),
+        }));
+        break;
+      default:
+        break;
+    }
   };
 
   useEffect(() => {
