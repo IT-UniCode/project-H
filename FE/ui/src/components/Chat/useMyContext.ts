@@ -4,18 +4,25 @@ import chatService from "@service/chat.service";
 import socketService from "@service/socket.service";
 import { createContext } from "preact";
 import {
+  useContext,
   useEffect,
   useState,
   type Dispatch,
   type StateUpdater,
 } from "preact/hooks";
 import { useAuth } from "@hooks/useAuth";
+import type { JwtPayload } from "@interfaces/jwt.payload";
 
 interface StoreState {
   chats: IChat[];
   chatId: number;
   userId: number;
   name: string;
+
+  getChatById: (chatId: number) => Promise<void>;
+  getChats: () => Promise<void>;
+  setReadMessages: (chatId: number) => Promise<void>;
+  usePayload: () => JwtPayload | null;
 }
 
 export const Context = createContext<{
@@ -23,6 +30,10 @@ export const Context = createContext<{
   chatId: number;
   userId: number;
   name: string;
+  getChats: () => Promise<void>;
+  getChatById: (chatId: number) => Promise<void>;
+  usePayload: () => JwtPayload | null;
+  setReadMessages: (chatId: number) => Promise<void>;
   set: Dispatch<StateUpdater<StoreState>>;
 }>({
   chats: [],
@@ -30,38 +41,52 @@ export const Context = createContext<{
   userId: 0,
   name: "",
   set: () => {},
+  getChatById: () => Promise.resolve(),
+  getChats: () => Promise.resolve(),
+  setReadMessages: () => Promise.resolve(),
+  usePayload: () => null,
 });
 
-export const useMyContext = () => {
-  const { payload } = useAuth();
-
-  const [storeValue, setStoreValue] = useState<StoreState>({
+export const value = () => {
+  const [store, set] = useState<StoreState>({
     chats: [],
     chatId: 0,
     userId: 0,
     name: "",
+    getChatById,
+    getChats,
+    setReadMessages,
+    usePayload,
   });
 
-  const setReadMessages = async (chatId: number) => {
+  const [payload, setPayload] = useState<JwtPayload | null>(null);
+
+  function usePayload() {
+    const { payload } = useAuth();
+    setPayload(payload);
+    return payload;
+  }
+
+  async function setReadMessages(chatId: number) {
     await chatService.setReadMessage(chatId);
     getChatById(chatId);
-  };
+  }
 
   async function getChats() {
     const res = await chatService.getChats();
-    setStoreValue((prev) => ({ ...prev, chats: res }));
+    set((prev) => ({ ...prev, chats: res }));
   }
 
   async function getChatById(chatId: number) {
     const res = await chatService.getChatById(chatId);
-    const chat = storeValue.chats.find((chat) => chat.id === chatId);
+    const chat = store.chats.find((chat) => chat.id === chatId);
 
     if (!chat) {
       getChats();
       return;
     }
 
-    setStoreValue((prev) => ({
+    set((prev) => ({
       ...prev,
       chats: prev.chats.map((oldData) => {
         if (oldData.id === chatId) {
@@ -105,17 +130,16 @@ export const useMyContext = () => {
       case "create":
         (async () => {
           const res = await chatService.getChatById(chatId);
-          console.log(res);
 
-          setStoreValue((prev) => ({
+          set((prev) => ({
             ...prev,
-            chatId,
+            // chatId,
             chats: [...prev.chats, res],
           }));
         })();
         break;
       case "delete":
-        setStoreValue((prev) => ({
+        set((prev) => ({
           ...prev,
           chatId: prev.chatId === chatId ? 0 : prev.chatId,
           chats: prev.chats.filter((chat) => chat.id !== chatId),
@@ -127,17 +151,15 @@ export const useMyContext = () => {
   };
 
   useEffect(() => {
-    console.log("connected to socket");
-
     socketService.addListener("message", handleMessage);
     socketService.addListener("chat", handleChat);
 
     getChats();
 
     if (payload) {
-      setStoreValue((prev) => ({
+      set((prev) => ({
         ...prev,
-        userId: payload.id,
+        userId: payload!.id,
       }));
     }
 
@@ -148,12 +170,9 @@ export const useMyContext = () => {
   }, [payload]);
 
   return {
-    store: storeValue,
-    ...storeValue,
-    set: setStoreValue,
-    payload,
-    getChatById,
-    getChats,
-    setReadMessages,
+    ...store,
+    set,
   };
 };
+
+export const useMyContext = () => useContext(Context);
